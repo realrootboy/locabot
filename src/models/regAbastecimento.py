@@ -1,3 +1,5 @@
+from datetime import datetime
+
 class RegAbastecimento:
 
     def __init__(self,
@@ -19,6 +21,7 @@ class RegAbastecimento:
         self.val_total = val_total
         self.tp_combustivel = tp_combustivel
         self.posto = posto
+        self.media_dir = datetime.now().strftime("%Y-%m-%dT%H:%M:%S") + ' ' + username
 
     def stringData(self):
         return('*Usuário:* ' + self.username + '\n' +

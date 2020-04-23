@@ -5,12 +5,15 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
 import sys
 sys.path.append('..')
 
+from datetime import datetime
+
+import os
+
 from .controllerUtils import listUtils
 from models.regAbastecimento import RegAbastecimento
 
 
-RETORNO, PLACA, QUILOMETRAGEM, QNT_LITRO, VAL_LITRO, VAL_TOTAL, TP_COMBUSTIVEL, POSTO, CONFIRM = range(
-    9)
+RETORNO, PLACA, QUILOMETRAGEM, QNT_LITRO, VAL_LITRO, VAL_TOTAL, TP_COMBUSTIVEL, POSTO, BOMBAINICIO, FPLACA, BOMBAFIM, PAINEL, NFISCAL, CONFIRM = range(14)
 
 buff = list()
 
@@ -29,6 +32,11 @@ class CombustivelController:
                 VAL_LITRO: [MessageHandler(Filters.text, self.val_litro)],
                 TP_COMBUSTIVEL: [MessageHandler(Filters.text, self.tp_combustivel)],
                 POSTO: [MessageHandler(Filters.text, self.posto)],
+                BOMBAINICIO: [MessageHandler(Filters.photo, self.bombainicio)],
+                FPLACA: [MessageHandler(Filters.photo, self.fplaca)],
+                BOMBAFIM: [MessageHandler(Filters.photo, self.bombafim)],
+                PAINEL: [MessageHandler(Filters.photo, self.painel)],
+                NFISCAL: [MessageHandler(Filters.photo, self.nfiscal)],
                 CONFIRM: [MessageHandler(Filters.text, self.confirm)]
             },
 
@@ -236,9 +244,113 @@ class CombustivelController:
         self.logger.info('Posto informado por %s: %s',
                          user.first_name, update.message.text)
 
-        item = listUtils.searchAndGetItem(buff,
+        update.message.reply_text(
+            "Agora envie a foto da bomba antes do abastecimento."
+        )
+
+        return BOMBAINICIO
+    
+    def bombainicio(self, update, context):
+        try:
+            file_id = update.message.photo[-1].file_id
+            newFile = context.bot.getFile(file_id)
+            item = listUtils.searchAndGetItem(buff,
                                 update.message.from_user.username,
                                 update.message.chat.id)
+            os.mkdir('media/'+item.media_dir)
+            newFile.download('media/' + item.media_dir + '/bomba_antes.jpg')
+        except:
+            update.message.reply_text(
+                "Ocorreu um erro! Tente enviar apenas uma foto de uma vez. " +
+                "Agora envie a foto da bomba antes do abastecimento."
+            )
+            listUtils.listItens(buff)
+            return BOMBAINICIO
+     
+        update.message.reply_text(
+            "Agora envie a foto da placa do veículo."
+        )
+
+        return FPLACA
+    
+    def fplaca(self, update, context):
+        try:
+            file_id = update.message.photo[-1].file_id
+            newFile = context.bot.getFile(file_id)
+            item = listUtils.searchAndGetItem(buff,
+                                update.message.from_user.username,
+                                update.message.chat.id)
+            newFile.download('media/' + item.media_dir + '/placa.jpg')
+        except:
+            update.message.reply_text(
+                "Ocorreu um erro! Tente enviar apenas uma foto de uma vez. " +
+                "Agora envie a foto da placa do veículo."
+            )
+            return FPLACA
+
+        update.message.reply_text(
+            "Agora envie a foto da bomba após o abastecimento."
+        )
+        
+        return BOMBAFIM
+    
+    def bombafim(self, update, context):
+        try:
+            file_id = update.message.photo[-1].file_id
+            newFile = context.bot.getFile(file_id)
+            item = listUtils.searchAndGetItem(buff,
+                                update.message.from_user.username,
+                                update.message.chat.id)
+            newFile.download('media/' + item.media_dir + '/bomba_depois.jpg')
+        except:
+            update.message.reply_text(
+                "Ocorreu um erro! Tente enviar apenas uma foto de uma vez. " +
+                "Agora envie a foto da bomba após o abastecimento."
+            )
+            return
+
+        update.message.reply_text(
+            "Agora envie a foto do painel do veículo."
+        )
+
+        return PAINEL
+    
+    def painel(self, update, context):
+        try:
+            file_id = update.message.photo[-1].file_id
+            newFile = context.bot.getFile(file_id)
+            item = listUtils.searchAndGetItem(buff,
+                                update.message.from_user.username,
+                                update.message.chat.id)
+            newFile.download('media/' + item.media_dir + '/painel.jpg')
+        except:
+            update.message.reply_text(
+                "Ocorreu um erro! Tente enviar apenas uma foto de uma vez. " +
+                "Agora envie a foto do painel do veículo."
+            )
+            return PAINEL
+
+        update.message.reply_text(
+            "Agora envie a foto da nota fiscal."
+        )
+
+        return NFISCAL
+    
+    def nfiscal(self, update, context):
+        try:
+            file_id = update.message.photo[-1].file_id
+            newFile = context.bot.getFile(file_id)
+            item = listUtils.searchAndGetItem(buff,
+                                update.message.from_user.username,
+                                update.message.chat.id)
+            newFile.download('media/' + item.media_dir + '/nota_fiscal.jpg')
+        except:
+            update.message.reply_text(
+                "Ocorreu um erro! Tente enviar apenas uma foto de uma vez." +
+                "Agora envie a foto da nota fiscal."
+            )
+            return NFISCAL
+        
 
         a = float(str(item.qnt_litro).replace(',', '.'))
         b = float(str(item.val_litro).replace(',', '.'))
@@ -268,17 +380,24 @@ class CombustivelController:
             update.message.reply_text('Dados enviados com sucesso! Caso haja alguma inconsistência favor informar para @renanmgomes ou @igorpittol.',
                                       reply_markup=ReplyKeyboardRemove())
 
+            buff.pop(buff.index(item))
+
             return ConversationHandler.END
         elif(update.message.text == 'Não, refazer'):
             update.message.reply_text(
                 'Ok! Vamos refazer então.',
                 reply_markup=ReplyKeyboardMarkup([['Continuar']], one_time_keyboard=True))
+            
             buff.pop(buff.index(item))
+
             return RETORNO
         else:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Operação cancelada!')
+
+            buff.pop(buff.index(item))
+
             return ConversationHandler.END
 
     def cancel(self, update, context):
