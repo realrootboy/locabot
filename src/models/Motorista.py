@@ -8,7 +8,8 @@ class Motorista(Database.Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     nome = Column('nome', String(255))
     telegram_user = Column('telegram_user', String(255))
-    registros = relationship("Registro", back_populates="motorista")
+    registros = relationship('Registro', back_populates='motorista')
+    checklists = relationship('Checklist', back_populates='motorista')
 
     def __init__(self, nome, telegram_user):
         self.nome = nome
