@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Date, Table, ForeignKey
+from sqlalchemy import Column, String, Integer, Date, Table, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 from database.main import Database
@@ -10,9 +10,9 @@ class Checklist(Database.Base):
     motorista = relationship('Motorista', back_populates='checklists')
     placa = Column('placa', String(255))
     km_inicial = Column('km_inicial', String(255))
-    dt_abertura = Column('dt_abertura', Date())
+    dt_abertura = Column('dt_abertura', DateTime(timezone=True))
     km_final = Column('km_final', String(255))
-    dt_fechamento = Column('dt_fechamento', Date())
+    dt_fechamento = Column('dt_fechamento', DateTime(timezone=True))
     
     nao_conformidades = relationship('NaoConformidades', back_populates='checklist')
 

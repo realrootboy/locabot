@@ -9,10 +9,12 @@ class NaoConformidades(Database.Base):
     checklist_id = Column(Integer, ForeignKey('checklists.id'))
     checklist = relationship('Checklist', back_populates="nao_conformidades")
     path = Column('path', String(255))
-    descricao = Column('path', String(255))
+    descricao = Column('descricao', String(255))
 
     def __init__(self,
+                checklist,
                 path='',
                 descricao=''):
+        self.checklist = checklist
         self.path = path
         self.descricao = descricao

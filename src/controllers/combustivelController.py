@@ -26,9 +26,9 @@ class CombustivelController:
     def __init__(self, logger):
         self.logger = logger
         self.conv_handler = ConversationHandler(
-            entry_points=[CommandHandler('combustivel', self.registro)],
+            entry_points = [CommandHandler('combustivel', self.registro)],
 
-            states={
+            states = {
                 RETORNO: [MessageHandler(Filters.text, self.retorno)],
                 PLACA: [MessageHandler(Filters.text, self.placa)],
                 QUILOMETRAGEM: [MessageHandler(Filters.text, self.quilometragem)],
@@ -46,7 +46,7 @@ class CombustivelController:
 
 
 
-            fallbacks=[CommandHandler('cancel', self.cancel)]
+            fallbacks = [CommandHandler('cancel', self.cancel)]
         )
 
     def registro(self, update, context):
