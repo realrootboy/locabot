@@ -18,7 +18,17 @@ from models.regChecklist import RegChecklist
 from database.main import Database
 
 PLACA, KM_INICIAL, A_CONFIRM = range(3)
-KM_FINAL, CONFORMIDADE, F_CONFORMIDADE, O_CONFORMIDADE = range(4)
+
+KM_FINAL = 0
+CARRO_P_CASA = 1
+VIAJOU_C_CARRO = 2
+OUTRO_CONDUTOR = 3
+NOVO_CONDUTOR = 4
+DEIXOU_OFICINA = 5
+LOCAL_OFICINA = 6
+VAN_TACOGRAFO = 7
+CALIBROU_PNEU = 8
+F_CONFIRM = 9
 
 buff = list()
 
@@ -44,9 +54,15 @@ class ChecklistController:
 
             states={
                 KM_FINAL: [MessageHandler(Filters.text, self.km_final)],
-                CONFORMIDADE: [MessageHandler(Filters.text, self.conformidade)],
-                F_CONFORMIDADE: [MessageHandler(Filters.photo, self.f_conformidade)],
-                O_CONFORMIDADE: [MessageHandler(Filters.text, self.o_conformidade)],
+                CARRO_P_CASA: [MessageHandler(Filters.text, self.carro_p_casa)],
+                VIAJOU_C_CARRO: [MessageHandler(Filters.text, self.viajou_c_carro)],
+                OUTRO_CONDUTOR: [MessageHandler(Filters.text, self.outro_condutor)],
+                NOVO_CONDUTOR: [MessageHandler(Filters.text, self.novo_condutor)],
+                DEIXOU_OFICINA: [MessageHandler(Filters.text, self.deixou_oficina)],
+                LOCAL_OFICINA: [MessageHandler(Filters.text, self.local_oficina)],
+                VAN_TACOGRAFO: [MessageHandler(Filters.text, self.van_tacografo)],
+                CALIBROU_PNEU: [MessageHandler(Filters.text, self.calibrou_pneu)],
+                F_CONFIRM: [MessageHandler(Filters.text, self.f_confirm)]
             },
 
             fallbacks=[CommandHandler('cancel', self.cancel)]
@@ -193,7 +209,7 @@ class ChecklistController:
                 Session = Database.Session
                 session = Session()
 
-                #motorista = Motorista('Renan Moreira Gomes', 'renanmgomes')
+                # motorista = Motorista('Renan Moreira Gomes', 'renanmgomes')
                 motorista = session.query(Motorista).filter_by(
                     telegram_user=item.username).first()
 
@@ -311,12 +327,18 @@ class ChecklistController:
                 context.bot.send_message(
                     chat_id=update.effective_chat.id,
                     text='Quilometragem inválida. Por favor, informe novamente!')
-                return KM_INICIAL
+                update.message.reply_text(
+                    'Por favor, informe novamente!',
+                    reply_markup=ReplyKeyboardRemove())
+                return KM_FINAL
             if(float(update.message.text) < float(item.km_inicial[:-3])):
                 context.bot.send_message(
                     chat_id=update.effective_chat.id,
-                    text='Quilometragem final menor que a inicial (inicial:'+str(item.km_inicial)+'). Por favor, informe novamente!')
-                return KM_INICIAL
+                    text='Quilometragem final menor que a inicial (inicial:'+str(item.km_inicial)+').')
+                update.message.reply_text(
+                    'Por favor, informe novamente!',
+                    reply_markup=ReplyKeyboardRemove())
+                return KM_FINAL
         except:
             replaced = str(update.message.text).replace(',', '.')
             try:
@@ -324,17 +346,26 @@ class ChecklistController:
                     context.bot.send_message(
                         chat_id=update.effective_chat.id,
                         text='Quilometragem inválida. Por favor, informe novamente!')
-                    return KM_INICIAL
+                    update.message.reply_text(
+                        'Por favor, informe novamente!',
+                        reply_markup=ReplyKeyboardRemove())
+                    return KM_FINAL
                 if(float(update.message.text) < float(item.km_inicial[:-3])):
                     context.bot.send_message(
                         chat_id=update.effective_chat.id,
-                        text='Quilometragem final menor que a inicial (inicial:'+str(item.km_inicial)+'). Por favor, informe novamente!')
-                    return KM_INICIAL
+                        text='Quilometragem final menor que a inicial (inicial:'+str(item.km_inicial)+').')
+                    update.message.reply_text(
+                        'Por favor, informe novamente!',
+                        reply_markup=ReplyKeyboardRemove())
+                    return KM_FINAL
             except:
                 context.bot.send_message(
                     chat_id=update.effective_chat.id,
-                    text='Formato invalido de quilometragem. Por favor, informe novamente!')
-                return KM_INICIAL
+                    text='Formato invalido de quilometragem.')
+                update.message.reply_text(
+                    'Por favor, informe novamente!',
+                    reply_markup=ReplyKeyboardRemove())
+                return KM_FINAL
 
         replaced = str(update.message.text).replace('.', ',')
 
@@ -349,29 +380,255 @@ class ChecklistController:
         update.message.reply_text(
             'Quilometragem final informada: '+update.message.text+'\n')
 
-        reply_keyboard = [['Sim, registrar'], ['Não, finalizar'], ['Cancelar']]
+        reply_keyboard = [['Sim'], ['Não']]
 
         update.message.reply_text(
-            'Houve alguma não-conformidade?',
+            'Retornou com o carro para casa?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
-        return CONFORMIDADE
+        return CARRO_P_CASA
 
-    def conformidade(self, update, context):
-        if(update.message.text == 'Sim, registrar'):
+    def carro_p_casa(self, update, context):
+        reply_keyboard = [['Sim'], ['Não']]
+
+        if(update.message.text == 'Sim'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'carro_p_casa',
+                                      True)
+        elif(update.message.text == 'Não'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'carro_p_casa',
+                                      False)
+        else:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text='Por favor, envie a foto da não conformidade')
-            return F_CONFORMIDADE
-        elif(update.message.text == 'Não, finalizar'):
-            item = listUtils.searchAndGetItem(buff,
-                                              update.message.from_user.username,
-                                              update.message.chat.id)
+                text='Resposta inválida, por favor, responda apenas [Sim] ou [Não]')
 
-            if(update.message.text == 'Não, finalizar'):
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text='Salvando dados...')
+            update.message.reply_text(
+                'Retornou com o carro para casa?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return CARRO_P_CASA
+
+        update.message.reply_text(
+            'Viajou com o carro?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return VIAJOU_C_CARRO
+
+    def viajou_c_carro(self, update, context):
+        reply_keyboard = [['Sim'], ['Não']]
+
+        if(update.message.text == 'Sim'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'viajou_c_carro',
+                                      True)
+        elif(update.message.text == 'Não'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'viajou_c_carro',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Sim] ou [Não]')
+
+            update.message.reply_text(
+                'Outro condutor?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return VIAJOU_C_CARRO
+
+        update.message.reply_text(
+            'Outro condutor?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return OUTRO_CONDUTOR
+
+    def outro_condutor(self, update, context):
+        reply_keyboard = [['Sim'], ['Não']]
+
+        if(update.message.text == 'Sim'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'outro_condutor',
+                                      True)
+            update.message.reply_text(
+                'Insira o nome do novo condutor:',
+                reply_markup=ReplyKeyboardRemove())
+
+            return NOVO_CONDUTOR
+        elif(update.message.text == 'Não'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'outro_condutor',
+                                      False)
+            update.message.reply_text(
+                'Deixou na oficina?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return DEIXOU_OFICINA
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Sim] ou [Não]')
+
+            update.message.reply_text(
+                'Outro condutor?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return OUTRO_CONDUTOR
+
+    def novo_condutor(self, update, context):
+        reply_keyboard = [['Sim'], ['Não']]
+
+        listUtils.searchAndUpdate(buff,
+                                  update.message.from_user.username,
+                                  update.message.chat.id,
+                                  'novo_condutor',
+                                  update.message.text)
+
+        update.message.reply_text(
+            'Deixou o carro na oficina (Revisão/Reforma)?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return DEIXOU_OFICINA
+
+    def deixou_oficina(self, update, context):
+        reply_keyboard = [['Sim'], ['Não']]
+
+        if(update.message.text == 'Sim'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'deixou_oficina',
+                                      True)
+            update.message.reply_text(
+                'Informe a oficina(LOCAL):',
+                reply_markup=ReplyKeyboardRemove())
+
+            return LOCAL_OFICINA
+        elif(update.message.text == 'Não'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'deixou_oficina',
+                                      False)
+            update.message.reply_text(
+                'Trocou tacografo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return VAN_TACOGRAFO
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Sim] ou [Não]')
+
+            update.message.reply_text(
+                'Deixou o carro na oficina (Revisão/Reforma)?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return DEIXOU_OFICINA
+
+    def local_oficina(self, update, context):
+        reply_keyboard = [['Sim'], ['Não']]
+
+        listUtils.searchAndUpdate(buff,
+                                  update.message.from_user.username,
+                                  update.message.chat.id,
+                                  'local_oficina',
+                                  update.message.text)
+
+        update.message.reply_text(
+            'Trocou tacografo?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return VAN_TACOGRAFO
+
+    def van_tacografo(self, update, context):
+        reply_keyboard = [['Sim'], ['Não']]
+
+        if(update.message.text == 'Sim'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'van_tacografo',
+                                      True)
+        elif(update.message.text == 'Não'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'van_tacografo',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Sim] ou [Não]')
+
+            update.message.reply_text(
+                'Trocou tacografo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return VAN_TACOGRAFO
+
+        update.message.reply_text(
+            'Calibrou os Pneus?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return CALIBROU_PNEU
+
+    def calibrou_pneu(self, update, context):
+        reply_keyboard = [['Sim'], ['Não']]
+
+        if(update.message.text == 'Sim'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'calibrou_pneu',
+                                      True)
+        elif(update.message.text == 'Não'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'calibrou_pneu',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Sim] ou [Não]')
+
+            update.message.reply_text(
+                'Trocou tacografo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return VAN_TACOGRAFO
+
+        reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+        update.message.reply_text(
+            item.dadosFechamento(), parse_mode=ParseMode.MARKDOWN)
+
+        update.message.reply_text(
+            'O dados informados estão corretos?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+
+        return F_CONFIRM
+
+    def f_confirm(self, update, context):
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+
+        if(update.message.text == 'Sim, confirmar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Salvando dados...')
 
             try:
                 Session = Database.Session
@@ -382,9 +639,17 @@ class ChecklistController:
 
                 checklist.km_final = item.km_final
                 checklist.dt_fechamento = datetime.now().strftime("%Y-%m-%dT%H:%M:%S-03:00")
+                checklist.carro_p_casa = item.carro_p_casa
+                checklist.viajou_c_carro = item.viajou_c_carro
+                checklist.outro_condutor = item.outro_condutor
+                checklist.novo_condutor = item.novo_condutor
+                checklist.deixou_oficina = item.deixou_oficina
+                checklist.local_oficina = item.local_oficina
+                checklist.van_tacografo = item.van_tacografo
+                checklist.calibrou_pneu = item.calibrou_pneu
 
                 session.add(checklist)
-                
+
                 for i, nc in enumerate(item.desc_conformidades):
                     session.add(
                         NaoConformidades(
@@ -397,6 +662,7 @@ class ChecklistController:
                 session.commit()
 
                 session.close()
+
             except Exception as e:
                 update.message.reply_text('Houve um erro ao tentar salvar! ' +
                                           'O erro foi reportado, tente novamente mais tarde.',
@@ -411,74 +677,22 @@ class ChecklistController:
                                       reply_markup=ReplyKeyboardRemove())
 
             return ConversationHandler.END
-
-    def f_conformidade(self, update, context):
-        try:
-            file_id = update.message.photo[-1].file_id
-            newFile = context.bot.getFile(file_id)
-            item = listUtils.searchAndGetItem(buff,
-                                              update.message.from_user.username,
-                                              update.message.chat.id)
-            try:
-                os.mkdir('media/'+item.media_dir)
-            except Exception as e:
-                print(e)
-
-            newFile.download('media/' + item.media_dir + '/' +
-                             str(item.n_conformidades) + '.jpg')
-
-            listUtils.searchAndUpdate(buff,
-                                      update.message.from_user.username,
-                                      update.message.chat.id,
-                                      'n_conformidades',
-                                      item.n_conformidades + 1)
-        except Exception as e:
-            print(e)
+        elif(update.message.text == 'Não, refazer'):
             update.message.reply_text(
-                "Ocorreu um erro! Tente enviar apenas uma foto de uma vez. " +
-                "Agora envie a foto da bomba antes do abastecimento."
-            )
-            listUtils.listItens(buff)
-            return F_CONFORMIDADE
+                'Ok! Vamos refazer então.',
+                reply_markup=ReplyKeyboardMarkup([['Continuar']], one_time_keyboard=True))
 
-        update.message.reply_text(
-            "Agora descreva a não-conformidade:"
-        )
+            buff.pop(buff.index(item))
 
-        return O_CONFORMIDADE
+            return ConversationHandler.END
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Operação cancelada!')
 
-    def o_conformidade(self, update, context):
-        item = listUtils.searchAndGetItem(buff,
-                                          update.message.from_user.username,
-                                          update.message.chat.id)
+            buff.pop(buff.index(item))
 
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text='Salvando a não-conformidade...')
-
-        item.desc_conformidades.append(update.message.text)
-        aux = item.desc_conformidades
-
-        listUtils.searchAndUpdate(buff,
-                                  update.message.from_user.username,
-                                  update.message.chat.id,
-                                  'desc_conformidades',
-                                  aux)
-        
-        print(aux)
-
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text='Salvo com sucesso!'
-        )
-
-        reply_keyboard = [['Sim, registrar'], ['Não, finalizar'], ['Cancelar']]
-
-        update.message.reply_text(
-            'Houve mais alguma não-conformidade?',
-            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
-
-        return CONFORMIDADE
+            return ConversationHandler.END
 
     def cancel(self, update, context):
         user = update.message.from_user
