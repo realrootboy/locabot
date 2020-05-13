@@ -28,7 +28,19 @@ DEIXOU_OFICINA = 5
 LOCAL_OFICINA = 6
 VAN_TACOGRAFO = 7
 CALIBROU_PNEU = 8
-F_CONFIRM = 9
+MECANICA_MOTOR = 9
+MECANICA_AMORTECEDOR = 10
+MECANICA_ESCAPAMENTO = 11
+MECANICA_FREIO = 12
+MECANICA_EMBREAGEM = 13
+MECANICA_ACELERADOR = 14
+MECANICA_CAMBIO = 15
+MECANICA_OLEO = 16
+MECANICA_AGUA = 17
+MECANICA_ALINHAMENTO = 18
+MECANICA_FREIODEMAO = 19
+MECANICA_CONFIRM = 20
+F_CONFIRM = 21
 
 buff = list()
 
@@ -46,7 +58,9 @@ class ChecklistController:
                 A_CONFIRM: [MessageHandler(Filters.text, self.a_confirm)]
             },
 
-            fallbacks=[CommandHandler('cancel', self.cancel)]
+            fallbacks=[
+                CommandHandler('Cancelar', self.cancel), 
+                CommandHandler('cancelar', self.cancel)]
         )
         self.conv_handler_fechamento = ConversationHandler(
             entry_points=[CommandHandler(
@@ -54,6 +68,7 @@ class ChecklistController:
 
             states={
                 KM_FINAL: [MessageHandler(Filters.text, self.km_final)],
+                
                 CARRO_P_CASA: [MessageHandler(Filters.text, self.carro_p_casa)],
                 VIAJOU_C_CARRO: [MessageHandler(Filters.text, self.viajou_c_carro)],
                 OUTRO_CONDUTOR: [MessageHandler(Filters.text, self.outro_condutor)],
@@ -62,6 +77,20 @@ class ChecklistController:
                 LOCAL_OFICINA: [MessageHandler(Filters.text, self.local_oficina)],
                 VAN_TACOGRAFO: [MessageHandler(Filters.text, self.van_tacografo)],
                 CALIBROU_PNEU: [MessageHandler(Filters.text, self.calibrou_pneu)],
+                
+                MECANICA_MOTOR: [MessageHandler(Filters.text, self.mecanica_motor)],
+                MECANICA_AMORTECEDOR: [MessageHandler(Filters.text, self.mecanica_amortecedor)],
+                MECANICA_ESCAPAMENTO: [MessageHandler(Filters.text, self.mecanica_escapamento)],
+                MECANICA_FREIO: [MessageHandler(Filters.text, self.mecanica_freio)],
+                MECANICA_EMBREAGEM: [MessageHandler(Filters.text, self.mecanica_embreagem)],
+                MECANICA_ACELERADOR: [MessageHandler(Filters.text, self.mecanica_acelerador)],
+                MECANICA_CAMBIO: [MessageHandler(Filters.text, self.mecanica_cambio)],
+                MECANICA_OLEO: [MessageHandler(Filters.text, self.mecanica_oleo)],
+                MECANICA_AGUA: [MessageHandler(Filters.text, self.mecanica_agua)],
+                MECANICA_ALINHAMENTO: [MessageHandler(Filters.text, self.mecanica_alinhamento)],
+                MECANICA_FREIODEMAO: [MessageHandler(Filters.text, self.mecanica_freiodemao)],
+                MECANICA_CONFIRM: [MessageHandler(Filters.text, self.mecanica_confirm)],
+
                 F_CONFIRM: [MessageHandler(Filters.text, self.f_confirm)]
             },
 
@@ -582,7 +611,7 @@ class ChecklistController:
         return CALIBROU_PNEU
 
     def calibrou_pneu(self, update, context):
-        reply_keyboard = [['Sim'], ['Não']]
+        reply_keyboard = [['Ok'], ['Não está ok']]
 
         if(update.message.text == 'Sim'):
             listUtils.searchAndUpdate(buff,
@@ -606,19 +635,408 @@ class ChecklistController:
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
             return VAN_TACOGRAFO
 
-        reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+        #reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+        #item = listUtils.searchAndGetItem(buff,
+        #                                  update.message.from_user.username,
+        #                                  update.message.chat.id)
+        #update.message.reply_text(
+        #    item.dadosFechamento(), parse_mode=ParseMode.MARKDOWN)
+        #update.message.reply_text(
+        #    'O dados informados estão corretos?',
+        #    reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+        #return F_CONFIRM
 
+        context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos a revisão da mecânica do veículo!')
+
+        update.message.reply_text(
+            'Como está o motor?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return MECANICA_MOTOR
+
+    def mecanica_motor(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_motor',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_motor',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                    'Como está o motor?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return MECANICA_MOTOR
+        
+        update.message.reply_text(
+            'Como está o amortecedor?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return MECANICA_AMORTECEDOR
+
+    def mecanica_amortecedor(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_amortecedor',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_amortecedor',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                    'Como está o amortecedor?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return MECANICA_AMORTECEDOR
+        
+        update.message.reply_text(
+            'Como está o escapamento?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return MECANICA_ESCAPAMENTO
+
+    def mecanica_escapamento(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_escapamento',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_escapamento',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                    'Como está o escapamento?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return MECANICA_ESCAPAMENTO
+        
+        update.message.reply_text(
+            'Como está o escapamento?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return MECANICA_FREIO
+
+    def mecanica_freio(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_freio',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_freio',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                    'Como está o freio?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return MECANICA_FREIO
+        
+        update.message.reply_text(
+            'Como está a embreagem?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return MECANICA_EMBREAGEM
+
+    def mecanica_embreagem(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_embreagem',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_embreagem',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                    'Como está a embreagem?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return MECANICA_EMBREAGEM
+        
+        update.message.reply_text(
+            'Como está a embreagem?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return MECANICA_ACELERADOR
+
+    def mecanica_acelerador(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_acelerador',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_acelerador',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                    'Como está o acelerador?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return MECANICA_ACELERADOR
+        
+        update.message.reply_text(
+            'Como está o cambio?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return MECANICA_CAMBIO
+
+    def mecanica_cambio(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_cambio',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_cambio',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                    'Como está o cambio?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return MECANICA_CAMBIO
+        
+        update.message.reply_text(
+            'Como está o oleo?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return MECANICA_OLEO
+
+    def mecanica_oleo(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_oleo',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_oleo',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                    'Como está o oleo?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return MECANICA_OLEO
+        
+        update.message.reply_text(
+            'Como está a agua?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return MECANICA_AGUA
+
+    def mecanica_agua(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_agua',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_agua',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                    'Como está a agua?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return MECANICA_AGUA
+        
+        update.message.reply_text(
+            'Como está o alinhamento?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return MECANICA_ALINHAMENTO
+
+    def mecanica_alinhamento(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_alinhamento',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_alinhamento',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                    'Como está o alinhamento?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return MECANICA_ALINHAMENTO
+        
+        update.message.reply_text(
+            'Como está o freio de mão?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return MECANICA_FREIODEMAO
+
+    def mecanica_freiodemao(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_freiodemao',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'mecanica_freiodemao',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                    'Como está o freio de mão?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return MECANICA_FREIODEMAO
+        
+        reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
                                           update.message.chat.id)
         update.message.reply_text(
-            item.dadosFechamento(), parse_mode=ParseMode.MARKDOWN)
-
+            item.dadosMecanica(), parse_mode=ParseMode.MARKDOWN)
         update.message.reply_text(
             'O dados informados estão corretos?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+        return MECANICA_CONFIRM
 
-        return F_CONFIRM
+    def mecanica_confirm(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+
+        if(update.message.text == 'Sim, confirmar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos a revisão da lataria do veículo!')
+
+            update.message.reply_text(
+                'Como está o motor?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return ConversationHandler.END
+        elif(update.message.text == 'Não, refazer'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos novamente a revisão da mecanica do veículo!')
+            
+            update.message.reply_text(
+            'Como está o motor?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return MECANICA_MOTOR
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Operação cancelada!')
+
+            buff.pop(buff.index(item))
+
+            return ConversationHandler.END
 
     def f_confirm(self, update, context):
         item = listUtils.searchAndGetItem(buff,
@@ -695,6 +1113,10 @@ class ChecklistController:
             return ConversationHandler.END
 
     def cancel(self, update, context):
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+        buff.pop(buff.index(item))
         user = update.message.from_user
         self.logger.info("Usuario %s cancelou a conversa.", user.first_name)
         update.message.reply_text('Tchau!',

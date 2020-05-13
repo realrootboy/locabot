@@ -1,13 +1,22 @@
 from datetime import datetime
 
+
 def strBool(b):
     if(b):
         return 'Sim'
     else:
         return 'Não'
 
+
+def strBool2(b):
+    if(b):
+        return 'Ok'
+    else:
+        return 'Não está ok'
+
+
 class RegChecklist:
-    
+
     def __init__(self,
                  username,
                  chat_id,
@@ -25,7 +34,19 @@ class RegChecklist:
                  deixou_oficina=False,
                  local_oficina='',
                  van_tacografo=False,
-                 calibrou_pneu=False):
+                 calibrou_pneu=False,
+                 mecanica_motor=True,
+                 mecanica_amortecedor=True,
+                 mecanica_escapamento=True,
+                 mecanica_freio=True,
+                 mecanica_embreagem=True,
+                 mecanica_acelerador=True,
+                 mecanica_cambio=True,
+                 mecanica_oleo=True,
+                 mecanica_agua=True,
+                 mecanica_alinhamento=True,
+                 mecanica_freiodemao=True
+                 ):
         self.username = username
         self.chat_id = chat_id
         self.placa = placa
@@ -46,13 +67,24 @@ class RegChecklist:
         self.local_oficina = local_oficina
         self.van_tacografo = van_tacografo
         self.calibrou_pneu = calibrou_pneu
+        self.mecanica_motor = mecanica_motor
+        self.mecanica_amortecedor = mecanica_amortecedor
+        self.mecanica_escapamento = mecanica_escapamento
+        self.mecanica_freio = mecanica_freio
+        self.mecanica_embreagem = mecanica_embreagem
+        self.mecanica_acelerador = mecanica_acelerador
+        self.mecanica_cambio = mecanica_cambio
+        self.mecanica_oleo = mecanica_oleo
+        self.mecanica_agua = mecanica_agua
+        self.mecanica_alinhamento = mecanica_alinhamento
+        self.mecanica_freiodemao = mecanica_freiodemao
 
     def dadosAbertura(self):
         return('*Usuário:* ' + self.username + '\n' +
                '*Chat Atual:* ' + str(self.chat_id) + '\n\n' +
                '*Placa:* ' + self.placa + '\n' +
                '*KM Inicial:* ' + str(self.km_inicial) + ' KM\n')
-    
+
     def dadosFechamento(self):
         return('*Usuário:* ' + self.username + '\n' +
                '*Chat Atual:* ' + str(self.chat_id) + '\n\n' +
@@ -67,3 +99,17 @@ class RegChecklist:
                '*Local da oficina:* ' + str(self.local_oficina) + '\n' +
                '*Trocou o tacógrafo:* ' + strBool(self.van_tacografo) + '\n' +
                '*Calibrou os pneus:* ' + strBool(self.calibrou_pneu) + '\n')
+
+    def dadosMecanica(self):
+        return('*CHECKLIST DE MECANICA*\n\n' +
+               '*Motor:* ' + strBool2(self.mecanica_motor) + '\n'
+               '*Amortecedor:* ' + strBool2(self.mecanica_amortecedor) + '\n'
+               '*Escapamento:* ' + strBool2(self.mecanica_escapamento) + '\n'
+               '*Freio:* ' + strBool2(self.mecanica_freio) + '\n'
+               '*Embreagem:* ' + strBool2(self.mecanica_embreagem) + '\n'
+               '*Acelerador:* ' + strBool2(self.mecanica_acelerador) + '\n'
+               '*Cambio:* ' + strBool2(self.mecanica_cambio) + '\n'
+               '*Oleo:* ' + strBool2(self.mecanica_oleo) + '\n'
+               '*Agua:* ' + strBool2(self.mecanica_agua) + '\n'
+               '*Alinhamento:* ' + strBool2(self.mecanica_alinhamento) + '\n'
+               '*Freio de mão:* ' + strBool2(self.mecanica_freiodemao) + '\n')
