@@ -481,7 +481,7 @@ class CombustivelController:
             buff.pop(buff.index(item))
 
             return RETORNO
-        else:
+        elif(update.message.text == 'Cancelar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Operação cancelada!')
@@ -491,6 +491,19 @@ class CombustivelController:
             buff.pop(buff.index(item))
 
             return ConversationHandler.END
+        else:
+            reply_keyboard = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+                        
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Sim, confirmar], [Não, refazer] ou [Cancelar]')
+            update.message.reply_text(
+                item.stringData(), parse_mode=ParseMode.MARKDOWN)
+            update.message.reply_text(
+                    'O dados informados estão corretos?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return CONFIRM
 
     def cancel(self, update, context):
         user = update.message.from_user

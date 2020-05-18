@@ -28,6 +28,7 @@ DEIXOU_OFICINA = 5
 LOCAL_OFICINA = 6
 VAN_TACOGRAFO = 7
 CALIBROU_PNEU = 8
+
 MECANICA_MOTOR = 9
 MECANICA_AMORTECEDOR = 10
 MECANICA_ESCAPAMENTO = 11
@@ -40,7 +41,63 @@ MECANICA_AGUA = 17
 MECANICA_ALINHAMENTO = 18
 MECANICA_FREIODEMAO = 19
 MECANICA_CONFIRM = 20
-F_CONFIRM = 21
+
+LATARIA_DIANTEIRO = 21
+LATARIA_TRASEIRO = 22
+LATARIA_PORTADIANTEIRADIREITA = 23
+LATARIA_PORTADIANTEIRAESQUERDA = 24
+LATARIA_PORTATRASEIRADIREITA = 25
+LATARIA_PORTATRASEIRAESQUERDA = 26
+LATARIA_PORTAMALAS = 27
+LATARIA_PARACHOQUEDIANTEIRO = 28
+LATARIA_PARACHOQUETRASEIRO = 29
+LATARIA_CAPO = 30
+LATARIA_TETO = 31
+LATARIA_CONFIRM = 32
+
+ELETRICA_FAROLETE = 33
+ELETRICA_FAROLBAIXO = 34
+ELETRICA_FAROLALTO = 35
+ELETRICA_SETAS = 36
+ELETRICA_LUZESDOPAINEL = 37
+ELETRICA_LUZESINTERNAS = 38
+ELETRICA_BATERIA = 39
+ELETRICA_RADIO = 40
+ELETRICA_ALTOFALANTES = 41
+ELETRICA_LIMPADORPARABRISA = 42
+ELETRICA_ARCONDICIONADO = 43
+ELETRICA_TRAVAS = 44
+ELETRICA_VIDROS = 45
+ELETRICA_CONFIRM = 46
+
+VIDROS_PARABRISA = 47
+VIDROS_LATERAISESQUERDO = 48
+VIDROS_LATERAISDIREITO = 49
+VIDROS_TRASEIRO = 50
+VIDROS_CONFIRM = 51
+
+SEGURANCA_TRIANGULO = 52
+SEGURANCA_EXTINTOR = 53
+SEGURANCA_CINTOS = 54
+SEGURANCA_ALARME = 55
+SEGURANCA_FECHADURAS = 56
+SEGURANCA_MACANETAS = 57
+SEGURANCA_RETROVISORES = 58
+SEGURANCA_MACACO = 59
+SEGURANCA_CONFIRM = 60
+
+PNEUS_DIANTEIROESQUERDO = 61
+PNEUS_DIANTEIRODIREITO = 62
+PNEUS_TRASEIROESQUERDO = 63
+PNEUS_TRASEIRODIREITO = 64
+PNEUS_ESTEPE = 65
+PNEUS_CONFIRM = 66
+
+HIGIENIZACAO_EXTERNA = 67
+HIGIENIZACAO_INTERNA = 68
+HIGIENIZACAO_CONFIRM = 69
+
+F_CONFIRM = 70
 
 buff = list()
 
@@ -59,7 +116,7 @@ class ChecklistController:
             },
 
             fallbacks=[
-                CommandHandler('Cancelar', self.cancel), 
+                CommandHandler('Cancelar', self.cancel),
                 CommandHandler('cancelar', self.cancel)]
         )
         self.conv_handler_fechamento = ConversationHandler(
@@ -68,7 +125,7 @@ class ChecklistController:
 
             states={
                 KM_FINAL: [MessageHandler(Filters.text, self.km_final)],
-                
+
                 CARRO_P_CASA: [MessageHandler(Filters.text, self.carro_p_casa)],
                 VIAJOU_C_CARRO: [MessageHandler(Filters.text, self.viajou_c_carro)],
                 OUTRO_CONDUTOR: [MessageHandler(Filters.text, self.outro_condutor)],
@@ -77,7 +134,7 @@ class ChecklistController:
                 LOCAL_OFICINA: [MessageHandler(Filters.text, self.local_oficina)],
                 VAN_TACOGRAFO: [MessageHandler(Filters.text, self.van_tacografo)],
                 CALIBROU_PNEU: [MessageHandler(Filters.text, self.calibrou_pneu)],
-                
+
                 MECANICA_MOTOR: [MessageHandler(Filters.text, self.mecanica_motor)],
                 MECANICA_AMORTECEDOR: [MessageHandler(Filters.text, self.mecanica_amortecedor)],
                 MECANICA_ESCAPAMENTO: [MessageHandler(Filters.text, self.mecanica_escapamento)],
@@ -91,6 +148,61 @@ class ChecklistController:
                 MECANICA_FREIODEMAO: [MessageHandler(Filters.text, self.mecanica_freiodemao)],
                 MECANICA_CONFIRM: [MessageHandler(Filters.text, self.mecanica_confirm)],
 
+                LATARIA_DIANTEIRO: [MessageHandler(Filters.text, self.lataria_dianteiro)],
+                LATARIA_TRASEIRO: [MessageHandler(Filters.text, self.lataria_traseiro)],
+                LATARIA_PORTADIANTEIRADIREITA: [MessageHandler(Filters.text, self.lataria_portadianteiradireita)],
+                LATARIA_PORTADIANTEIRAESQUERDA: [MessageHandler(Filters.text, self.lataria_portadianteiraesquerda)],
+                LATARIA_PORTATRASEIRADIREITA: [MessageHandler(Filters.text, self.lataria_portatraseiradireita)],
+                LATARIA_PORTATRASEIRAESQUERDA: [MessageHandler(Filters.text, self.lataria_portatraseiraesquerda)],
+                LATARIA_PORTAMALAS: [MessageHandler(Filters.text, self.lataria_portamalas)],
+                LATARIA_PARACHOQUEDIANTEIRO: [MessageHandler(Filters.text, self.lataria_parachoquedianteiro)],
+                LATARIA_PARACHOQUETRASEIRO: [MessageHandler(Filters.text, self.lataria_parachoquetraseiro)],
+                LATARIA_CAPO: [MessageHandler(Filters.text, self.lataria_capo)],
+                LATARIA_TETO: [MessageHandler(Filters.text, self.lataria_teto)],
+                LATARIA_CONFIRM: [MessageHandler(Filters.text, self.lataria_confirm)],
+
+                ELETRICA_FAROLETE: [MessageHandler(Filters.text, self.eletrica_farolete)],
+                ELETRICA_FAROLBAIXO: [MessageHandler(Filters.text, self.eletrica_farolbaixo)],
+                ELETRICA_FAROLALTO: [MessageHandler(Filters.text, self.eletrica_farolalto)],
+                ELETRICA_SETAS: [MessageHandler(Filters.text, self.eletrica_setas)],
+                ELETRICA_LUZESDOPAINEL: [MessageHandler(Filters.text, self.eletrica_luzesdopainel)],
+                ELETRICA_LUZESINTERNAS: [MessageHandler(Filters.text, self.eletrica_luzesinternas)],
+                ELETRICA_BATERIA: [MessageHandler(Filters.text, self.eletrica_bateria)],
+                ELETRICA_RADIO: [MessageHandler(Filters.text, self.eletrica_radio)],
+                ELETRICA_ALTOFALANTES: [MessageHandler(Filters.text, self.eletrica_altofalantes)],
+                ELETRICA_LIMPADORPARABRISA: [MessageHandler(Filters.text, self.eletrica_limpadorparabrisa)],
+                ELETRICA_ARCONDICIONADO: [MessageHandler(Filters.text, self.eletrica_arcondicionado)],
+                ELETRICA_TRAVAS: [MessageHandler(Filters.text, self.eletrica_travas)],
+                ELETRICA_VIDROS: [MessageHandler(Filters.text, self.eletrica_vidros)],
+                ELETRICA_CONFIRM: [MessageHandler(Filters.text, self.eletrica_confirm)],
+
+                VIDROS_PARABRISA: [MessageHandler(Filters.text, self.vidros_parabrisa)],
+                VIDROS_LATERAISESQUERDO: [MessageHandler(Filters.text, self.vidros_lateraisesquerdo)],
+                VIDROS_LATERAISDIREITO: [MessageHandler(Filters.text, self.vidros_lateraisdireito)],
+                VIDROS_TRASEIRO: [MessageHandler(Filters.text, self.vidros_traseiro)],
+                VIDROS_CONFIRM: [MessageHandler(Filters.text, self.vidros_confirm)],
+
+                SEGURANCA_TRIANGULO: [MessageHandler(Filters.text, self.seguranca_triangulo)],
+                SEGURANCA_EXTINTOR: [MessageHandler(Filters.text, self.seguranca_extintor)],
+                SEGURANCA_CINTOS: [MessageHandler(Filters.text, self.seguranca_cintos)],
+                SEGURANCA_ALARME: [MessageHandler(Filters.text, self.seguranca_alarme)],
+                SEGURANCA_FECHADURAS: [MessageHandler(Filters.text, self.seguranca_fechaduras)],
+                SEGURANCA_MACANETAS: [MessageHandler(Filters.text, self.seguranca_macanetas)],
+                SEGURANCA_RETROVISORES: [MessageHandler(Filters.text, self.seguranca_retrovisores)],
+                SEGURANCA_MACACO: [MessageHandler(Filters.text, self.seguranca_macaco)],
+                SEGURANCA_CONFIRM: [MessageHandler(Filters.text, self.seguranca_confirm)],
+
+                PNEUS_DIANTEIROESQUERDO: [MessageHandler(Filters.text, self.pneus_dianteiroesquerdo)],
+                PNEUS_DIANTEIRODIREITO: [MessageHandler(Filters.text, self.pneus_dianteirodireito)],
+                PNEUS_TRASEIROESQUERDO: [MessageHandler(Filters.text, self.pneus_traseiroesquerdo)],
+                PNEUS_TRASEIRODIREITO: [MessageHandler(Filters.text, self.pneus_traseirodireito)],
+                PNEUS_ESTEPE: [MessageHandler(Filters.text, self.pneus_estepe)],
+                PNEUS_CONFIRM: [MessageHandler(Filters.text, self.pneus_confirm)],
+
+                HIGIENIZACAO_EXTERNA: [MessageHandler(Filters.text, self.higienizacao_externa)],
+                HIGIENIZACAO_INTERNA: [MessageHandler(Filters.text, self.higienizacao_interna)],
+                HIGIENIZACAO_CONFIRM: [MessageHandler(Filters.text, self.higienizacao_confirm)],
+
                 F_CONFIRM: [MessageHandler(Filters.text, self.f_confirm)]
             },
 
@@ -100,7 +212,7 @@ class ChecklistController:
     def abrir_checklist(self, update, context):
         try:
             open_checklist = RegChecklist(
-                update.message.from_user.username, update.message.chat.id)
+                update.message.from_user.username, update.message.chat.id, True)
             buff.append(open_checklist)
         except:
             update.message.reply_text(
@@ -244,6 +356,7 @@ class ChecklistController:
 
                 checklist = Checklist(
                     motorista,
+                    True,
                     item.placa,
                     str(item.km_inicial) + ' KM',
                     item.dt_abertura
@@ -287,7 +400,7 @@ class ChecklistController:
     def fechar_checklist(self, update, context):
         try:
             open_checklist = RegChecklist(
-                update.message.from_user.username, update.message.chat.id)
+                update.message.from_user.username, update.message.chat.id, False)
         except:
             update.message.reply_text(
                 'Não é possível realizar o cadastro de combustível sem um nome de usuário cadastrado.',
@@ -328,7 +441,7 @@ class ChecklistController:
                 buff.append(open_checklist)
             else:
                 update.message.reply_text(
-                    'Não foi possível abrir um novo checklist.\n\n*MOTIVO: existe um checklist em aberto*\n``` Por favor, feche-o antes de abrir um novo.```',
+                    'Não foi possível fechar um checklist.\n\n*MOTIVO: não existe um checklist em aberto*\n',
                     reply_markup=ReplyKeyboardRemove(),
                     parse_mode=ParseMode.MARKDOWN
                 )
@@ -636,19 +749,19 @@ class ChecklistController:
             return VAN_TACOGRAFO
 
         #reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
-        #item = listUtils.searchAndGetItem(buff,
+        # item = listUtils.searchAndGetItem(buff,
         #                                  update.message.from_user.username,
         #                                  update.message.chat.id)
-        #update.message.reply_text(
+        # update.message.reply_text(
         #    item.dadosFechamento(), parse_mode=ParseMode.MARKDOWN)
-        #update.message.reply_text(
+        # update.message.reply_text(
         #    'O dados informados estão corretos?',
         #    reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
-        #return F_CONFIRM
+        # return F_CONFIRM
 
         context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text='Agora faremos a revisão da mecânica do veículo!')
+            chat_id=update.effective_chat.id,
+            text='Agora faremos a revisão da mecânica do veículo!')
 
         update.message.reply_text(
             'Como está o motor?',
@@ -676,11 +789,11 @@ class ChecklistController:
                 chat_id=update.effective_chat.id,
                 text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
             update.message.reply_text(
-                    'Como está o motor?',
-                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+                'Como está o motor?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return MECANICA_MOTOR
-        
+
         update.message.reply_text(
             'Como está o amortecedor?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
@@ -707,11 +820,11 @@ class ChecklistController:
                 chat_id=update.effective_chat.id,
                 text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
             update.message.reply_text(
-                    'Como está o amortecedor?',
-                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+                'Como está o amortecedor?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return MECANICA_AMORTECEDOR
-        
+
         update.message.reply_text(
             'Como está o escapamento?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
@@ -738,13 +851,13 @@ class ChecklistController:
                 chat_id=update.effective_chat.id,
                 text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
             update.message.reply_text(
-                    'Como está o escapamento?',
-                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+                'Como está o escapamento?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return MECANICA_ESCAPAMENTO
-        
+
         update.message.reply_text(
-            'Como está o escapamento?',
+            'Como está o freio?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
         return MECANICA_FREIO
@@ -769,11 +882,11 @@ class ChecklistController:
                 chat_id=update.effective_chat.id,
                 text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
             update.message.reply_text(
-                    'Como está o freio?',
-                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+                'Como está o freio?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return MECANICA_FREIO
-        
+
         update.message.reply_text(
             'Como está a embreagem?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
@@ -800,11 +913,11 @@ class ChecklistController:
                 chat_id=update.effective_chat.id,
                 text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
             update.message.reply_text(
-                    'Como está a embreagem?',
-                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+                'Como está a embreagem?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return MECANICA_EMBREAGEM
-        
+
         update.message.reply_text(
             'Como está a embreagem?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
@@ -831,11 +944,11 @@ class ChecklistController:
                 chat_id=update.effective_chat.id,
                 text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
             update.message.reply_text(
-                    'Como está o acelerador?',
-                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+                'Como está o acelerador?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return MECANICA_ACELERADOR
-        
+
         update.message.reply_text(
             'Como está o cambio?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
@@ -862,11 +975,11 @@ class ChecklistController:
                 chat_id=update.effective_chat.id,
                 text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
             update.message.reply_text(
-                    'Como está o cambio?',
-                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+                'Como está o cambio?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return MECANICA_CAMBIO
-        
+
         update.message.reply_text(
             'Como está o oleo?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
@@ -893,11 +1006,11 @@ class ChecklistController:
                 chat_id=update.effective_chat.id,
                 text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
             update.message.reply_text(
-                    'Como está o oleo?',
-                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+                'Como está o oleo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return MECANICA_OLEO
-        
+
         update.message.reply_text(
             'Como está a agua?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
@@ -924,11 +1037,11 @@ class ChecklistController:
                 chat_id=update.effective_chat.id,
                 text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
             update.message.reply_text(
-                    'Como está a agua?',
-                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+                'Como está a agua?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return MECANICA_AGUA
-        
+
         update.message.reply_text(
             'Como está o alinhamento?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
@@ -955,11 +1068,11 @@ class ChecklistController:
                 chat_id=update.effective_chat.id,
                 text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
             update.message.reply_text(
-                    'Como está o alinhamento?',
-                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+                'Como está o alinhamento?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return MECANICA_ALINHAMENTO
-        
+
         update.message.reply_text(
             'Como está o freio de mão?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
@@ -986,11 +1099,11 @@ class ChecklistController:
                 chat_id=update.effective_chat.id,
                 text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
             update.message.reply_text(
-                    'Como está o freio de mão?',
-                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+                'Como está o freio de mão?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return MECANICA_FREIODEMAO
-        
+
         reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
@@ -1015,21 +1128,21 @@ class ChecklistController:
                 text='Agora faremos a revisão da lataria do veículo!')
 
             update.message.reply_text(
-                'Como está o motor?',
+                'Como está a lataria dianteira?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
-            return ConversationHandler.END
+            return LATARIA_DIANTEIRO
         elif(update.message.text == 'Não, refazer'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Agora faremos novamente a revisão da mecanica do veículo!')
-            
+
             update.message.reply_text(
-            'Como está o motor?',
-            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+                'Como está o motor?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return MECANICA_MOTOR
-        else:
+        elif(update.message.text == 'Cancelar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Operação cancelada!')
@@ -1037,6 +1150,1543 @@ class ChecklistController:
             buff.pop(buff.index(item))
 
             return ConversationHandler.END
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Opção invalida. Por favor, responda apenas: [Sim, confirmar], [Não, refazer] ou [Cancelar]')
+            reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+            item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+            update.message.reply_text(
+                item.dadosMecanica(), parse_mode=ParseMode.MARKDOWN)
+            update.message.reply_text(
+                'O dados informados estão corretos?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+        
+
+    def lataria_dianteiro(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_dianteiro',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_dianteiro',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está a lataria dianteira?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return LATARIA_DIANTEIRO
+
+        update.message.reply_text(
+            'Como está a lataria traseira?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return LATARIA_TRASEIRO
+
+    def lataria_dianteiro(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_dianteiro',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_dianteiro',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está a lataria dianteira?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return LATARIA_DIANTEIRO
+        update.message.reply_text(
+            'Como está a lataria traseira?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return LATARIA_TRASEIRO
+
+    def lataria_traseiro(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_traseiro',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_traseiro',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está a lataria traseira?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return LATARIA_TRASEIRO
+        update.message.reply_text(
+            'Como está a porta dianteira direita?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return LATARIA_PORTADIANTEIRADIREITA
+
+    def lataria_portadianteiradireita(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_portadianteiradireita',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_portadianteiradireita',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está a porta dianteira direita?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return LATARIA_PORTADIANTEIRADIREITA
+        update.message.reply_text(
+            'Como está a porta dianteira esquerda?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return LATARIA_PORTADIANTEIRAESQUERDA
+
+    def lataria_portadianteiraesquerda(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_portadianteiraesquerda',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_portadianteiraesquerda',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está a porta dianteira esquerda?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return LATARIA_PORTADIANTEIRAESQUERDA
+        update.message.reply_text(
+            'Como está a porta traseira direita?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return LATARIA_PORTATRASEIRADIREITA
+
+    def lataria_portatraseiradireita(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_portatraseiradireita',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_portatraseiradireita',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está a porta traseira direita?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return LATARIA_PORTATRASEIRADIREITA
+        update.message.reply_text(
+            'Como está a porta traseira esquerda?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return LATARIA_PORTATRASEIRAESQUERDA
+
+    def lataria_portatraseiraesquerda(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_portatraseiraesquerda',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_portatraseiraesquerda',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está a porta traseira esquerda?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return LATARIA_PORTATRASEIRAESQUERDA
+        update.message.reply_text(
+            'Como está o porta malas?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return LATARIA_PORTAMALAS
+
+    def lataria_portamalas(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_portamalas',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_portamalas',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o porta malas?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return LATARIA_PORTAMALAS
+        update.message.reply_text(
+            'Como está o parachoque dianteiro?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return LATARIA_PARACHOQUEDIANTEIRO
+
+    def lataria_parachoquedianteiro(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_parachoquedianteiro',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_parachoquedianteiro',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o parachoque dianteiro?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return LATARIA_PARACHOQUEDIANTEIRO
+        update.message.reply_text(
+            'Como está o parachoque traseiro?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return LATARIA_PARACHOQUETRASEIRO
+
+    def lataria_parachoquetraseiro(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_parachoquetraseiro',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_parachoquetraseiro',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o parachoque traseiro?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return LATARIA_PARACHOQUETRASEIRO
+        update.message.reply_text(
+            'Como está a lataria do capo?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return LATARIA_CAPO
+
+    def lataria_capo(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_capo',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_capo',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está a lataria do capo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return LATARIA_CAPO
+        update.message.reply_text(
+            'Como está a lataria do teto?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return LATARIA_TETO
+
+    def lataria_teto(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_teto',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'lataria_teto',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está a lataria do teto?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return LATARIA_TETO
+        
+        reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+        update.message.reply_text(
+            item.dadosLataria(), parse_mode=ParseMode.MARKDOWN)
+        update.message.reply_text(
+            'O dados informados estão corretos?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+        return LATARIA_CONFIRM
+        
+    
+    def lataria_confirm(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+        
+        if(update.message.text == 'Sim, confirmar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos a revisão da parte elétrica do veículo!')
+            
+            update.message.reply_text(
+                'Como está o farolete?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return ELETRICA_FAROLETE
+        elif(update.message.text == 'Não, refazer'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos novamente a revisão da lataria do veículo!')
+
+            update.message.reply_text(
+                'Como está a lataria dianteira?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return LATARIA_DIANTEIRO
+        elif(update.message.text == 'Cancelar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Operação cancelada!')
+
+            buff.pop(buff.index(item))
+
+            return ConversationHandler.END
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Opção invalida. Por favor, responda apenas: [Sim, confirmar], [Não, refazer] ou [Cancelar]')
+            reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+            item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+            update.message.reply_text(
+                item.dadosLataria(), parse_mode=ParseMode.MARKDOWN)
+            update.message.reply_text(
+                'O dados informados estão corretos?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+
+    def eletrica_farolete(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_farolete',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_farolete',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o farolete?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return ELETRICA_FAROLETE
+        update.message.reply_text(
+            'Como está o farol baixo?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return ELETRICA_FAROLBAIXO
+
+    def eletrica_farolbaixo(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_farolbaixo',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_farolbaixo',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o farol baixo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return ELETRICA_FAROLBAIXO
+        update.message.reply_text(
+            'Como está o farol alto?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return ELETRICA_FAROLALTO
+
+    def eletrica_farolalto(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_farolalto',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_farolalto',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o farol alto?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return ELETRICA_FAROLALTO
+        update.message.reply_text(
+            'Como está as setas?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return ELETRICA_SETAS
+
+    def eletrica_setas(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_setas',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_setas',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está as setas?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return ELETRICA_SETAS
+        update.message.reply_text(
+            'Como está as luzes do painel?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return ELETRICA_LUZESDOPAINEL
+
+    def eletrica_luzesdopainel(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_luzesdopainel',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_luzesdopainel',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está as luzes do painel?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return ELETRICA_LUZESDOPAINEL
+        update.message.reply_text(
+            'Como está as luzes internas?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return ELETRICA_LUZESINTERNAS
+
+    def eletrica_luzesinternas(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_luzesinternas',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_luzesinternas',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está as luzes internas?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return ELETRICA_LUZESINTERNAS
+        update.message.reply_text(
+            'Como está a bateria?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return ELETRICA_BATERIA
+
+    def eletrica_bateria(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_bateria',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_bateria',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está a bateria?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return ELETRICA_BATERIA
+        update.message.reply_text(
+            'Como está o radio?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return ELETRICA_RADIO
+
+    def eletrica_radio(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_radio',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_radio',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o radio?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return ELETRICA_RADIO
+        update.message.reply_text(
+            'Como está os autofalantes?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return ELETRICA_ALTOFALANTES
+
+    def eletrica_altofalantes(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_altofalantes',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_altofalantes',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está os autofalantes?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return ELETRICA_ALTOFALANTES
+        update.message.reply_text(
+            'Como está o limpador de parabrisa?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return ELETRICA_LIMPADORPARABRISA
+
+    def eletrica_limpadorparabrisa(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_limpadorparabrisa',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_limpadorparabrisa',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o limpador de parabrisa?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return ELETRICA_LIMPADORPARABRISA
+        update.message.reply_text(
+            'Como está o ar condicionado?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return ELETRICA_ARCONDICIONADO
+
+    def eletrica_arcondicionado(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_arcondicionado',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_arcondicionado',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o ar condicionado?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return ELETRICA_ARCONDICIONADO
+        update.message.reply_text(
+            'Como está as travas?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return ELETRICA_TRAVAS
+
+    def eletrica_travas(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_travas',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_travas',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está as travas?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return ELETRICA_TRAVAS
+        update.message.reply_text(
+            'Como está a parte elétrica dos vidros?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return ELETRICA_VIDROS
+
+    def eletrica_vidros(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_vidros',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'eletrica_vidros',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está a parte elétrica dos vidros?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return ELETRICA_VIDROS
+        
+        reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+        update.message.reply_text(
+            item.dadosEletrica(), parse_mode=ParseMode.MARKDOWN)
+        update.message.reply_text(
+            'O dados informados estão corretos?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+        return ELETRICA_CONFIRM
+    
+    def eletrica_confirm(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+        
+        if(update.message.text == 'Sim, confirmar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos a revisão dos vidros do veículo!')
+            
+            update.message.reply_text(
+                'Como está o parabrisa?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return VIDROS_PARABRISA
+        elif(update.message.text == 'Não, refazer'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos novamente a revisão da eletrica do veículo!')
+
+            update.message.reply_text(
+                'Como está o farolete',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return ELETRICA_FAROLETE
+        elif(update.message.text == 'Cancelar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Operação cancelada!')
+
+            buff.pop(buff.index(item))
+
+            return ConversationHandler.END
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Opção invalida. Por favor, responda apenas: [Sim, confirmar], [Não, refazer] ou [Cancelar]')
+            reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+            item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+            update.message.reply_text(
+                item.dadosEletrica(), parse_mode=ParseMode.MARKDOWN)
+            update.message.reply_text(
+                'O dados informados estão corretos?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+
+    def vidros_parabrisa(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'vidros_parabrisa',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'vidros_parabrisa',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o parabrisa?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return VIDROS_PARABRISA
+        update.message.reply_text(
+            'Como está os vidros da lateral esquerda?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return VIDROS_LATERAISESQUERDO
+
+    def vidros_lateraisesquerdo(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'vidros_lateraisesquerdo',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'vidros_lateraisesquerdo',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está os vidros da lateral esquerda?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return VIDROS_LATERAISESQUERDO
+        update.message.reply_text(
+            'Como está os vidros da lateral direita?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return VIDROS_LATERAISDIREITO
+
+    def vidros_lateraisdireito(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'vidros_lateraisdireito',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'vidros_lateraisdireito',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está os vidros da lateral direita?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return VIDROS_LATERAISDIREITO
+        update.message.reply_text(
+            'Como está os vidros traseiros?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return VIDROS_TRASEIRO
+
+    def vidros_traseiro(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'vidros_traseiro',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'vidros_traseiro',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está os vidros traseiros?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return VIDROS_TRASEIRO
+        
+        reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+        update.message.reply_text(
+            item.dadosVidros(), parse_mode=ParseMode.MARKDOWN)
+        update.message.reply_text(
+            'O dados informados estão corretos?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+        return VIDROS_CONFIRM
+
+    def vidros_confirm(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+        
+        if(update.message.text == 'Sim, confirmar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos a revisão dos itens de segurança do veículo!')
+            
+            update.message.reply_text(
+                'Como está o triangulo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return SEGURANCA_TRIANGULO
+        elif(update.message.text == 'Não, refazer'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos novamente a revisão dos vidros do veículo!')
+
+            update.message.reply_text(
+                'Como estão os vidros do parabrisa?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return VIDROS_PARABRISA
+        elif(update.message.text == 'Cancelar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Operação cancelada!')
+
+            buff.pop(buff.index(item))
+
+            return ConversationHandler.END
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Opção invalida. Por favor, responda apenas: [Sim, confirmar], [Não, refazer] ou [Cancelar]')
+            reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+            item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+            update.message.reply_text(
+                item.dadosSeguranca(), parse_mode=ParseMode.MARKDOWN)
+            update.message.reply_text(
+                'O dados informados estão corretos?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+
+    def seguranca_triangulo(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'seguranca_triangulo',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'seguranca_triangulo',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o triangulo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return SEGURANCA_TRIANGULO
+        update.message.reply_text(
+            'Como está o extintor?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return SEGURANCA_EXTINTOR
+
+    def seguranca_extintor(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'seguranca_extintor',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'seguranca_extintor',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o extintor?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return SEGURANCA_EXTINTOR
+        update.message.reply_text(
+            'Como está os cintos?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return SEGURANCA_CINTOS
+
+    def seguranca_cintos(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'seguranca_cintos',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'seguranca_cintos',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está os cintos?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return SEGURANCA_CINTOS
+        update.message.reply_text(
+            'Como está o alarme?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return SEGURANCA_ALARME
+
+    def seguranca_alarme(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'seguranca_alarme',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'seguranca_alarme',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o alarme?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return SEGURANCA_ALARME
+        update.message.reply_text(
+            'Como está as fechaduras?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return SEGURANCA_FECHADURAS
+
+    def seguranca_fechaduras(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'seguranca_fechaduras',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'seguranca_fechaduras',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está as fechaduras?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return SEGURANCA_FECHADURAS
+        update.message.reply_text(
+            'Como está as maçanetas?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return SEGURANCA_MACANETAS
+
+    def seguranca_macanetas(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'seguranca_macanetas',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'seguranca_macanetas',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está as maçanetas?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return SEGURANCA_MACANETAS
+        update.message.reply_text(
+            'Como está os retrovisores?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return SEGURANCA_RETROVISORES
+
+    def seguranca_retrovisores(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'seguranca_retrovisores',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'seguranca_retrovisores',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está os retrovisores?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return SEGURANCA_RETROVISORES
+        update.message.reply_text(
+            'Como está o macaco?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return SEGURANCA_MACACO
+
+    def seguranca_macaco(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'seguranca_macaco',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'seguranca_macaco',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o macaco?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return SEGURANCA_MACACO
+
+        reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+        update.message.reply_text(
+            item.dadosSeguranca(), parse_mode=ParseMode.MARKDOWN)
+        update.message.reply_text(
+            'O dados informados estão corretos?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+        return SEGURANCA_CONFIRM
+    
+    def seguranca_confirm(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+        
+        if(update.message.text == 'Sim, confirmar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos a revisão dos pneus do veículo!')
+            
+            update.message.reply_text(
+                'Como está o pneu dianteiro esquerdo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return PNEUS_DIANTEIROESQUERDO
+        elif(update.message.text == 'Não, refazer'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos novamente a revisão dos itens de segurança do veículo!')
+
+            update.message.reply_text(
+                'Como está o triangulo',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return SEGURANCA_TRIANGULO
+        elif(update.message.text == 'Cancelar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Operação cancelada!')
+
+            buff.pop(buff.index(item))
+
+            return ConversationHandler.END
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Opção invalida. Por favor, responda apenas: [Sim, confirmar], [Não, refazer] ou [Cancelar]')
+            reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+            item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+            update.message.reply_text(
+                item.dadosSeguranca(), parse_mode=ParseMode.MARKDOWN)
+            update.message.reply_text(
+                'O dados informados estão corretos?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+
+    def pneus_dianteiroesquerdo(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'pneus_dianteiroesquerdo',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'pneus_dianteiroesquerdo',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o pneu dianteiro esquerdo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return PNEUS_DIANTEIROESQUERDO
+        update.message.reply_text(
+            'Como está o pneu dianteiro direito?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return PNEUS_DIANTEIRODIREITO
+
+    def pneus_dianteirodireito(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'pneus_dianteirodireito',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'pneus_dianteirodireito',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o pneu dianteiro direito?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return PNEUS_DIANTEIRODIREITO
+        update.message.reply_text(
+            'Como está o pneu traseiro esquerdo?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return PNEUS_TRASEIROESQUERDO
+
+    def pneus_traseiroesquerdo(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'pneus_traseiroesquerdo',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'pneus_traseiroesquerdo',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o pneu traseiro esquerdo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return PNEUS_TRASEIROESQUERDO
+        update.message.reply_text(
+            'Como está o pneu traseiro direito?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return PNEUS_TRASEIRODIREITO
+
+    def pneus_traseirodireito(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'pneus_traseirodireito',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'pneus_traseirodireito',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o pneu traseiro direito?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return PNEUS_TRASEIRODIREITO
+        update.message.reply_text(
+            'Como está o estepe?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return PNEUS_ESTEPE
+
+    def pneus_estepe(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'pneus_estepe',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'pneus_estepe',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está o estepe?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return PNEUS_ESTEPE
+
+        reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+        update.message.reply_text(
+            item.dadosPneus(), parse_mode=ParseMode.MARKDOWN)
+        update.message.reply_text(
+            'O dados informados estão corretos?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+        return PNEUS_CONFIRM
+
+    def pneus_confirm(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+        
+        if(update.message.text == 'Sim, confirmar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos a revisão da higienização do veículo!')
+            
+            update.message.reply_text(
+                'Como está o higienização externa?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return HIGIENIZACAO_EXTERNA
+        elif(update.message.text == 'Não, refazer'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos novamente a revisão dos pneus do veiculo')
+
+            update.message.reply_text(
+                'Como está o pneu dianteiro esquerdo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return PNEUS_DIANTEIROESQUERDO
+        elif(update.message.text == 'Cancelar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Operação cancelada!')
+
+            buff.pop(buff.index(item))
+
+            return ConversationHandler.END
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Opção invalida. Por favor, responda apenas: [Sim, confirmar], [Não, refazer] ou [Cancelar]')
+            reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+            item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+            update.message.reply_text(
+                item.dadosHigienizacao(), parse_mode=ParseMode.MARKDOWN)
+            update.message.reply_text(
+                'O dados informados estão corretos?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+
+    def higienizacao_externa(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'higienizacao_externa',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'higienizacao_externa',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está a higienização externa?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return HIGIENIZACAO_EXTERNA
+        update.message.reply_text(
+            'Como está a higienização interna?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        return HIGIENIZACAO_INTERNA
+    
+    def higienizacao_interna(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+        if(update.message.text == 'Ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'higienizacao_interna',
+                                      True)
+        elif(update.message.text == 'Não está ok'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'higienizacao_interna',
+                                      False)
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
+            update.message.reply_text(
+                'Como está a higienização interna?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return HIGIENIZACAO_INTERNA
+        
+        reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+        update.message.reply_text(
+            item.dadosHigienizacao(), parse_mode=ParseMode.MARKDOWN)
+        update.message.reply_text(
+            'O dados informados estão corretos?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+        return HIGIENIZACAO_CONFIRM
+    
+    def higienizacao_confirm(self, update, context):
+        reply_keyboard = [['Ok'], ['Não está ok']]
+
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+        
+        if(update.message.text == 'Sim, confirmar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos a bla bla bla')
+            
+            #update.message.reply_text(
+            #    'Como está o higienização externa?',
+            #    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return ConversationHandler.END
+        elif(update.message.text == 'Não, refazer'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos novamente a revisão da higienização do veiculo')
+
+            update.message.reply_text(
+                'Como está a higienização externa?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return HIGIENIZACAO_EXTERNA
+        elif(update.message.text == 'Cancelar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Operação cancelada!')
+
+            buff.pop(buff.index(item))
+
+            return ConversationHandler.END
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Opção invalida. Por favor, responda apenas: [Sim, confirmar], [Não, refazer] ou [Cancelar]')
+            reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+            item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+            update.message.reply_text(
+                item.dadosHigienizacao(), parse_mode=ParseMode.MARKDOWN)
+            update.message.reply_text(
+                'O dados informados estão corretos?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
 
     def f_confirm(self, update, context):
         item = listUtils.searchAndGetItem(buff,
