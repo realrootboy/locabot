@@ -12,13 +12,14 @@ from controllers.controllerUtils import listUtils
 from models.Checklist import Checklist
 from models.Motorista import Motorista
 from models.NaoConformidades import NaoConformidades
+from models.Veiculos import Veiculos
 
 from models.regChecklist import RegChecklist
 
 from database.main import Database
 
 PLACA = -3
-KM_INICIAL = -2 
+KM_INICIAL = -2
 A_CONFIRM = 71
 
 KM_FINAL = 0
@@ -100,6 +101,10 @@ HIGIENIZACAO_INTERNA = 68
 HIGIENIZACAO_CONFIRM = 69
 
 F_CONFIRM = 70
+
+CONFORMIDADE = 72
+F_CONFORMIDADE = 73
+O_CONFORMIDADE = 74
 
 buff = list()
 
@@ -190,7 +195,13 @@ class ChecklistController:
 
                 HIGIENIZACAO_EXTERNA: [MessageHandler(Filters.text, self.higienizacao_externa)],
                 HIGIENIZACAO_INTERNA: [MessageHandler(Filters.text, self.higienizacao_interna)],
-                HIGIENIZACAO_CONFIRM: [MessageHandler(Filters.text, self.higienizacao_confirm)]
+                HIGIENIZACAO_CONFIRM: [MessageHandler(Filters.text, self.higienizacao_confirm)],
+
+                CONFORMIDADE: [MessageHandler(Filters.text, self.conformidade)],
+                F_CONFORMIDADE: [MessageHandler(Filters.photo, self.f_conformidade)],
+                O_CONFORMIDADE: [MessageHandler(
+                    Filters.text, self.o_conformidade)]
+
             },
 
             fallbacks=[
@@ -281,13 +292,20 @@ class ChecklistController:
                 HIGIENIZACAO_INTERNA: [MessageHandler(Filters.text, self.higienizacao_interna)],
                 HIGIENIZACAO_CONFIRM: [MessageHandler(Filters.text, self.higienizacao_confirm)],
 
-                F_CONFIRM: [MessageHandler(Filters.text, self.f_confirm)]
+                F_CONFIRM: [MessageHandler(Filters.text, self.f_confirm)],
+
+                CONFORMIDADE: [MessageHandler(Filters.text, self.conformidade)],
+                F_CONFORMIDADE: [MessageHandler(Filters.photo, self.f_conformidade)],
+                O_CONFORMIDADE: [MessageHandler(
+                    Filters.text, self.o_conformidade)]
             },
 
             fallbacks=[CommandHandler('cancel', self.cancel)]
         )
 
     def abrir_checklist(self, update, context):
+        placas = []
+
         try:
             open_checklist = RegChecklist(
                 update.message.from_user.username, update.message.chat.id, True)
@@ -320,6 +338,7 @@ class ChecklistController:
                     'Acesso não autorizado!', reply_markup=ReplyKeyboardRemove()
                 )
                 buff.remove(open_checklist)
+                session.close()
                 return ConversationHandler.END
             else:
                 checklist = session.query(Checklist).filter_by(
@@ -332,7 +351,13 @@ class ChecklistController:
                     parse_mode=ParseMode.MARKDOWN
                 )
                 buff.remove(open_checklist)
+                session.close()
                 return ConversationHandler.END
+
+            veiculos = session.query(Veiculos).order_by(Veiculos.placa.asc())
+
+            for veiculo in veiculos:
+                placas.append([veiculo.placa])
 
             session.close()
         except:
@@ -342,12 +367,35 @@ class ChecklistController:
             return ConversationHandler.END
 
         update.message.reply_text(
-            'Olá, ' + motorista.nome + '. Por favor, informe a placa do veículo.', reply_markup=ReplyKeyboardRemove())
+            'Olá, ' + motorista.nome + '. Por favor, informe a placa do veículo.',
+            reply_markup=ReplyKeyboardMarkup(placas, one_time_keyboard=True))
 
         return PLACA
 
     def placa(self, update, context):
         user = update.message.from_user
+
+        Session = Database.Session
+        session = Session()
+
+        placa = session.query(Veiculos).filter_by(
+            placa=update.message.text).first()
+
+        if placa is None:
+            placas = []
+            veiculos = session.query(Veiculos).order_by(Veiculos.placa.asc())
+
+            for veiculo in veiculos:
+                placas.append([veiculo.placa])
+
+            update.message.reply_text(
+                'Placa ' + update.message.text + ' inválida ou não encontrada na base de dados. ' +
+                'Por favor, informe novamente a placa do veículo.',
+                reply_markup=ReplyKeyboardMarkup(placas, one_time_keyboard=True))
+            session.close()
+            return PLACA
+
+        session.close()
 
         listUtils.searchAndUpdate(buff,
                                   update.message.from_user.username,
@@ -512,6 +560,16 @@ class ChecklistController:
                 checklist.higienizacao_interna = item.higienizacao_interna
 
                 session.add(checklist)
+
+                for i, nc in enumerate(item.desc_conformidades):
+                    session.add(
+                        NaoConformidades(
+                            checklist,
+                            item.media_dir + '/' + str(i) + '.jpg',
+                            nc
+                        )
+                    )
+
                 session.commit()
 
                 session.close()
@@ -537,7 +595,7 @@ class ChecklistController:
             buff.pop(buff.index(item))
 
             return ConversationHandler.END
-        else:
+        elif(update.message.text == 'Cancelar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Operação cancelada!')
@@ -545,6 +603,15 @@ class ChecklistController:
             buff.pop(buff.index(item))
 
             return ConversationHandler.END
+        else:
+            reply_keyboard2 = [['Sim, confirmar'],
+                               ['Não, refazer'], ['Cancelar']]
+            update.message.reply_text(
+                'Opção inválida, por favor responda apenas: "Sim, confirmar", "Não, refazer" ou "Cancelar".',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True)
+            )
+
+            return F_CONFIRM
 
     def fechar_checklist(self, update, context):
         try:
@@ -576,6 +643,7 @@ class ChecklistController:
                     'Usuário ' + update.message.from_user.username + ' não encontrado na base de dados. ' +
                     'Acesso não autorizado!', reply_markup=ReplyKeyboardRemove()
                 )
+                session.close()
                 return ConversationHandler.END
             else:
                 checklist = session.query(Checklist).filter_by(
@@ -594,6 +662,7 @@ class ChecklistController:
                     reply_markup=ReplyKeyboardRemove(),
                     parse_mode=ParseMode.MARKDOWN
                 )
+                session.close()
                 return ConversationHandler.END
 
             session.close()
@@ -1343,33 +1412,6 @@ class ChecklistController:
             'Como está a lataria traseira?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
-        return LATARIA_TRASEIRO
-
-    def lataria_dianteiro(self, update, context):
-        reply_keyboard = [['Ok'], ['Não está ok']]
-        if(update.message.text == 'Ok'):
-            listUtils.searchAndUpdate(buff,
-                                      update.message.from_user.username,
-                                      update.message.chat.id,
-                                      'lataria_dianteiro',
-                                      True)
-        elif(update.message.text == 'Não está ok'):
-            listUtils.searchAndUpdate(buff,
-                                      update.message.from_user.username,
-                                      update.message.chat.id,
-                                      'lataria_dianteiro',
-                                      False)
-        else:
-            context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text='Resposta inválida, por favor, responda apenas [Ok] ou [Não está ok]')
-            update.message.reply_text(
-                'Como está a lataria dianteira?',
-                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
-            return LATARIA_DIANTEIRO
-        update.message.reply_text(
-            'Como está a lataria traseira?',
-            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
         return LATARIA_TRASEIRO
 
     def lataria_traseiro(self, update, context):
@@ -2795,75 +2837,19 @@ class ChecklistController:
 
     def higienizacao_confirm(self, update, context):
         reply_keyboard = [['Ok'], ['Não está ok']]
-        reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+        reply_keyboard2 = [['Sim, registrar'],
+                           ['Não, finalizar'], ['Cancelar']]
 
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
                                           update.message.chat.id)
 
         if(update.message.text == 'Sim, confirmar'):
-            context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text='Agora faremos a verificação geral do checklist!')
+            update.message.reply_text(
+                'Houve alguma não-conformidade?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
 
-            if(item.is_abertura):
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=item.dadosAbertura(), parse_mode=ParseMode.MARKDOWN)
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=item.dadosMecanica(), parse_mode=ParseMode.MARKDOWN)
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=item.dadosLataria(), parse_mode=ParseMode.MARKDOWN)
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=item.dadosEletrica(), parse_mode=ParseMode.MARKDOWN)
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=item.dadosVidros(), parse_mode=ParseMode.MARKDOWN)
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=item.dadosSeguranca(), parse_mode=ParseMode.MARKDOWN)
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=item.dadosPneus(), parse_mode=ParseMode.MARKDOWN)
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=item.dadosHigienizacao(), parse_mode=ParseMode.MARKDOWN)
-                update.message.reply_text(
-                    'O dados informados estão corretos?',
-                    reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
-                return A_CONFIRM
-            else:
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=item.dadosAbertura(), parse_mode=ParseMode.MARKDOWN)
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=item.dadosMecanica(), parse_mode=ParseMode.MARKDOWN)
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=item.dadosLataria(), parse_mode=ParseMode.MARKDOWN)
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=item.dadosEletrica(), parse_mode=ParseMode.MARKDOWN)
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=item.dadosVidros(), parse_mode=ParseMode.MARKDOWN)
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=item.dadosSeguranca(), parse_mode=ParseMode.MARKDOWN)
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=item.dadosPneus(), parse_mode=ParseMode.MARKDOWN)
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=item.dadosHigienizacao(), parse_mode=ParseMode.MARKDOWN)
-                update.message.reply_text(
-                    'O dados informados estão corretos?',
-                    reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
-                return F_CONFIRM
+            return CONFORMIDADE
 
         elif(update.message.text == 'Não, refazer'):
             context.bot.send_message(
@@ -2914,10 +2900,10 @@ class ChecklistController:
 
                 motorista = session.query(Motorista).filter_by(
                     telegram_user=item.username).first()
-                
+
                 checklist_abertura = session.query(Checklist).filter_by(
                     motorista_id=motorista.id).order_by(Checklist.id.desc()).first()
-                
+
                 checklist = Checklist(
                     motorista,
                     False,
@@ -3032,7 +3018,7 @@ class ChecklistController:
             buff.pop(buff.index(item))
 
             return ConversationHandler.END
-        else:
+        elif(update.message.text == 'Cancelar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Operação cancelada!')
@@ -3040,6 +3026,15 @@ class ChecklistController:
             buff.pop(buff.index(item))
 
             return ConversationHandler.END
+        else:
+            reply_keyboard2 = [['Sim, confirmar'],
+                               ['Não, refazer'], ['Cancelar']]
+            update.message.reply_text(
+                'Opção inválida, por favor responda apenas: "Sim, confirmar", "Não, refazer" ou "Cancelar".',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True)
+            )
+
+            return F_CONFIRM
 
     def cancel(self, update, context):
         item = listUtils.searchAndGetItem(buff,
@@ -3052,3 +3047,164 @@ class ChecklistController:
                                   reply_markup=ReplyKeyboardRemove())
 
         return ConversationHandler.END
+
+
+    def conformidade(self, update, context):
+        reply_keyboard = [['Sim, registrar'], ['Não, finalizar'], ['Cancelar']]
+
+        if(update.message.text == 'Sim, registrar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Por favor, envie a foto da não conformidade')
+            return F_CONFORMIDADE
+        elif(update.message.text == 'Não, finalizar'):
+            reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+
+            item = listUtils.searchAndGetItem(buff,
+                                              update.message.from_user.username,
+                                              update.message.chat.id)
+
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos a verificação geral do checklist!')
+            if(item.is_abertura):
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosAbertura(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosMecanica(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosLataria(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosEletrica(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosVidros(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosSeguranca(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosPneus(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosHigienizacao(), parse_mode=ParseMode.MARKDOWN)
+                update.message.reply_text(
+                    'O dados informados estão corretos?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+                return A_CONFIRM
+            else:
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosAbertura(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosMecanica(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosLataria(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosEletrica(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosVidros(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosSeguranca(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosPneus(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosHigienizacao(), parse_mode=ParseMode.MARKDOWN)
+                update.message.reply_text(
+                    'O dados informados estão corretos?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+                return F_CONFIRM
+        elif(update.message.text == 'Cancelar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Operação cancelada!'
+            )
+            buff.pop(buff.index(item))
+            return ConversationHandler.END
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Por favor, responda apenas: "Sim, registrar", "Não, finalizar" ou "Cancelar"'
+            )
+            update.message.reply_text(
+                'Houve alguma não-conformidade?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return CONFORMIDADE
+
+    def f_conformidade(self, update, context):
+        try:
+            file_id = update.message.photo[-1].file_id
+            newFile = context.bot.getFile(file_id)
+            item = listUtils.searchAndGetItem(buff,
+                                              update.message.from_user.username,
+                                              update.message.chat.id)
+            try:
+                os.mkdir('media/'+item.media_dir)
+            except Exception as e:
+                print(e)
+
+            newFile.download('media/' + item.media_dir + '/' +
+                             str(item.n_conformidades) + '.jpg')
+
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'n_conformidades',
+                                      item.n_conformidades + 1)
+        except Exception as e:
+            print(e)
+            update.message.reply_text(
+                "Ocorreu um erro! Tente enviar apenas uma foto de uma vez. " +
+                "Agora envie a foto da não conformidade."
+            )
+            listUtils.listItens(buff)
+            return F_CONFORMIDADE
+
+        update.message.reply_text(
+            "Agora descreva a não-conformidade:"
+        )
+
+        return O_CONFORMIDADE
+    
+    def o_conformidade(self, update, context):
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text='Salvando a não-conformidade...')
+
+        item.desc_conformidades.append(update.message.text)
+        aux = item.desc_conformidades
+
+        listUtils.searchAndUpdate(buff,
+                                  update.message.from_user.username,
+                                  update.message.chat.id,
+                                  'desc_conformidades',
+                                  aux)
+
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text='Salvo com sucesso!'
+        )
+
+        reply_keyboard = [['Sim, registrar'], ['Não, finalizar'], ['Cancelar']]
+
+        update.message.reply_text(
+            'Houve mais alguma não-conformidade?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        return CONFORMIDADE
