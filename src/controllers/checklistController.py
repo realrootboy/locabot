@@ -17,7 +17,9 @@ from models.regChecklist import RegChecklist
 
 from database.main import Database
 
-PLACA, KM_INICIAL, A_CONFIRM = range(3)
+PLACA = -3
+KM_INICIAL = -2 
+A_CONFIRM = 71
 
 KM_FINAL = 0
 CARRO_P_CASA = 1
@@ -112,7 +114,83 @@ class ChecklistController:
             states={
                 PLACA: [MessageHandler(Filters.text, self.placa)],
                 KM_INICIAL: [MessageHandler(Filters.text, self.km_inicial)],
-                A_CONFIRM: [MessageHandler(Filters.text, self.a_confirm)]
+                A_CONFIRM: [MessageHandler(Filters.text, self.a_confirm)],
+                CARRO_P_CASA: [MessageHandler(Filters.text, self.carro_p_casa)],
+                VIAJOU_C_CARRO: [MessageHandler(Filters.text, self.viajou_c_carro)],
+                OUTRO_CONDUTOR: [MessageHandler(Filters.text, self.outro_condutor)],
+                NOVO_CONDUTOR: [MessageHandler(Filters.text, self.novo_condutor)],
+                DEIXOU_OFICINA: [MessageHandler(Filters.text, self.deixou_oficina)],
+                LOCAL_OFICINA: [MessageHandler(Filters.text, self.local_oficina)],
+                VAN_TACOGRAFO: [MessageHandler(Filters.text, self.van_tacografo)],
+                CALIBROU_PNEU: [MessageHandler(Filters.text, self.calibrou_pneu)],
+
+                MECANICA_MOTOR: [MessageHandler(Filters.text, self.mecanica_motor)],
+                MECANICA_AMORTECEDOR: [MessageHandler(Filters.text, self.mecanica_amortecedor)],
+                MECANICA_ESCAPAMENTO: [MessageHandler(Filters.text, self.mecanica_escapamento)],
+                MECANICA_FREIO: [MessageHandler(Filters.text, self.mecanica_freio)],
+                MECANICA_EMBREAGEM: [MessageHandler(Filters.text, self.mecanica_embreagem)],
+                MECANICA_ACELERADOR: [MessageHandler(Filters.text, self.mecanica_acelerador)],
+                MECANICA_CAMBIO: [MessageHandler(Filters.text, self.mecanica_cambio)],
+                MECANICA_OLEO: [MessageHandler(Filters.text, self.mecanica_oleo)],
+                MECANICA_AGUA: [MessageHandler(Filters.text, self.mecanica_agua)],
+                MECANICA_ALINHAMENTO: [MessageHandler(Filters.text, self.mecanica_alinhamento)],
+                MECANICA_FREIODEMAO: [MessageHandler(Filters.text, self.mecanica_freiodemao)],
+                MECANICA_CONFIRM: [MessageHandler(Filters.text, self.mecanica_confirm)],
+
+                LATARIA_DIANTEIRO: [MessageHandler(Filters.text, self.lataria_dianteiro)],
+                LATARIA_TRASEIRO: [MessageHandler(Filters.text, self.lataria_traseiro)],
+                LATARIA_PORTADIANTEIRADIREITA: [MessageHandler(Filters.text, self.lataria_portadianteiradireita)],
+                LATARIA_PORTADIANTEIRAESQUERDA: [MessageHandler(Filters.text, self.lataria_portadianteiraesquerda)],
+                LATARIA_PORTATRASEIRADIREITA: [MessageHandler(Filters.text, self.lataria_portatraseiradireita)],
+                LATARIA_PORTATRASEIRAESQUERDA: [MessageHandler(Filters.text, self.lataria_portatraseiraesquerda)],
+                LATARIA_PORTAMALAS: [MessageHandler(Filters.text, self.lataria_portamalas)],
+                LATARIA_PARACHOQUEDIANTEIRO: [MessageHandler(Filters.text, self.lataria_parachoquedianteiro)],
+                LATARIA_PARACHOQUETRASEIRO: [MessageHandler(Filters.text, self.lataria_parachoquetraseiro)],
+                LATARIA_CAPO: [MessageHandler(Filters.text, self.lataria_capo)],
+                LATARIA_TETO: [MessageHandler(Filters.text, self.lataria_teto)],
+                LATARIA_CONFIRM: [MessageHandler(Filters.text, self.lataria_confirm)],
+
+                ELETRICA_FAROLETE: [MessageHandler(Filters.text, self.eletrica_farolete)],
+                ELETRICA_FAROLBAIXO: [MessageHandler(Filters.text, self.eletrica_farolbaixo)],
+                ELETRICA_FAROLALTO: [MessageHandler(Filters.text, self.eletrica_farolalto)],
+                ELETRICA_SETAS: [MessageHandler(Filters.text, self.eletrica_setas)],
+                ELETRICA_LUZESDOPAINEL: [MessageHandler(Filters.text, self.eletrica_luzesdopainel)],
+                ELETRICA_LUZESINTERNAS: [MessageHandler(Filters.text, self.eletrica_luzesinternas)],
+                ELETRICA_BATERIA: [MessageHandler(Filters.text, self.eletrica_bateria)],
+                ELETRICA_RADIO: [MessageHandler(Filters.text, self.eletrica_radio)],
+                ELETRICA_ALTOFALANTES: [MessageHandler(Filters.text, self.eletrica_altofalantes)],
+                ELETRICA_LIMPADORPARABRISA: [MessageHandler(Filters.text, self.eletrica_limpadorparabrisa)],
+                ELETRICA_ARCONDICIONADO: [MessageHandler(Filters.text, self.eletrica_arcondicionado)],
+                ELETRICA_TRAVAS: [MessageHandler(Filters.text, self.eletrica_travas)],
+                ELETRICA_VIDROS: [MessageHandler(Filters.text, self.eletrica_vidros)],
+                ELETRICA_CONFIRM: [MessageHandler(Filters.text, self.eletrica_confirm)],
+
+                VIDROS_PARABRISA: [MessageHandler(Filters.text, self.vidros_parabrisa)],
+                VIDROS_LATERAISESQUERDO: [MessageHandler(Filters.text, self.vidros_lateraisesquerdo)],
+                VIDROS_LATERAISDIREITO: [MessageHandler(Filters.text, self.vidros_lateraisdireito)],
+                VIDROS_TRASEIRO: [MessageHandler(Filters.text, self.vidros_traseiro)],
+                VIDROS_CONFIRM: [MessageHandler(Filters.text, self.vidros_confirm)],
+
+                SEGURANCA_TRIANGULO: [MessageHandler(Filters.text, self.seguranca_triangulo)],
+                SEGURANCA_EXTINTOR: [MessageHandler(Filters.text, self.seguranca_extintor)],
+                SEGURANCA_CINTOS: [MessageHandler(Filters.text, self.seguranca_cintos)],
+                SEGURANCA_ALARME: [MessageHandler(Filters.text, self.seguranca_alarme)],
+                SEGURANCA_FECHADURAS: [MessageHandler(Filters.text, self.seguranca_fechaduras)],
+                SEGURANCA_MACANETAS: [MessageHandler(Filters.text, self.seguranca_macanetas)],
+                SEGURANCA_RETROVISORES: [MessageHandler(Filters.text, self.seguranca_retrovisores)],
+                SEGURANCA_MACACO: [MessageHandler(Filters.text, self.seguranca_macaco)],
+                SEGURANCA_CONFIRM: [MessageHandler(Filters.text, self.seguranca_confirm)],
+
+                PNEUS_DIANTEIROESQUERDO: [MessageHandler(Filters.text, self.pneus_dianteiroesquerdo)],
+                PNEUS_DIANTEIRODIREITO: [MessageHandler(Filters.text, self.pneus_dianteirodireito)],
+                PNEUS_TRASEIROESQUERDO: [MessageHandler(Filters.text, self.pneus_traseiroesquerdo)],
+                PNEUS_TRASEIRODIREITO: [MessageHandler(Filters.text, self.pneus_traseirodireito)],
+                PNEUS_ESTEPE: [MessageHandler(Filters.text, self.pneus_estepe)],
+                PNEUS_CONFIRM: [MessageHandler(Filters.text, self.pneus_confirm)],
+
+                HIGIENIZACAO_EXTERNA: [MessageHandler(Filters.text, self.higienizacao_externa)],
+                HIGIENIZACAO_INTERNA: [MessageHandler(Filters.text, self.higienizacao_interna)],
+                HIGIENIZACAO_CONFIRM: [MessageHandler(Filters.text, self.higienizacao_confirm)]
             },
 
             fallbacks=[
@@ -321,20 +399,28 @@ class ChecklistController:
         update.message.reply_text(
             'Quilometragem informada: '+update.message.text+'\n')
 
-        item = listUtils.searchAndGetItem(buff,
-                                          update.message.from_user.username,
-                                          update.message.chat.id)
+        # item = listUtils.searchAndGetItem(buff,
+        #                                   update.message.from_user.username,
+        #                                   update.message.chat.id)
+
+        # update.message.reply_text(
+        #     item.dadosAbertura(), parse_mode=ParseMode.MARKDOWN)
+
+        # reply_keyboard = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+
+        # update.message.reply_text(
+        #     'O dados informados estão corretos?',
+        #     reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+        # return A_CONFIRM
+
+        reply_keyboard = [['Sim'], ['Não']]
 
         update.message.reply_text(
-            item.dadosAbertura(), parse_mode=ParseMode.MARKDOWN)
-
-        reply_keyboard = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
-
-        update.message.reply_text(
-            'O dados informados estão corretos?',
+            'Retornou com o carro para casa?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
-        return A_CONFIRM
+        return CARRO_P_CASA
 
     def a_confirm(self, update, context):
         item = listUtils.searchAndGetItem(buff,
@@ -361,6 +447,69 @@ class ChecklistController:
                     str(item.km_inicial) + ' KM',
                     item.dt_abertura
                 )
+
+                checklist.carro_p_casa = item.carro_p_casa
+                checklist.viajou_c_carro = item.viajou_c_carro
+                checklist.outro_condutor = item.outro_condutor
+                checklist.novo_condutor = item.novo_condutor
+                checklist.deixou_oficina = item.deixou_oficina
+                checklist.local_oficina = item.local_oficina
+                checklist.van_tacografo = item.van_tacografo
+                checklist.calibrou_pneu = item.calibrou_pneu
+                checklist.mecanica_motor = item.mecanica_motor
+                checklist.mecanica_amortecedor = item.mecanica_amortecedor
+                checklist.mecanica_escapamento = item.mecanica_escapamento
+                checklist.mecanica_freio = item.mecanica_freio
+                checklist.mecanica_embreagem = item.mecanica_embreagem
+                checklist.mecanica_acelerador = item.mecanica_acelerador
+                checklist.mecanica_cambio = item.mecanica_cambio
+                checklist.mecanica_oleo = item.mecanica_oleo
+                checklist.mecanica_agua = item.mecanica_agua
+                checklist.mecanica_alinhamento = item.mecanica_alinhamento
+                checklist.mecanica_freiodemao = item.mecanica_freiodemao
+                checklist.lataria_dianteiro = item.lataria_dianteiro
+                checklist.lataria_traseiro = item.lataria_traseiro
+                checklist.lataria_portadianteiradireita = item.lataria_portadianteiradireita
+                checklist.lataria_portadianteiraesquerda = item.lataria_portadianteiraesquerda
+                checklist.lataria_portatraseiradireita = item.lataria_portatraseiradireita
+                checklist.lataria_portatraseiraesquerda = item.lataria_portatraseiraesquerda
+                checklist.lataria_portamalas = item.lataria_portamalas
+                checklist.lataria_parachoquedianteiro = item.lataria_parachoquedianteiro
+                checklist.lataria_parachoquetraseiro = item.lataria_parachoquetraseiro
+                checklist.lataria_capo = item.lataria_capo
+                checklist.lataria_teto = item.lataria_teto
+                checklist.eletrica_farolete = item.eletrica_farolete
+                checklist.eletrica_farolbaixo = item.eletrica_farolbaixo
+                checklist.eletrica_farolalto = item.eletrica_farolalto
+                checklist.eletrica_setas = item.eletrica_setas
+                checklist.eletrica_luzesdopainel = item.eletrica_luzesdopainel
+                checklist.eletrica_luzesinternas = item.eletrica_luzesinternas
+                checklist.eletrica_bateria = item.eletrica_bateria
+                checklist.eletrica_radio = item.eletrica_radio
+                checklist.eletrica_altofalantes = item.eletrica_altofalantes
+                checklist.eletrica_limpadorparabrisa = item.eletrica_limpadorparabrisa
+                checklist.eletrica_arcondicionado = item.eletrica_arcondicionado
+                checklist.eletrica_travas = item.eletrica_travas
+                checklist.eletrica_vidros = item.eletrica_vidros
+                checklist.vidros_parabrisa = item.vidros_parabrisa
+                checklist.vidros_lateraisesquerdo = item.vidros_lateraisesquerdo
+                checklist.vidros_lateraisdireito = item.vidros_lateraisdireito
+                checklist.vidros_traseiro = item.vidros_traseiro
+                checklist.seguranca_triangulo = item.seguranca_triangulo
+                checklist.seguranca_extintor = item.seguranca_extintor
+                checklist.seguranca_cintos = item.seguranca_cintos
+                checklist.seguranca_alarme = item.seguranca_alarme
+                checklist.seguranca_fechaduras = item.seguranca_fechaduras
+                checklist.seguranca_macanetas = item.seguranca_macanetas
+                checklist.seguranca_retrovisores = item.seguranca_retrovisores
+                checklist.seguranca_macaco = item.seguranca_macaco
+                checklist.pneus_dianteiroesquerdo = item.pneus_dianteiroesquerdo
+                checklist.pneus_dianteirodireito = item.pneus_dianteirodireito
+                checklist.pneus_traseiroesquerdo = item.pneus_traseiroesquerdo
+                checklist.pneus_traseirodireito = item.pneus_traseirodireito
+                checklist.pneus_estepe = item.pneus_estepe
+                checklist.higienizacao_externa = item.higienizacao_externa
+                checklist.higienizacao_interna = item.higienizacao_interna
 
                 session.add(checklist)
                 session.commit()
@@ -919,7 +1068,7 @@ class ChecklistController:
             return MECANICA_EMBREAGEM
 
         update.message.reply_text(
-            'Como está a embreagem?',
+            'Como está o acelerador?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
         return MECANICA_ACELERADOR
@@ -1154,16 +1303,16 @@ class ChecklistController:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Opção invalida. Por favor, responda apenas: [Sim, confirmar], [Não, refazer] ou [Cancelar]')
-            reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+            reply_keyboard2 = [['Sim, confirmar'],
+                               ['Não, refazer'], ['Cancelar']]
             item = listUtils.searchAndGetItem(buff,
-                                          update.message.from_user.username,
-                                          update.message.chat.id)
+                                              update.message.from_user.username,
+                                              update.message.chat.id)
             update.message.reply_text(
                 item.dadosMecanica(), parse_mode=ParseMode.MARKDOWN)
             update.message.reply_text(
                 'O dados informados estão corretos?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
-        
 
     def lataria_dianteiro(self, update, context):
         reply_keyboard = [['Ok'], ['Não está ok']]
@@ -1488,7 +1637,7 @@ class ChecklistController:
                 'Como está a lataria do teto?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
             return LATARIA_TETO
-        
+
         reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
@@ -1499,20 +1648,19 @@ class ChecklistController:
             'O dados informados estão corretos?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
         return LATARIA_CONFIRM
-        
-    
+
     def lataria_confirm(self, update, context):
         reply_keyboard = [['Ok'], ['Não está ok']]
 
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
                                           update.message.chat.id)
-        
+
         if(update.message.text == 'Sim, confirmar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Agora faremos a revisão da parte elétrica do veículo!')
-            
+
             update.message.reply_text(
                 'Como está o farolete?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
@@ -1539,10 +1687,11 @@ class ChecklistController:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Opção invalida. Por favor, responda apenas: [Sim, confirmar], [Não, refazer] ou [Cancelar]')
-            reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+            reply_keyboard2 = [['Sim, confirmar'],
+                               ['Não, refazer'], ['Cancelar']]
             item = listUtils.searchAndGetItem(buff,
-                                          update.message.from_user.username,
-                                          update.message.chat.id)
+                                              update.message.from_user.username,
+                                              update.message.chat.id)
             update.message.reply_text(
                 item.dadosLataria(), parse_mode=ParseMode.MARKDOWN)
             update.message.reply_text(
@@ -1895,7 +2044,7 @@ class ChecklistController:
                 'Como está a parte elétrica dos vidros?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
             return ELETRICA_VIDROS
-        
+
         reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
@@ -1906,19 +2055,19 @@ class ChecklistController:
             'O dados informados estão corretos?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
         return ELETRICA_CONFIRM
-    
+
     def eletrica_confirm(self, update, context):
         reply_keyboard = [['Ok'], ['Não está ok']]
 
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
                                           update.message.chat.id)
-        
+
         if(update.message.text == 'Sim, confirmar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Agora faremos a revisão dos vidros do veículo!')
-            
+
             update.message.reply_text(
                 'Como está o parabrisa?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
@@ -1945,10 +2094,11 @@ class ChecklistController:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Opção invalida. Por favor, responda apenas: [Sim, confirmar], [Não, refazer] ou [Cancelar]')
-            reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+            reply_keyboard2 = [['Sim, confirmar'],
+                               ['Não, refazer'], ['Cancelar']]
             item = listUtils.searchAndGetItem(buff,
-                                          update.message.from_user.username,
-                                          update.message.chat.id)
+                                              update.message.from_user.username,
+                                              update.message.chat.id)
             update.message.reply_text(
                 item.dadosEletrica(), parse_mode=ParseMode.MARKDOWN)
             update.message.reply_text(
@@ -2058,7 +2208,7 @@ class ChecklistController:
                 'Como está os vidros traseiros?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
             return VIDROS_TRASEIRO
-        
+
         reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
@@ -2076,12 +2226,12 @@ class ChecklistController:
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
                                           update.message.chat.id)
-        
+
         if(update.message.text == 'Sim, confirmar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Agora faremos a revisão dos itens de segurança do veículo!')
-            
+
             update.message.reply_text(
                 'Como está o triangulo?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
@@ -2108,10 +2258,11 @@ class ChecklistController:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Opção invalida. Por favor, responda apenas: [Sim, confirmar], [Não, refazer] ou [Cancelar]')
-            reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+            reply_keyboard2 = [['Sim, confirmar'],
+                               ['Não, refazer'], ['Cancelar']]
             item = listUtils.searchAndGetItem(buff,
-                                          update.message.from_user.username,
-                                          update.message.chat.id)
+                                              update.message.from_user.username,
+                                              update.message.chat.id)
             update.message.reply_text(
                 item.dadosSeguranca(), parse_mode=ParseMode.MARKDOWN)
             update.message.reply_text(
@@ -2340,19 +2491,19 @@ class ChecklistController:
             'O dados informados estão corretos?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
         return SEGURANCA_CONFIRM
-    
+
     def seguranca_confirm(self, update, context):
         reply_keyboard = [['Ok'], ['Não está ok']]
 
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
                                           update.message.chat.id)
-        
+
         if(update.message.text == 'Sim, confirmar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Agora faremos a revisão dos pneus do veículo!')
-            
+
             update.message.reply_text(
                 'Como está o pneu dianteiro esquerdo?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
@@ -2379,10 +2530,11 @@ class ChecklistController:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Opção invalida. Por favor, responda apenas: [Sim, confirmar], [Não, refazer] ou [Cancelar]')
-            reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+            reply_keyboard2 = [['Sim, confirmar'],
+                               ['Não, refazer'], ['Cancelar']]
             item = listUtils.searchAndGetItem(buff,
-                                          update.message.from_user.username,
-                                          update.message.chat.id)
+                                              update.message.from_user.username,
+                                              update.message.chat.id)
             update.message.reply_text(
                 item.dadosSeguranca(), parse_mode=ParseMode.MARKDOWN)
             update.message.reply_text(
@@ -2537,12 +2689,12 @@ class ChecklistController:
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
                                           update.message.chat.id)
-        
+
         if(update.message.text == 'Sim, confirmar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Agora faremos a revisão da higienização do veículo!')
-            
+
             update.message.reply_text(
                 'Como está o higienização externa?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
@@ -2569,10 +2721,11 @@ class ChecklistController:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Opção invalida. Por favor, responda apenas: [Sim, confirmar], [Não, refazer] ou [Cancelar]')
-            reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+            reply_keyboard2 = [['Sim, confirmar'],
+                               ['Não, refazer'], ['Cancelar']]
             item = listUtils.searchAndGetItem(buff,
-                                          update.message.from_user.username,
-                                          update.message.chat.id)
+                                              update.message.from_user.username,
+                                              update.message.chat.id)
             update.message.reply_text(
                 item.dadosHigienizacao(), parse_mode=ParseMode.MARKDOWN)
             update.message.reply_text(
@@ -2605,7 +2758,7 @@ class ChecklistController:
             'Como está a higienização interna?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
         return HIGIENIZACAO_INTERNA
-    
+
     def higienizacao_interna(self, update, context):
         reply_keyboard = [['Ok'], ['Não está ok']]
         if(update.message.text == 'Ok'):
@@ -2628,7 +2781,7 @@ class ChecklistController:
                 'Como está a higienização interna?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
             return HIGIENIZACAO_INTERNA
-        
+
         reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
@@ -2639,23 +2792,79 @@ class ChecklistController:
             'O dados informados estão corretos?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
         return HIGIENIZACAO_CONFIRM
-    
+
     def higienizacao_confirm(self, update, context):
         reply_keyboard = [['Ok'], ['Não está ok']]
+        reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
 
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
                                           update.message.chat.id)
-        
+
         if(update.message.text == 'Sim, confirmar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text='Agora faremos a bla bla bla')
-            
-            #update.message.reply_text(
-            #    'Como está o higienização externa?',
-            #    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
-            return ConversationHandler.END
+                text='Agora faremos a verificação geral do checklist!')
+
+            if(item.is_abertura):
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosAbertura(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosMecanica(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosLataria(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosEletrica(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosVidros(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosSeguranca(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosPneus(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosHigienizacao(), parse_mode=ParseMode.MARKDOWN)
+                update.message.reply_text(
+                    'O dados informados estão corretos?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+                return A_CONFIRM
+            else:
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosAbertura(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosMecanica(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosLataria(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosEletrica(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosVidros(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosSeguranca(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosPneus(), parse_mode=ParseMode.MARKDOWN)
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosHigienizacao(), parse_mode=ParseMode.MARKDOWN)
+                update.message.reply_text(
+                    'O dados informados estão corretos?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+                return F_CONFIRM
+
         elif(update.message.text == 'Não, refazer'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -2678,10 +2887,11 @@ class ChecklistController:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Opção invalida. Por favor, responda apenas: [Sim, confirmar], [Não, refazer] ou [Cancelar]')
-            reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+            reply_keyboard2 = [['Sim, confirmar'],
+                               ['Não, refazer'], ['Cancelar']]
             item = listUtils.searchAndGetItem(buff,
-                                          update.message.from_user.username,
-                                          update.message.chat.id)
+                                              update.message.from_user.username,
+                                              update.message.chat.id)
             update.message.reply_text(
                 item.dadosHigienizacao(), parse_mode=ParseMode.MARKDOWN)
             update.message.reply_text(
@@ -2702,11 +2912,25 @@ class ChecklistController:
                 Session = Database.Session
                 session = Session()
 
-                checklist = session.query(Checklist).filter_by(
-                    motorista_id=item.motorista_id).order_by(Checklist.id.desc()).first()
+                motorista = session.query(Motorista).filter_by(
+                    telegram_user=item.username).first()
+                
+                checklist_abertura = session.query(Checklist).filter_by(
+                    motorista_id=motorista.id).order_by(Checklist.id.desc()).first()
+                
+                checklist = Checklist(
+                    motorista,
+                    False,
+                    item.placa,
+                    str(item.km_inicial) + ' KM',
+                    item.dt_abertura
+                )
 
-                checklist.km_final = item.km_final
+                checklist.km_final = str(item.km_final) + ' KM'
                 checklist.dt_fechamento = datetime.now().strftime("%Y-%m-%dT%H:%M:%S-03:00")
+
+                checklist_abertura.dt_fechamento = checklist.dt_fechamento
+
                 checklist.carro_p_casa = item.carro_p_casa
                 checklist.viajou_c_carro = item.viajou_c_carro
                 checklist.outro_condutor = item.outro_condutor
@@ -2715,7 +2939,62 @@ class ChecklistController:
                 checklist.local_oficina = item.local_oficina
                 checklist.van_tacografo = item.van_tacografo
                 checklist.calibrou_pneu = item.calibrou_pneu
+                checklist.mecanica_motor = item.mecanica_motor
+                checklist.mecanica_amortecedor = item.mecanica_amortecedor
+                checklist.mecanica_escapamento = item.mecanica_escapamento
+                checklist.mecanica_freio = item.mecanica_freio
+                checklist.mecanica_embreagem = item.mecanica_embreagem
+                checklist.mecanica_acelerador = item.mecanica_acelerador
+                checklist.mecanica_cambio = item.mecanica_cambio
+                checklist.mecanica_oleo = item.mecanica_oleo
+                checklist.mecanica_agua = item.mecanica_agua
+                checklist.mecanica_alinhamento = item.mecanica_alinhamento
+                checklist.mecanica_freiodemao = item.mecanica_freiodemao
+                checklist.lataria_dianteiro = item.lataria_dianteiro
+                checklist.lataria_traseiro = item.lataria_traseiro
+                checklist.lataria_portadianteiradireita = item.lataria_portadianteiradireita
+                checklist.lataria_portadianteiraesquerda = item.lataria_portadianteiraesquerda
+                checklist.lataria_portatraseiradireita = item.lataria_portatraseiradireita
+                checklist.lataria_portatraseiraesquerda = item.lataria_portatraseiraesquerda
+                checklist.lataria_portamalas = item.lataria_portamalas
+                checklist.lataria_parachoquedianteiro = item.lataria_parachoquedianteiro
+                checklist.lataria_parachoquetraseiro = item.lataria_parachoquetraseiro
+                checklist.lataria_capo = item.lataria_capo
+                checklist.lataria_teto = item.lataria_teto
+                checklist.eletrica_farolete = item.eletrica_farolete
+                checklist.eletrica_farolbaixo = item.eletrica_farolbaixo
+                checklist.eletrica_farolalto = item.eletrica_farolalto
+                checklist.eletrica_setas = item.eletrica_setas
+                checklist.eletrica_luzesdopainel = item.eletrica_luzesdopainel
+                checklist.eletrica_luzesinternas = item.eletrica_luzesinternas
+                checklist.eletrica_bateria = item.eletrica_bateria
+                checklist.eletrica_radio = item.eletrica_radio
+                checklist.eletrica_altofalantes = item.eletrica_altofalantes
+                checklist.eletrica_limpadorparabrisa = item.eletrica_limpadorparabrisa
+                checklist.eletrica_arcondicionado = item.eletrica_arcondicionado
+                checklist.eletrica_travas = item.eletrica_travas
+                checklist.eletrica_vidros = item.eletrica_vidros
+                checklist.vidros_parabrisa = item.vidros_parabrisa
+                checklist.vidros_lateraisesquerdo = item.vidros_lateraisesquerdo
+                checklist.vidros_lateraisdireito = item.vidros_lateraisdireito
+                checklist.vidros_traseiro = item.vidros_traseiro
+                checklist.seguranca_triangulo = item.seguranca_triangulo
+                checklist.seguranca_extintor = item.seguranca_extintor
+                checklist.seguranca_cintos = item.seguranca_cintos
+                checklist.seguranca_alarme = item.seguranca_alarme
+                checklist.seguranca_fechaduras = item.seguranca_fechaduras
+                checklist.seguranca_macanetas = item.seguranca_macanetas
+                checklist.seguranca_retrovisores = item.seguranca_retrovisores
+                checklist.seguranca_macaco = item.seguranca_macaco
+                checklist.pneus_dianteiroesquerdo = item.pneus_dianteiroesquerdo
+                checklist.pneus_dianteirodireito = item.pneus_dianteirodireito
+                checklist.pneus_traseiroesquerdo = item.pneus_traseiroesquerdo
+                checklist.pneus_traseirodireito = item.pneus_traseirodireito
+                checklist.pneus_estepe = item.pneus_estepe
+                checklist.higienizacao_externa = item.higienizacao_externa
+                checklist.higienizacao_interna = item.higienizacao_interna
 
+                session.add(checklist_abertura)
                 session.add(checklist)
 
                 for i, nc in enumerate(item.desc_conformidades):

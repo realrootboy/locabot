@@ -171,13 +171,21 @@ class RegChecklist:
         return('*Usuário:* ' + self.username + '\n' +
                '*Chat Atual:* ' + str(self.chat_id) + '\n\n' +
                '*Placa:* ' + self.placa + '\n' +
-               '*KM Inicial:* ' + str(self.km_inicial) + ' KM\n')
+               '*KM Inicial:* ' + str(self.km_inicial) + '\n' +
+               '*Retornou com o carro para casa:* ' + strBool(self.carro_p_casa) + '\n' +
+               '*Viajou com o carro:* ' + strBool(self.viajou_c_carro) + '\n' +
+               '*Outro condutor:* ' + strBool(self.outro_condutor) + '\n' +
+               '*Novo condutor:* ' + str(self.novo_condutor) + '\n' +
+               '*Deixou na oficina:* ' + strBool(self.deixou_oficina) + '\n' +
+               '*Local da oficina:* ' + str(self.local_oficina) + '\n' +
+               '*Trocou o tacógrafo:* ' + strBool(self.van_tacografo) + '\n' +
+               '*Calibrou os pneus:* ' + strBool(self.calibrou_pneu) + '\n')
 
     def dadosFechamento(self):
         return('*Usuário:* ' + self.username + '\n' +
                '*Chat Atual:* ' + str(self.chat_id) + '\n\n' +
                '*Placa:* ' + self.placa + '\n' +
-               '*KM Inicial:* ' + str(self.km_inicial) + '\n'
+               '*KM Inicial:* ' + str(self.km_inicial) + '\n' +
                '*KM Final:* ' + str(self.km_final) + ' KM\n\n' +
                '*Retornou com o carro para casa:* ' + strBool(self.carro_p_casa) + '\n' +
                '*Viajou com o carro:* ' + strBool(self.viajou_c_carro) + '\n' +
@@ -256,7 +264,7 @@ class RegChecklist:
                 '*Dianteiro direito:* ' + strBool2(self.pneus_dianteirodireito) + '\n' +
                 '*Traseiro esquerdo:* ' + strBool2(self.pneus_traseiroesquerdo) + '\n' +
                 '*Traseiro direito:* ' + strBool2(self.pneus_traseirodireito) + '\n' + 
-                '*Estepe:* ', strBool2(self.pneus_estepe) + '\n')
+                '*Estepe:* ' + strBool2(self.pneus_estepe) + '\n')
 
     def dadosHigienizacao(self):
         return ('*CHECKLIST DE HIGIENIZAÇÃO*\n\n' +
