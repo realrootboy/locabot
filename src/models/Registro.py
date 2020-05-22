@@ -1,9 +1,11 @@
 from datetime import datetime
+from pytz import timezone
 
-from sqlalchemy import Column, String, Integer, Date, Table, ForeignKey
+from sqlalchemy import Column, String, Integer, Date, Table, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 from database.main import Database
+
 
 class Registro(Database.Base):
     __tablename__ = 'registros'
@@ -18,6 +20,7 @@ class Registro(Database.Base):
     tp_combustivel = Column('tp_combustivel', String(255))
     posto = Column('posto', String(255))
     media_dir = Column('media_dir', String(255))
+    created_at = Column('created_at', DateTime(timezone=True))
 
     def __init__(self,
                  motorista,
@@ -38,3 +41,4 @@ class Registro(Database.Base):
         self.tp_combustivel = tp_combustivel
         self.posto = posto
         self.media_dir = media_dir
+        self.created_at = datetime.now(timezone('America/Sao_Paulo'))

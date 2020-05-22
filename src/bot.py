@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 from configs.bot import config
 from controllers.combustivelController import CombustivelController
 from controllers.checklistController import ChecklistController
+from controllers.pontoController import PontoController
 
 class Locatransbot:
   def __init__(self):
@@ -18,10 +19,12 @@ class Locatransbot:
     
     self.combustivel = CombustivelController(logger)
     self.checklist = ChecklistController(logger)
+    self.ponto = PontoController(logger)
 
     self.dp.add_handler(self.combustivel.conv_handler)
     self.dp.add_handler(self.checklist.conv_handler_abertura)
     self.dp.add_handler(self.checklist.conv_handler_fechamento)
+    self.dp.add_handler(self.ponto.conv_handler)
     
   def start(self):
     self.dp.add_error_handler(self.error)

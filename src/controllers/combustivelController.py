@@ -12,6 +12,7 @@ from controllers.controllerUtils import listUtils
 from models.regAbastecimento import RegAbastecimento
 from models.Motorista import Motorista
 from models.Registro import Registro
+from models.Veiculos import Veiculos
 
 from database.main import Database
 
@@ -44,17 +45,17 @@ class CombustivelController:
                 CONFIRM: [MessageHandler(Filters.text, self.confirm)]
             },
 
-
-
             fallbacks = [CommandHandler('cancel', self.cancel)]
         )
 
     def registro(self, update, context):
+        placas = []
         try:
             abastecimento = RegAbastecimento(
                 update.message.from_user.username, update.message.chat.id)
             buff.append(abastecimento)
-        except:
+        except Exception as e:
+            print(e)
             update.message.reply_text(
                 'Não é possível realizar o cadastro de combustível sem um nome de usuário cadastrado.',
                 reply_markup=ReplyKeyboardRemove()
@@ -72,21 +73,31 @@ class CombustivelController:
                     'Usuário ' + update.message.from_user.username + ' não encontrado na base de dados. ' + 
                     'Acesso não autorizado!', reply_markup=ReplyKeyboardRemove()
                 )
+                session.close()
+                buff.remove(abastecimento)
                 return ConversationHandler.END
 
+            veiculos = session.query(Veiculos).order_by(Veiculos.placa.asc())
+            for veiculo in veiculos:
+                placas.append([veiculo.placa])
+
             session.close()
-        except:
+        except Exception as e:
+            print(e)
             update.message.reply_text('Houve um erro ao tentar se conectar com a base de dados! ' +
                                           'O erro foi reportado, tente novamente mais tarde.',
                                           reply_markup=ReplyKeyboardRemove())
+            buff.remove(abastecimento)
             return ConversationHandler.END
 
         update.message.reply_text(
-            'Olá, ' + motorista.nome + '. Por favor, informe a placa do veículo.', reply_markup=ReplyKeyboardRemove())
-
+            'Olá, ' + motorista.nome + '. Por favor, informe a placa do veículo.',
+            reply_markup=ReplyKeyboardMarkup(placas, one_time_keyboard=True))
+        
         return PLACA
 
     def retorno(self, update, context):
+        placas = []
         try:
             abastecimento = RegAbastecimento(
                 update.message.from_user.username, update.message.chat.id)
@@ -109,7 +120,12 @@ class CombustivelController:
                     'Usuário ' + update.message.from_user.username + ' não encontrado na base de dados. ' + 
                     'Acesso não autorizado!', reply_markup=ReplyKeyboardRemove()
                 )
+                session.close()
                 return ConversationHandler.END
+
+            veiculos = session.query(Veiculos).order_by(Veiculos.placa.asc())
+            for veiculo in veiculos:
+                placas.append([veiculo.placa])
 
             session.close()
         except:
@@ -119,12 +135,35 @@ class CombustivelController:
             return ConversationHandler.END
 
         update.message.reply_text(
-            'Olá, ' + motorista.nome + '. Por favor, informe a placa do veículo.', reply_markup=ReplyKeyboardRemove())
-
+            'Olá, ' + motorista.nome + '. Por favor, informe a placa do veículo.',
+            reply_markup=ReplyKeyboardMarkup(placas, one_time_keyboard=True))
+        
         return PLACA
 
     def placa(self, update, context):
         user = update.message.from_user
+
+        Session = Database.Session
+        session = Session()
+
+        placa = session.query(Veiculos).filter_by(
+            placa=update.message.text).first()
+
+        if placa is None:
+            placas = []
+            veiculos = session.query(Veiculos).order_by(Veiculos.placa.asc())
+
+            for veiculo in veiculos:
+                placas.append([veiculo.placa])
+
+            update.message.reply_text(
+                'Placa ' + update.message.text + ' inválida ou não encontrada na base de dados. ' +
+                'Por favor, informe novamente a placa do veículo.',
+                reply_markup=ReplyKeyboardMarkup(placas, one_time_keyboard=True))
+            session.close()
+            return PLACA
+
+        session.close()
 
         listUtils.searchAndUpdate(buff,
                                   update.message.from_user.username,

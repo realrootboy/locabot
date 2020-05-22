@@ -3,6 +3,7 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
                           ConversationHandler)
 
 from datetime import datetime
+from pytz import timezone
 
 import shutil
 import os
@@ -2913,7 +2914,7 @@ class ChecklistController:
                 )
 
                 checklist.km_final = str(item.km_final) + ' KM'
-                checklist.dt_fechamento = datetime.now().strftime("%Y-%m-%dT%H:%M:%S-03:00")
+                checklist.dt_fechamento = datetime.now(timezone('America/Sao_Paulo'))
 
                 checklist_abertura.dt_fechamento = checklist.dt_fechamento
 

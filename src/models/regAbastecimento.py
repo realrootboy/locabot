@@ -1,4 +1,5 @@
 from datetime import datetime
+from pytz import timezone
 
 class RegAbastecimento:
 
@@ -21,7 +22,7 @@ class RegAbastecimento:
         self.val_total = val_total
         self.tp_combustivel = tp_combustivel
         self.posto = posto
-        self.media_dir = datetime.now().strftime("%Y-%m-%dT%H:%M:%S") + ' ' + username
+        self.media_dir = datetime.now(timezone('America/Sao_Paulo')).strftime('%d-%b-%Y (%H:%M:%S.%f)') + ' ' + username
 
     def stringData(self):
         return('*Usuário:* ' + self.username + '\n' +

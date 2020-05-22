@@ -1,4 +1,5 @@
 from datetime import datetime
+from pytz import timezone
 
 
 def strBool(b):
@@ -23,7 +24,7 @@ class RegChecklist:
                  is_abertura,
                  placa='',
                  km_inicial='',
-                 dt_abertura=datetime.now().strftime("%Y-%m-%dT%H:%M:%S-03:00"),
+                 dt_abertura=datetime.now(timezone('America/Sao_Paulo')),
                  km_final='',
                  dt_fechamento=None,
                  idd=-1,
@@ -102,7 +103,7 @@ class RegChecklist:
         self.id = idd
         self.motorista_id = motorista_id
         self.n_conformidades = 0
-        self.media_dir = datetime.now().strftime("%Y-%m-%dT%H:%M:%S") + ' ' + username
+        self.media_dir = datetime.now(timezone('America/Sao_Paulo')) + ' ' + username
         self.desc_conformidades = list()
         self.carro_p_casa = carro_p_casa
         self.viajou_c_carro = viajou_c_carro

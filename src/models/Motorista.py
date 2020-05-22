@@ -10,6 +10,7 @@ class Motorista(Database.Base):
     telegram_user = Column('telegram_user', String(255))
     registros = relationship('Registro', back_populates='motorista')
     checklists = relationship('Checklist', back_populates='motorista')
+    pontos_motorista = relationship('PontosMotorista', back_populates='motorista')
 
     def __init__(self, nome, telegram_user):
         self.nome = nome
