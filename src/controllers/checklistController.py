@@ -311,16 +311,17 @@ class ChecklistController:
             open_checklist = RegChecklist(
                 update.message.from_user.username, update.message.chat.id, True)
             buff.append(open_checklist)
-        except:
+        except Exception as e:
+            print(e)
             update.message.reply_text(
-                'Não é possível realizar o cadastro de combustível sem um nome de usuário cadastrado.',
+                'Não é possível realizar o cadastro de checklist sem um nome de usuário cadastrado.',
                 reply_markup=ReplyKeyboardRemove()
             )
             return ConversationHandler.END
 
         if update.message.from_user.username is None:
             update.message.reply_text(
-                'Não é possível realizar o cadastro de combustível sem um nome de usuário cadastrado.',
+                'Não é possível realizar o cadastro de checklist sem um nome de usuário cadastrado.',
                 reply_markup=ReplyKeyboardRemove()
             )
             buff.remove(open_checklist)
@@ -980,13 +981,13 @@ class ChecklistController:
 
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text='Agora faremos a revisão da mecânica do veículo!')
+            text='Agora faremos a revisão dos pneus do veículo!')
 
         update.message.reply_text(
-            'Como está o motor?',
+            'Como está o pneu dianteiro esquerdo?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
-        return MECANICA_MOTOR
+        return PNEUS_DIANTEIROESQUERDO
 
     def mecanica_motor(self, update, context):
         reply_keyboard = [['Ok'], ['Não está ok']]
@@ -1336,21 +1337,19 @@ class ChecklistController:
 
     def mecanica_confirm(self, update, context):
         reply_keyboard = [['Ok'], ['Não está ok']]
+        reply_keyboard2 = [['Sim, registrar'],
+                           ['Não, finalizar'], ['Cancelar']]
 
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
                                           update.message.chat.id)
 
         if(update.message.text == 'Sim, confirmar'):
-            context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text='Agora faremos a revisão da lataria do veículo!')
-
             update.message.reply_text(
-                'Como está a lataria dianteira?',
-                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+                'Houve alguma não-conformidade?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
 
-            return LATARIA_DIANTEIRO
+            return CONFORMIDADE
         elif(update.message.text == 'Não, refazer'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -1702,12 +1701,12 @@ class ChecklistController:
         if(update.message.text == 'Sim, confirmar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text='Agora faremos a revisão da parte elétrica do veículo!')
+                text='Agora faremos a revisão dos vidros do veículo!')
 
             update.message.reply_text(
-                'Como está o farolete?',
+                'Como está o parabrisa?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
-            return ELETRICA_FAROLETE
+            return VIDROS_PARABRISA
         elif(update.message.text == 'Não, refazer'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -2109,12 +2108,12 @@ class ChecklistController:
         if(update.message.text == 'Sim, confirmar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text='Agora faremos a revisão dos vidros do veículo!')
+                text='Agora faremos a revisão da parte mecanica do veículo!')
 
             update.message.reply_text(
-                'Como está o parabrisa?',
+                'Como está o motor?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
-            return VIDROS_PARABRISA
+            return MECANICA_MOTOR
         elif(update.message.text == 'Não, refazer'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -2545,12 +2544,12 @@ class ChecklistController:
         if(update.message.text == 'Sim, confirmar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text='Agora faremos a revisão dos pneus do veículo!')
+                text='Agora faremos a revisão da higienização do veículo!')
 
             update.message.reply_text(
-                'Como está o pneu dianteiro esquerdo?',
+                'Como está a higienização externa?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
-            return PNEUS_DIANTEIROESQUERDO
+            return HIGIENIZACAO_EXTERNA
         elif(update.message.text == 'Não, refazer'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -2736,12 +2735,12 @@ class ChecklistController:
         if(update.message.text == 'Sim, confirmar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text='Agora faremos a revisão da higienização do veículo!')
+                text='Agora faremos a revisão da lataria do veículo!')
 
             update.message.reply_text(
-                'Como está o higienização externa?',
+                'Como está a lataria dianteira?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
-            return HIGIENIZACAO_EXTERNA
+            return LATARIA_DIANTEIRO
         elif(update.message.text == 'Não, refazer'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -2838,20 +2837,25 @@ class ChecklistController:
 
     def higienizacao_confirm(self, update, context):
         reply_keyboard = [['Ok'], ['Não está ok']]
-        reply_keyboard2 = [['Sim, registrar'],
-                           ['Não, finalizar'], ['Cancelar']]
 
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
                                           update.message.chat.id)
 
         if(update.message.text == 'Sim, confirmar'):
+            #update.message.reply_text(
+            #    'Houve alguma não-conformidade?',
+            #    reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
+
+            #return CONFORMIDADE
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Agora faremos a revisão da parte elétrica do veículo!')
+
             update.message.reply_text(
-                'Houve alguma não-conformidade?',
-                reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
-
-            return CONFORMIDADE
-
+                'Como está o farolete?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            return ELETRICA_FAROLETE
         elif(update.message.text == 'Não, refazer'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,

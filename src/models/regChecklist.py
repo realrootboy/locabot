@@ -103,7 +103,7 @@ class RegChecklist:
         self.id = idd
         self.motorista_id = motorista_id
         self.n_conformidades = 0
-        self.media_dir = datetime.now(timezone('America/Sao_Paulo')) + ' ' + username
+        self.media_dir = str(datetime.now(timezone('America/Sao_Paulo'))) + ' ' + username
         self.desc_conformidades = list()
         self.carro_p_casa = carro_p_casa
         self.viajou_c_carro = viajou_c_carro
