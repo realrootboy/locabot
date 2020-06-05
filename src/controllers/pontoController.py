@@ -9,6 +9,7 @@ from controllers.controllerUtils import listUtils
 
 from models.Motorista import Motorista
 from models.PontosMotorista import PontosMotorista
+from models.IntervalosDePontoMotorista import IntervalosDePontoMotorista
 
 from models.regPonto import RegPonto
 
@@ -48,6 +49,7 @@ class PontoController:
         )
 
     def registro(self, update, context):
+        # VALIDAÇÃO DE NOME DE USUARIO DO TELEGRAM
         try:
             ponto = RegPonto(
                 username=update.message.from_user.username,
@@ -67,6 +69,7 @@ class PontoController:
                 reply_markup=ReplyKeyboardRemove()
             )
             return ConversationHandler.END
+        # =========================================
 
         try:
             Session = Database.Session
@@ -85,17 +88,29 @@ class PontoController:
                 ponto.role = 'motorista'
                 nome = motorista.nome
 
-                if(pontoDb and pontoDb.saida is None):
+                if (pontoDb and pontoDb.saida is None):
                     ponto.entrada = pontoDb.entrada
-                    ponto.intervalo = pontoDb.intervalo
-                    ponto.fim_intervalo = pontoDb.fim_intervalo
                     ponto.saida = pontoDb.saida
+                    ponto.id = pontoDb.id
         except Exception as e:
             print(e)
             update.message.reply_text('Houve um erro ao tentar se conectar com a base de dados! ' +
                                       'O erro foi reportado, tente novamente mais tarde.',
                                       reply_markup=ReplyKeyboardRemove())
             return ConversationHandler.END
+
+        try:
+            intervaloDePonto = session.query(IntervalosDePontoMotorista).filter_by(
+                ponto_motorista_id=pontoDb.id).order_by(IntervalosDePontoMotorista.id.desc()).first()
+
+            if (intervaloDePonto and intervaloDePonto.fim_intervalo is None):
+                ponto.intervalo = intervaloDePonto.intervalo
+                ponto.fim_intervalo = intervaloDePonto.fim_intervalo
+
+        except Exception as e:
+            print(e)
+
+        session.close()
 
         replyKeyboard = handleOpts(ponto)
         buff.append(ponto)
@@ -159,7 +174,6 @@ class PontoController:
 
             return OPTS
 
-
     def entrada(self, update, context):
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
@@ -167,10 +181,10 @@ class PontoController:
 
         if(update.message.text == 'Sim, confirmar'):
             listUtils.searchAndUpdate(buff,
-                                  update.message.from_user.username,
-                                  update.message.chat.id,
-                                  'entrada',
-                                  datetime.now(timezone('America/Sao_Paulo')))
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'entrada',
+                                      datetime.now(timezone('America/Sao_Paulo')))
 
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -183,13 +197,11 @@ class PontoController:
 
                 motorista = session.query(Motorista).filter_by(
                     telegram_user=item.username).first()
-                
+
                 ponto = PontosMotorista(
                     motorista,
                     item.entrada,
-                    item.intervalo,
-                    item.fim_intervalo,
-                    item.saida                    
+                    item.saida
                 )
 
                 session.add(ponto)
@@ -203,7 +215,7 @@ class PontoController:
                 print(e)
                 buff.pop(buff.index(item))
                 return ConversationHandler.END
-            
+
             buff.pop(buff.index(item))
 
             update.message.reply_text('Dados enviados com sucesso! Caso haja alguma inconsistência favor informar para @renanmgomes ou @igorpittol.',
@@ -229,7 +241,7 @@ class PontoController:
                 chat_id=update.effective_chat.id,
                 text='Resposta inválida, por favor, responda apenas com: ' +
                 '"Sim, confirmar" ou "Não, finalizar"')
-            
+
             update.message.reply_text(
                 'Deseja confirmar a abertura de expediente?',
                 reply_markup=ReplyKeyboardMarkup(
@@ -245,10 +257,10 @@ class PontoController:
 
         if(update.message.text == 'Sim, confirmar'):
             listUtils.searchAndUpdate(buff,
-                                  update.message.from_user.username,
-                                  update.message.chat.id,
-                                  'intervalo',
-                                  datetime.now(timezone('America/Sao_Paulo')))
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'intervalo',
+                                      datetime.now(timezone('America/Sao_Paulo')))
 
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -261,18 +273,24 @@ class PontoController:
 
                 motorista = session.query(Motorista).filter_by(
                     telegram_user=item.username).first()
-                
+
                 pontoDb = session.query(PontosMotorista).filter_by(
                     motorista_id=motorista.id).order_by(PontosMotorista.id.desc()).first()
-                
-                pontoDb.entrada = item.entrada,
-                pontoDb.intervalo = item.intervalo,
-                pontoDb.fim_intervalo = item.fim_intervalo,
-                pontoDb.saida = item.saida                    
-                
-                session.add(pontoDb)
+
+                intervalo = IntervalosDePontoMotorista(
+                    pontoDb,
+                    item.intervalo,
+                    item.fim_intervalo
+                )
+
+                session.add(intervalo)
 
                 session.commit()
+
+                intervalos = session.query(IntervalosDePontoMotorista).filter_by(
+                    ponto_motorista_id=pontoDb.id)
+                
+                item.intervalos = intervalos
 
                 session.close()
             except Exception as e:
@@ -282,7 +300,7 @@ class PontoController:
                 print(e)
                 buff.pop(buff.index(item))
                 return ConversationHandler.END
-            
+
             buff.pop(buff.index(item))
 
             update.message.reply_text('Dados enviados com sucesso! Caso haja alguma inconsistência favor informar para @renanmgomes ou @igorpittol.',
@@ -308,7 +326,7 @@ class PontoController:
                 chat_id=update.effective_chat.id,
                 text='Resposta inválida, por favor, responda apenas com: ' +
                 '"Sim, confirmar" ou "Não, finalizar"')
-            
+
             update.message.reply_text(
                 'Deseja confirmar a abertura de intervalo?',
                 reply_markup=ReplyKeyboardMarkup(
@@ -324,10 +342,10 @@ class PontoController:
 
         if(update.message.text == 'Sim, confirmar'):
             listUtils.searchAndUpdate(buff,
-                                  update.message.from_user.username,
-                                  update.message.chat.id,
-                                  'fim_intervalo',
-                                  datetime.now(timezone('America/Sao_Paulo')))
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'fim_intervalo',
+                                      datetime.now(timezone('America/Sao_Paulo')))
 
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -340,18 +358,23 @@ class PontoController:
 
                 motorista = session.query(Motorista).filter_by(
                     telegram_user=item.username).first()
-                
+
                 pontoDb = session.query(PontosMotorista).filter_by(
                     motorista_id=motorista.id).order_by(PontosMotorista.id.desc()).first()
-                
-                pontoDb.entrada = item.entrada,
-                pontoDb.intervalo = item.intervalo,
-                pontoDb.fim_intervalo = item.fim_intervalo,
-                pontoDb.saida = item.saida                    
-                
-                session.add(pontoDb)
+
+                intervalo = session.query(IntervalosDePontoMotorista).filter_by(
+                    ponto_motorista_id=pontoDb.id).order_by(IntervalosDePontoMotorista.id.desc()).first()
+
+                intervalo.fim_intervalo = item.fim_intervalo
+
+                session.add(intervalo)
 
                 session.commit()
+
+                intervalos = session.query(IntervalosDePontoMotorista).filter_by(
+                    ponto_motorista_id=pontoDb.id)
+                
+                item.intervalos = intervalos
 
                 session.close()
             except Exception as e:
@@ -361,7 +384,7 @@ class PontoController:
                 print(e)
                 buff.pop(buff.index(item))
                 return ConversationHandler.END
-            
+
             buff.pop(buff.index(item))
 
             update.message.reply_text('Dados enviados com sucesso! Caso haja alguma inconsistência favor informar para @renanmgomes ou @igorpittol.',
@@ -387,7 +410,7 @@ class PontoController:
                 chat_id=update.effective_chat.id,
                 text='Resposta inválida, por favor, responda apenas com: ' +
                 '"Sim, confirmar" ou "Não, finalizar"')
-            
+
             update.message.reply_text(
                 'Deseja confirmar o fechamento de intervalo?',
                 reply_markup=ReplyKeyboardMarkup(
@@ -403,10 +426,10 @@ class PontoController:
 
         if(update.message.text == 'Sim, confirmar'):
             listUtils.searchAndUpdate(buff,
-                                  update.message.from_user.username,
-                                  update.message.chat.id,
-                                  'saida',
-                                  datetime.now(timezone('America/Sao_Paulo')))
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'saida',
+                                      datetime.now(timezone('America/Sao_Paulo')))
 
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -419,18 +442,21 @@ class PontoController:
 
                 motorista = session.query(Motorista).filter_by(
                     telegram_user=item.username).first()
-                
+
                 pontoDb = session.query(PontosMotorista).filter_by(
                     motorista_id=motorista.id).order_by(PontosMotorista.id.desc()).first()
-                
+
                 pontoDb.entrada = item.entrada,
-                pontoDb.intervalo = item.intervalo,
-                pontoDb.fim_intervalo = item.fim_intervalo,
-                pontoDb.saida = item.saida                    
-                
+                pontoDb.saida = item.saida
+
                 session.add(pontoDb)
 
                 session.commit()
+
+                intervalos = session.query(IntervalosDePontoMotorista).filter_by(
+                    ponto_motorista_id=pontoDb.id)
+                
+                item.intervalos = intervalos
 
                 session.close()
             except Exception as e:
@@ -440,7 +466,7 @@ class PontoController:
                 print(e)
                 buff.pop(buff.index(item))
                 return ConversationHandler.END
-            
+
             buff.pop(buff.index(item))
 
             update.message.reply_text('Dados enviados com sucesso! Caso haja alguma inconsistência favor informar para @renanmgomes ou @igorpittol.',
@@ -466,7 +492,7 @@ class PontoController:
                 chat_id=update.effective_chat.id,
                 text='Resposta inválida, por favor, responda apenas com: ' +
                 '"Sim, confirmar" ou "Não, finalizar"')
-            
+
             update.message.reply_text(
                 'Deseja confirmar o fechamento de expediente?',
                 reply_markup=ReplyKeyboardMarkup(

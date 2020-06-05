@@ -13,18 +13,13 @@ class PontosMotorista(Database.Base):
     motorista_id = Column(Integer, ForeignKey('motoristas.id'))
     motorista = relationship('Motorista', back_populates='pontos_motorista')
     entrada = Column('entrada', DateTime(timezone=True))
-    intervalo = Column('intervalo', DateTime(timezone=True))
-    fim_intervalo = Column('fim_intervalo', DateTime(timezone=True))
     saida = Column('saida', DateTime(timezone=True))
+    intervalos_de_ponto_motorista = relationship('IntervalosDePontoMotorista', back_populates='ponto')
 
     def __init__(self,
                  motorista,
                  entrada,
-                 intervalo,
-                 fim_intervalo,
                  saida):
         self.motorista = motorista
         self.entrada = entrada
-        self.intervalo = intervalo
-        self.fim_intervalo = fim_intervalo
         self.saida = saida
