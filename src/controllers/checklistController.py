@@ -206,8 +206,7 @@ class ChecklistController:
             },
 
             fallbacks=[
-                CommandHandler('Cancelar', self.cancel),
-                CommandHandler('cancelar', self.cancel)]
+                CommandHandler('cancelar_abrir_checklist', self.cancel)]
         )
         self.conv_handler_fechamento = ConversationHandler(
             entry_points=[CommandHandler(
@@ -301,7 +300,7 @@ class ChecklistController:
                     Filters.text, self.o_conformidade)]
             },
 
-            fallbacks=[CommandHandler('cancel', self.cancel)]
+            fallbacks=[CommandHandler('cancelar_fechar_checklist', self.cancel)]
         )
 
     def abrir_checklist(self, update, context):

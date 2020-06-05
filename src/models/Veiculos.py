@@ -1,6 +1,7 @@
 from datetime import datetime
+from pytz import timezone
 
-from sqlalchemy import Column, String, Integer, Date, Table, ForeignKey
+from sqlalchemy import Column, String, Integer, Date, Table, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 from database.main import Database
@@ -16,6 +17,7 @@ class Veiculos(Database.Base):
     situacao = Column('situacao', String(255))
     ano_fabricacao = Column('ano_fabricacao', String(255))
     ano_modelo = Column('ano_modelo', String(255))
+    created_at = Column('created_at', DateTime(timezone=True))
 
     def __init__(self,
                  placa,
@@ -34,3 +36,4 @@ class Veiculos(Database.Base):
         self.situacao = situacao
         self.ano_fabricacao = ano_fabricacao
         self.ano_modelo = ano_modelo
+        self.created_at = datetime.now(timezone('America/Sao_Paulo'))

@@ -6,7 +6,6 @@ from sqlalchemy.orm import relationship
 
 from database.main import Database
 
-
 class Registro(Database.Base):
     __tablename__ = 'registros'
     id = Column(Integer, primary_key=True, autoincrement=True)

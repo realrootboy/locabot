@@ -10,7 +10,6 @@ from controllers.controllerUtils import listUtils
 from models.Motorista import Motorista
 from models.PontosMotorista import PontosMotorista
 from models.IntervalosDePontoMotorista import IntervalosDePontoMotorista
-
 from models.regPonto import RegPonto
 
 from database.main import Database
@@ -45,7 +44,7 @@ class PontoController:
                 SAIDA: [MessageHandler(Filters.text, self.saida)]
             },
 
-            fallbacks=[CommandHandler('cancel', self.cancel)]
+            fallbacks=[CommandHandler('cancelar_bater_ponto', self.cancel)]
         )
 
     def registro(self, update, context):

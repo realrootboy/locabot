@@ -1,4 +1,7 @@
-from sqlalchemy import Column, String, Integer, Date, Table, ForeignKey
+from datetime import datetime
+from pytz import timezone
+
+from sqlalchemy import Column, String, Integer, Date, Table, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 from database.main import Database
@@ -11,7 +14,9 @@ class Motorista(Database.Base):
     registros = relationship('Registro', back_populates='motorista')
     checklists = relationship('Checklist', back_populates='motorista')
     pontos_motorista = relationship('PontosMotorista', back_populates='motorista')
+    created_at = Column('created_at', DateTime(timezone=True))
 
     def __init__(self, nome, telegram_user):
         self.nome = nome
         self.telegram_user = telegram_user
+        self.created_at = datetime.now(timezone('America/Sao_Paulo'))

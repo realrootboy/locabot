@@ -45,7 +45,7 @@ class CombustivelController:
                 CONFIRM: [MessageHandler(Filters.text, self.confirm)]
             },
 
-            fallbacks = [CommandHandler('cancel', self.cancel)]
+            fallbacks = [CommandHandler('cancelar_combustivel', self.cancel)]
         )
 
     def registro(self, update, context):
