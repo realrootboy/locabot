@@ -37,3 +37,15 @@ class PontosMotorista:
 # CONTROLE DE ACESSO ADMINISTRATIVO
 # LISTAGEM DOS MOTORISTAS
 # HORAS TRABALHADAS POR MES DO MOTORISTA
+# import datetime
+# import calendar
+# 
+# year = 2012
+# month = 6
+# 
+# num_days = calendar.monthrange(year, month)[1]
+# start_date = datetime.date(year, month, 1)
+# end_date = datetime.date(year, month, num_days)
+# 
+# results = session.query(Event).filter(
+#     and_(Event.date >= start_date, Event.date <= end_date)).all()

@@ -6,33 +6,32 @@ from sqlalchemy.orm import relationship
 
 from database.main import Database
 
-
-class PontosMotorista(Database.Base):
-    __tablename__ = 'pontos_motorista'
+class PontosAdministrativo(Database.Base):
+    __tablename__ = 'pontos_administrativo'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    motorista_id = Column(Integer, ForeignKey('motoristas.id'))
-    motorista = relationship('Motorista', back_populates='pontos_motorista')
+    administrativo_id = Column(Integer, ForeignKey('administrativos.id'))
+    administrativo = relationship('Administrativo', back_populates='pontos_administrativo')
     entrada = Column('entrada', DateTime(timezone=True))
     saida = Column('saida', DateTime(timezone=True))
     horas_trabalhadas = Column('horas_trabalhadas', String(255))
     horas_extra = Column('horas_extra', String(255))
-    intervalos_de_ponto_motorista = relationship('IntervalosDePontoMotorista', back_populates='ponto')
+    intervalos_de_ponto_administrativo = relationship('IntervalosDePontoAdministrativo', back_populates='ponto')
 
     def __init__(self,
-                 motorista,
+                 administrativo,
                  entrada,
                  saida,
                  horas_trabalhadas=None,
                  horas_extra=None):
-        self.motorista = motorista
+        self.administrativo = administrativo
         self.entrada = entrada
         self.saida = saida
         self.horas_trabalhadas = horas_trabalhadas
         self.horas_extra = horas_extra
 
+    
 
-# import datetime
-# from datetime import timedelta
+
 #  
 # datetimeFormat = '%Y-%m-%d %H:%M:%S.%f'
 # date1 = '2016-04-16 10:01:28.585'

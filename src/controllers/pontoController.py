@@ -8,8 +8,13 @@ from pytz import timezone
 from controllers.controllerUtils import listUtils
 
 from models.Motorista import Motorista
+from models.Administrativo import Administrativo
 from models.PontosMotorista import PontosMotorista
+from models.PontosAdministrativo import PontosAdministrativo
 from models.IntervalosDePontoMotorista import IntervalosDePontoMotorista
+from models.IntervalosDePontoAdministrativo import IntervalosDePontoAdministrativo
+from models.EscalasMotorista import EscalasMotorista
+
 from models.regPonto import RegPonto
 
 from database.main import Database
@@ -74,23 +79,35 @@ class PontoController:
             Session = Database.Session
             session = Session()
 
-            motorista = session.query(Motorista).filter_by(
+            administrativo = session.query(Administrativo).filter_by(
                 telegram_user=ponto.username
             ).first()
 
-            if motorista is None:
-                session.close()
-                return ConversationHandler.END
-            else:
-                pontoDb = session.query(PontosMotorista).filter_by(
-                    motorista_id=motorista.id).order_by(PontosMotorista.id.desc()).first()
-                ponto.role = 'motorista'
-                nome = motorista.nome
+            if administrativo is None:
+                motorista = session.query(Motorista).filter_by(
+                    telegram_user=ponto.username
+                ).first()
 
-                if (pontoDb and pontoDb.saida is None):
-                    ponto.entrada = pontoDb.entrada
-                    ponto.saida = pontoDb.saida
-                    ponto.id = pontoDb.id
+                if motorista is None:
+                    session.close()
+                    return ConversationHandler.END
+                else:
+                    pontoDb = session.query(PontosMotorista).filter_by(
+                        motorista_id=motorista.id).order_by(PontosMotorista.id.desc()).first()
+                    ponto.role = 'motorista'
+                    nome = motorista.nome
+            else:
+                pontoDb = session.query(PontosAdministrativo).filter_by(
+                    administrativo_id=administrativo.id).order_by(PontosAdministrativo.id.desc()).first()
+                ponto.role = 'TI'
+                ponto.specific_role = 'Estagiário'
+                nome = administrativo.nome
+            
+            if (pontoDb and pontoDb.saida is None):
+                ponto.entrada = pontoDb.entrada
+                ponto.saida = pontoDb.saida
+                ponto.id = pontoDb.id
+
         except Exception as e:
             print(e)
             update.message.reply_text('Houve um erro ao tentar se conectar com a base de dados! ' +
@@ -99,8 +116,12 @@ class PontoController:
             return ConversationHandler.END
 
         try:
-            intervaloDePonto = session.query(IntervalosDePontoMotorista).filter_by(
-                ponto_motorista_id=pontoDb.id).order_by(IntervalosDePontoMotorista.id.desc()).first()
+            if ponto.role == 'motorista':
+                intervaloDePonto = session.query(IntervalosDePontoMotorista).filter_by(
+                    ponto_motorista_id=pontoDb.id).order_by(IntervalosDePontoMotorista.id.desc()).first()
+            else:
+                intervaloDePonto = session.query(IntervalosDePontoAdministrativo).filter_by(
+                    ponto_administrativo_id=pontoDb.id).order_by(IntervalosDePontoAdministrativo.id.desc()).first()
 
             if (intervaloDePonto and intervaloDePonto.fim_intervalo is None):
                 ponto.intervalo = intervaloDePonto.intervalo
@@ -194,14 +215,26 @@ class PontoController:
                 Session = Database.Session
                 session = Session()
 
-                motorista = session.query(Motorista).filter_by(
-                    telegram_user=item.username).first()
+                if(item.role == 'motorista'):
+                    motorista = session.query(Motorista).filter_by(
+                        telegram_user=item.username).first()
 
-                ponto = PontosMotorista(
-                    motorista,
-                    item.entrada,
-                    item.saida
-                )
+                
+                    ponto = PontosMotorista(
+                        motorista,
+                        item.entrada,
+                        item.said
+                    )
+                
+                else:
+                    administrativo = session.query(Administrativo).filter_by(
+                        telegram_user=item.username).first()
+                    
+                    ponto = PontosAdministrativo(
+                        administrativo,
+                        item.entrada,
+                        item.saida
+                    )
 
                 session.add(ponto)
 
@@ -270,24 +303,40 @@ class PontoController:
                 Session = Database.Session
                 session = Session()
 
-                motorista = session.query(Motorista).filter_by(
-                    telegram_user=item.username).first()
+                if item.role == 'motorista':
+                    motorista = session.query(Motorista).filter_by(
+                        telegram_user=item.username).first()
 
-                pontoDb = session.query(PontosMotorista).filter_by(
-                    motorista_id=motorista.id).order_by(PontosMotorista.id.desc()).first()
+                    pontoDb = session.query(PontosMotorista).filter_by(
+                        motorista_id=motorista.id).order_by(PontosMotorista.id.desc()).first()
 
-                intervalo = IntervalosDePontoMotorista(
-                    pontoDb,
-                    item.intervalo,
-                    item.fim_intervalo
-                )
+                    intervalo = IntervalosDePontoMotorista(
+                        pontoDb,
+                        item.intervalo,
+                        item.fim_intervalo
+                    )
+                else:
+                    administrativo = session.query(Administrativo).filter_by(
+                        telegram_user=item.username).first()
+                    
+                    pontoDb = session.query(PontosAdministrativo).filter_by(
+                        administrativo_id=administrativo.id).order_by(PontosAdministrativo.id.desc()).first()
+                    
+                    intervalo = IntervalosDePontoAdministrativo(
+                        pontoDb,
+                        item.intervalo,
+                        item.fim_intervalo
+                    )
 
                 session.add(intervalo)
-
                 session.commit()
 
-                intervalos = session.query(IntervalosDePontoMotorista).filter_by(
-                    ponto_motorista_id=pontoDb.id)
+                if item.role == 'motorista':
+                    intervalos = session.query(IntervalosDePontoMotorista).filter_by(
+                        ponto_motorista_id=pontoDb.id)
+                else:
+                    intervalos = session.query(IntervalosDePontoAdministrativo).filter_by(
+                        ponto_administrativo_id=pontoDb.id)
                 
                 item.intervalos = intervalos
 
@@ -355,14 +404,24 @@ class PontoController:
                 Session = Database.Session
                 session = Session()
 
-                motorista = session.query(Motorista).filter_by(
-                    telegram_user=item.username).first()
+                if item.role == 'motorista':
+                    motorista = session.query(Motorista).filter_by(
+                        telegram_user=item.username).first()
 
-                pontoDb = session.query(PontosMotorista).filter_by(
-                    motorista_id=motorista.id).order_by(PontosMotorista.id.desc()).first()
+                    pontoDb = session.query(PontosMotorista).filter_by(
+                        motorista_id=motorista.id).order_by(PontosMotorista.id.desc()).first()
 
-                intervalo = session.query(IntervalosDePontoMotorista).filter_by(
-                    ponto_motorista_id=pontoDb.id).order_by(IntervalosDePontoMotorista.id.desc()).first()
+                    intervalo = session.query(IntervalosDePontoMotorista).filter_by(
+                        ponto_motorista_id=pontoDb.id).order_by(IntervalosDePontoMotorista.id.desc()).first()
+                else:
+                    administrativo = session.query(Administrativo).filter_by(
+                        telegram_user=item.username).first()
+                    
+                    pontoDb = session.query(PontosAdministrativo).filter_by(
+                        administrativo_id=administrativo.id).order_by(PontosAdministrativo.id.desc()).first()
+                    
+                    intervalo = session.query(IntervalosDePontoAdministrativo).filter_by(
+                        ponto_administrativo_id=pontoDb.id).order_by(IntervalosDePontoAdministrativo.id.desc()).first()
 
                 intervalo.fim_intervalo = item.fim_intervalo
 
@@ -370,8 +429,12 @@ class PontoController:
 
                 session.commit()
 
-                intervalos = session.query(IntervalosDePontoMotorista).filter_by(
-                    ponto_motorista_id=pontoDb.id)
+                if item.role == 'motorista':
+                    intervalos = session.query(IntervalosDePontoMotorista).filter_by(
+                        ponto_motorista_id=pontoDb.id)
+                else:
+                    intervalos = session.query(IntervalosDePontoAdministrativo).filter_by(
+                        ponto_administrativo_id=pontoDb.id)
                 
                 item.intervalos = intervalos
 
@@ -439,21 +502,44 @@ class PontoController:
                 Session = Database.Session
                 session = Session()
 
-                motorista = session.query(Motorista).filter_by(
-                    telegram_user=item.username).first()
+                if item.role == 'motorista':
+                    motorista = session.query(Motorista).filter_by(
+                        telegram_user=item.username).first()
 
-                pontoDb = session.query(PontosMotorista).filter_by(
-                    motorista_id=motorista.id).order_by(PontosMotorista.id.desc()).first()
+                    pontoDb = session.query(PontosMotorista).filter_by(
+                        motorista_id=motorista.id).order_by(PontosMotorista.id.desc()).first()
+                else:
+                    administrativo = session.query(Administrativo).filter_by(
+                        telegram_user=item.username).first()
+                    
+                    pontoDb = session.query(PontosAdministrativo).filter_by(
+                        administrativo_id=administrativo.id).order_by(PontosAdministrativo.id.desc()).first()
 
                 pontoDb.entrada = item.entrada,
                 pontoDb.saida = item.saida
+                
+                if item.role == 'motorista':
+                    intervalos = session.query(IntervalosDePontoMotorista).filter_by(
+                        ponto_motorista_id=pontoDb.id)
+                else:
+                    intervalos = session.query(IntervalosDePontoAdministrativo).filter_by(
+                        ponto_administrativo_id=pontoDb.id)
 
+                item.calculateHours(intervalos)
+
+                pontoDb.horas_trabalhadas = item.horas_trabalhadas
+                pontoDb.horas_extra = item.horas_extra 
+                
                 session.add(pontoDb)
 
                 session.commit()
 
-                intervalos = session.query(IntervalosDePontoMotorista).filter_by(
-                    ponto_motorista_id=pontoDb.id)
+                if item.role == 'motorista':
+                    intervalos = session.query(IntervalosDePontoMotorista).filter_by(
+                        ponto_motorista_id=pontoDb.id)
+                else:
+                    intervalos = session.query(IntervalosDePontoAdministrativo).filter_by(
+                        ponto_administrativo_id=pontoDb.id)
                 
                 item.intervalos = intervalos
 

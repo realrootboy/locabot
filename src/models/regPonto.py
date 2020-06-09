@@ -18,7 +18,7 @@ class RegPonto:
             return self.specific_role
 
     def intervalosToStr(self):
-        if self.intervalos is None:
+        if (self.intervalos is None) or (self.intervalos.count() == 0):
             return ''
         
         string = '\n'
@@ -26,7 +26,7 @@ class RegPonto:
             string = (string + 'INTERVALO ' + str(index + 1) + '\n' + 
                 '*Inicio do intervalo:* ' + tzToHumans(item.intervalo) + '\n' +
                 '*Fim do intervalo:* ' + tzToHumans(item.fim_intervalo) + '\n')
-        
+
         return string
 
     def __init__(self,
@@ -39,7 +39,8 @@ class RegPonto:
                  fim_intervalo=None,
                  saida=None,
                  id=-1,
-                 intervalos = None):
+                 intervalos = None,
+                 horas_trabalhadas = None):
         self.username = username
         self.chat_id = chat_id
         self.role = role
@@ -50,6 +51,7 @@ class RegPonto:
         self.saida = saida
         self.id = id
         self.intervalos = None
+        self.horas_trabalhadas = horas_trabalhadas
 
     def stringData(self):
         return('*Usuário:* ' + self.username + '\n' +
@@ -57,4 +59,26 @@ class RegPonto:
                '*Função:* ' + self.getFilteredRole() + '\n\n' +
                '*Entrada:* ' + tzToHumans(self.entrada) + '\n' +
                self.intervalosToStr() + '\n' +
-               '*Saida:* ' + tzToHumans(self.saida))
+               '*Saida:* ' + tzToHumans(self.saida) + 
+               self.getHorasTrabalhadas())
+    
+    def getHorasTrabalhadas(self):
+        if self.horas_trabalhadas:
+            return ('\n\n========\n\n' + '*Horas Trabalhadas:* ' + self.horas_trabalhadas)
+        return ''
+
+    def calculateHours(self, intervalos=None):
+        diff = self.saida - self.entrada
+        seconds = diff.total_seconds()
+
+        if intervalos:
+            for index, item in enumerate(intervalos):
+                print((item.fim_intervalo - item.intervalo).total_seconds())
+                seconds -= (item.fim_intervalo - item.intervalo).total_seconds()
+
+        seconds = seconds % (24 * 3600) 
+        hour = seconds // 3600
+        seconds %= 3600
+        minutes = seconds // 60
+        seconds %= 60
+        self.horas_trabalhadas = "%d:%02d:%02d" % (hour, minutes, seconds) 
