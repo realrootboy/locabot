@@ -1,7 +1,5 @@
 #!/bin/bash
 
-docker start locatrans
-
 value="DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 
 docker exec locatrans psql -U postgres -d locabot -c "${value}"
@@ -12,7 +10,7 @@ value=""
 
 for f in migrations/*.sql; 
 do 
-  echo "Processing $f file..";
+  echo "Processing file: $f";
   value+=$(<$f) 
 done
 

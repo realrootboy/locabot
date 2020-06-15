@@ -99,8 +99,7 @@ class PontoController:
             else:
                 pontoDb = session.query(PontosAdministrativo).filter_by(
                     administrativo_id=administrativo.id).order_by(PontosAdministrativo.id.desc()).first()
-                ponto.role = 'TI'
-                ponto.specific_role = 'Estagiário'
+                ponto.role = administrativo.role
                 nome = administrativo.nome
             
             if (pontoDb and pontoDb.saida is None):
@@ -521,9 +520,11 @@ class PontoController:
                 if item.role == 'motorista':
                     intervalos = session.query(IntervalosDePontoMotorista).filter_by(
                         ponto_motorista_id=pontoDb.id)
+                    item.horas_extra = 0
                 else:
                     intervalos = session.query(IntervalosDePontoAdministrativo).filter_by(
                         ponto_administrativo_id=pontoDb.id)
+                    item.horas_extra = 0
 
                 item.calculateHours(intervalos)
 

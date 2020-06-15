@@ -11,6 +11,7 @@ class Administrativo(Database.Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     nome = Column('nome', String(255))
     telegram_user = Column('telegram_user', String(255))
+    setor = Column('setor', String(255))
     role = Column('role', String(255))
     pontos_administrativo = relationship('PontosAdministrativo', back_populates='administrativo')
     created_at = Column('created_at', DateTime(timezone=True))
@@ -18,5 +19,6 @@ class Administrativo(Database.Base):
     def __init__(self, nome, telegram_user, role):
         self.nome = nome
         self.telegram_user = telegram_user
+        self.setor = setor
         self.role = role
         self.created_at = datetime.now(timezone('America/Sao_Paulo'))

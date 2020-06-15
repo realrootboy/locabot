@@ -12,10 +12,7 @@ def tzToHumans(time):
 class RegPonto:
 
     def getFilteredRole(self):
-        if(self.role == 'motorista'):
-            return self.role
-        else:
-            return self.specific_role
+        return self.role
 
     def intervalosToStr(self):
         if (self.intervalos is None) or (self.intervalos.count() == 0):

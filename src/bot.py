@@ -38,6 +38,7 @@ class Locatransbot:
         self.dp.add_handler(self.checklist.conv_handler_fechamento)
         self.dp.add_handler(self.ponto.conv_handler)
         self.dp.add_handler(self.ponto_views.conv_handler)
+        self.dp.add_handler(self.ponto_views.disponiveis)
 
     def start(self):
         self.dp.add_error_handler(self.error)

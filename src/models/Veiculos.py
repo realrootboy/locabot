@@ -10,6 +10,7 @@ class Veiculos(Database.Base):
     __tablename__ = 'veiculos'
     id = Column(Integer, primary_key=True, autoincrement=True)
     placa = Column('placa', String(255))
+    placa_conversao = Column('placa_conversao', String(255))
     marca = Column('marca', String(255))
     modelo = Column('modelo', String(255))
     chassis = Column('chassis', String(255))
@@ -21,6 +22,7 @@ class Veiculos(Database.Base):
 
     def __init__(self,
                  placa,
+                 placa_conversao,
                  marca,
                  modelo,
                  chassis,
@@ -29,6 +31,7 @@ class Veiculos(Database.Base):
                  ano_fabricacao,
                  ano_modelo):
         self.placa = placa
+        self.placa_conversao = placa_conversao
         self.marca = marca
         self.modelo = modelo
         self.chassis = chassis
