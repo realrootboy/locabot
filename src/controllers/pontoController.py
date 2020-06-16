@@ -19,11 +19,13 @@ from models.regPonto import RegPonto
 
 from database.main import Database
 
-OPTS, ENTRADA, INTERVALO, FIM_INTERVALO, SAIDA = range(5)
+OPTS, ENTRADA, INTERVALO, FIM_INTERVALO, SAIDA, REABERTURA = range(6)
 buff = list()
 
 
 def handleOpts(ponto):
+    if(ponto.already):
+        return [['Reabrir expediente']]
     if(ponto.entrada is None):
         return [['Abrir expediente']]
     elif(ponto.intervalo is None):
@@ -46,7 +48,8 @@ class PontoController:
                 ENTRADA: [MessageHandler(Filters.text, self.entrada)],
                 INTERVALO: [MessageHandler(Filters.text, self.intervalo)],
                 FIM_INTERVALO: [MessageHandler(Filters.text, self.fim_intervalo)],
-                SAIDA: [MessageHandler(Filters.text, self.saida)]
+                SAIDA: [MessageHandler(Filters.text, self.saida)],
+                REABERTURA: [MessageHandler(Filters.text, self.reabertura)]
             },
 
             fallbacks=[CommandHandler('cancelar_bater_ponto', self.cancel)]
@@ -106,6 +109,12 @@ class PontoController:
                 ponto.entrada = pontoDb.entrada
                 ponto.saida = pontoDb.saida
                 ponto.id = pontoDb.id
+                ponto.already = False
+            elif (pontoDb and pontoDb.saida) and (pontoDb.entrada.day == datetime.now(timezone('America/Sao_Paulo')).day):
+                ponto.entrada = pontoDb.entrada
+                ponto.saida = pontoDb.saida
+                ponto.id = pontoDb.id
+                ponto.already = True
 
         except Exception as e:
             print(e)
@@ -126,12 +135,15 @@ class PontoController:
                 ponto.intervalo = intervaloDePonto.intervalo
                 ponto.fim_intervalo = intervaloDePonto.fim_intervalo
 
+
         except Exception as e:
             print(e)
 
         session.close()
 
         replyKeyboard = handleOpts(ponto)
+
+
         buff.append(ponto)
 
         update.message.reply_text(
@@ -179,6 +191,14 @@ class PontoController:
             )
 
             return SAIDA
+        elif(update.message.text == 'Reabrir expediente'):
+            update.message.reply_text(
+                'Deseja confirmar a reabertura de expediente?',
+                reply_markup=ReplyKeyboardMarkup(
+                    [['Sim, confirmar'], ['Não, finalizar']], one_time_keyboard=True)
+            )
+
+            return REABERTURA
         else:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -586,6 +606,112 @@ class PontoController:
             )
 
             return SAIDA
+
+    def reabertura(self, update, context):
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+
+        if(update.message.text == 'Sim, confirmar'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'fim_intervalo',
+                                      datetime.now(timezone('America/Sao_Paulo')))
+
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Salvando dados...'
+            )
+
+            try:
+                Session = Database.Session
+                session = Session()
+
+                if item.role == 'motorista':
+                    motorista = session.query(Motorista).filter_by(
+                        telegram_user=item.username).first()
+
+                    pontoDb = session.query(PontosMotorista).filter_by(
+                        motorista_id=motorista.id).order_by(PontosMotorista.id.desc()).first()
+
+                    intervalo = IntervalosDePontoMotorista(
+                        pontoDb,
+                        item.fim_intervalo,
+                        None
+                    )
+                else:
+                    administrativo = session.query(Administrativo).filter_by(
+                        telegram_user=item.username).first()
+                    
+                    pontoDb = session.query(PontosAdministrativo).filter_by(
+                        administrativo_id=administrativo.id).order_by(PontosAdministrativo.id.desc()).first()
+                    
+                    intervalo = IntervalosDePontoAdministrativo(
+                        pontoDb,
+                        pontoDb.saida,
+                        item.fim_intervalo
+                    )
+
+                pontoDb.saida = None
+
+                session.add(intervalo)
+                session.add(pontoDb)
+                session.commit()
+
+                if item.role == 'motorista':
+                    intervalos = session.query(IntervalosDePontoMotorista).filter_by(
+                        ponto_motorista_id=pontoDb.id)
+                else:
+                    intervalos = session.query(IntervalosDePontoAdministrativo).filter_by(
+                        ponto_administrativo_id=pontoDb.id)
+                
+                item.intervalos = intervalos
+
+                session.close()
+            except Exception as e:
+                update.message.reply_text('Houve um erro ao tentar salvar! ' +
+                                          'O erro foi reportado, tente novamente mais tarde.',
+                                          reply_markup=ReplyKeyboardRemove())
+                print(e)
+                buff.pop(buff.index(item))
+                return ConversationHandler.END
+
+            buff.pop(buff.index(item))
+            item.saida = None
+
+            update.message.reply_text('Dados enviados com sucesso! Caso haja alguma inconsistência favor informar para @renanmgomes ou @igorpittol.',
+                                      reply_markup=ReplyKeyboardRemove())
+
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text=item.stringData(),
+                parse_mode=ParseMode.MARKDOWN
+            )
+
+            return ConversationHandler.END
+        elif(update.message.text == 'Não, finalizar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Operação cancelada!')
+
+            buff.pop(buff.index(item))
+
+            return ConversationHandler.END
+        else:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Resposta inválida, por favor, responda apenas com: ' +
+                '"Sim, confirmar" ou "Não, finalizar"')
+
+            update.message.reply_text(
+                'Deseja confirmar a reabertura de expediente?',
+                reply_markup=ReplyKeyboardMarkup(
+                    [['Sim, confirmar'], ['Não, finalizar']], one_time_keyboard=True)
+            )
+
+            return REABERTURA
+
 
     def cancel(self, update, context):
         item = listUtils.searchAndGetItem(buff,

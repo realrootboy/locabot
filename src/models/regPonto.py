@@ -37,7 +37,8 @@ class RegPonto:
                  saida=None,
                  id=-1,
                  intervalos = None,
-                 horas_trabalhadas = None):
+                 horas_trabalhadas = None,
+                 already = False):
         self.username = username
         self.chat_id = chat_id
         self.role = role
@@ -49,6 +50,7 @@ class RegPonto:
         self.id = id
         self.intervalos = None
         self.horas_trabalhadas = horas_trabalhadas
+        self.already = already
 
     def stringData(self):
         return('*Usuário:* ' + self.username + '\n' +
