@@ -41,9 +41,17 @@ class Locatransbot:
         self.dp.add_handler(self.ponto_views.disponiveis)
 
     def start(self):
+        self.dp.add_handler(CommandHandler('start', self.startCommand))
         self.dp.add_error_handler(self.error)
         self.updater.start_polling()
         self.updater.idle()
+
+    def startCommand(self, update, context):
+        response_message = "Interação com o bot ativada! Seja bem-vindo! =^._.^="
+        context.bot.send_message(
+            chat_id=update.message.chat_id,
+            text=response_message
+        )
 
     def error(self, update, context):
         logger.warning('Update "%s" caused error "%s"', update, context.error)
