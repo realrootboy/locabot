@@ -2,18 +2,41 @@ from telegram import (ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode)
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
                           ConversationHandler)
 
+from controllers.controllerUtils import listUtils
+
 from models.Motorista import Motorista
 from models.PontosMotorista import PontosMotorista
 from models.IntervalosDePontoMotorista import IntervalosDePontoMotorista
-from models.regPonto import RegPonto
 from models.Administrativo import Administrativo
 from models.PontosAdministrativo import PontosAdministrativo
+from models.IntervalosDePontoAdministrativo import IntervalosDePontoAdministrativo
+
+from models.regPdfPonto import RegPdfPonto
 
 from database.main import Database
+from sqlalchemy.sql import func
+
+from utils import CalendarUtils
+from utils.pdfFactory import PdfFactory
+
+from datetime import datetime
+from pytz import timezone
+
+import os
+
+
+MONTHS = {'jan': 1, 'fev': 2, 'mar': 3, 'abr': 4,  'mai': 5,  'jun': 6,
+          'jul': 7, 'ago': 8, 'set': 9, 'out': 10, 'nov': 11, 'dez': 12}
+FULL_MONTHS = {'janeiro': 1,  'fevereiro': 2, u'março': 3,    'abril': 4,
+               'maio': 5,     'junho': 6,     'julho': 7,     'agosto': 8,
+               'setembro': 9, 'outubro': 10,  'novembro': 11, 'dezembro': 12}
+
+buff = list()
 
 ESCOLHA_ROLE = 1
 ESCOLHA_ADMINISTRATIVO = 2
 ESCOLHA_MOTORISTA = 3
+PERIODO_ENVIO = 4
 
 class PontosMotorista:
     def __init__(self, logger):
@@ -24,7 +47,8 @@ class PontosMotorista:
             states={
                 ESCOLHA_ROLE: [MessageHandler(Filters.text, self.escolha_role)],
                 ESCOLHA_ADMINISTRATIVO: [MessageHandler(Filters.text, self.escolha_administrativo)],
-                ESCOLHA_MOTORISTA: [MessageHandler(Filters.text, self.escolha_motorista)]
+                ESCOLHA_MOTORISTA: [MessageHandler(Filters.text, self.escolha_motorista)],
+                PERIODO_ENVIO: [MessageHandler(Filters.text, self.periodo_envio)]
             },
 
             fallbacks=[CommandHandler('cancelar_info_ponto', self.cancel)]
@@ -73,11 +97,11 @@ class PontosMotorista:
     def registro(self, update, context):
         if update.message.from_user.username is None:
             update.message.reply_text(
-                'Não é possível realizar a consulta de folha de ponto sem um nome de usuário cadastrado',
+                'Não é possível realizar o cadastro de ponto sem um nome de usuário cadastrado.',
                 reply_markup=ReplyKeyboardRemove()
             )
             return ConversationHandler.END
-        
+
         try:
             Session = Database.Session
             session = Session()
@@ -102,17 +126,180 @@ class PontosMotorista:
 
         update.message.reply_text(
             'Olá, ' + administrativo.nome + '. Por favor, escolha o setor de consulta.',
-            reply_markup=ReplyKeyboardMarkup([['Administrativo', 'Motorista']], one_time_keyboard=True))
+            reply_markup=ReplyKeyboardMarkup([['Administrativo'], ['Motorista'], ['Cancelar']], one_time_keyboard=True))
 
         session.close()
 
         return ESCOLHA_ROLE
     
     def escolha_role(self, update, context):
+        if(update.message.text == 'Administrativo'):
+            Session = Database.Session
+            session = Session()
+
+            adms_reply = []
+
+            administrativos = session.query(Administrativo).order_by(Administrativo.nome.asc())
+
+            for administrativo in administrativos:
+                adms_reply.append([administrativo.nome + ' @' + administrativo.telegram_user])
+
+            update.message.reply_text(
+                'Por favor, informe o funcionário.',
+                reply_markup=ReplyKeyboardMarkup(adms_reply, one_time_keyboard=True))
+
+            session.close()
+
+            return ESCOLHA_ADMINISTRATIVO
+        elif(update.message.text == 'Motorista'):
+            update.message.reply_text(
+                'Ainda não implementado!',
+                reply_markup=ReplyKeyboardRemove())
+
+            return ConversationHandler.END
+        elif(update.message.text == 'Cancelar'):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Operação cancelada!')
+
+            return ConversationHandler.END
+        else:
+            reply_keyboard2 = [['Administrativo'], ['Motorista'], ['Cancelar']]
+            update.message.reply_text(
+                'Opção inválida, por favor responda apenas: "Administrativo", "Motorista" ou "Cancelar".',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True)
+            )
+
         return
 
     def escolha_administrativo(self, update, context):
-        return
+        user = update.message.from_user
+
+        Session = Database.Session
+        session = Session()
+
+        try:
+            nome, usuario_enviado = update.message.text.split(' @')
+            if usuario_enviado == '':
+                update.message.reply_text('Usuário não cadastrado, conversa encerrada.',
+                    reply_markup=ReplyKeyboardRemove())
+
+                return ConversationHandler.END
+        except:
+            nome, usuario_enviado = ['xxx', 'xxx']
+
+        administrativo = session.query(Administrativo).filter_by(
+            telegram_user=usuario_enviado).first()
+
+        if administrativo is None:
+            Session = Database.Session
+            session = Session()
+
+            adms_reply = []
+
+            administrativos = session.query(Administrativo).order_by(Administrativo.nome.asc())
+
+            for administrativo in administrativos:
+                adms_reply.append([administrativo.nome + ' @' + administrativo.telegram_user])
+
+            update.message.reply_text(
+                'Funcionário ' + update.message.text + ' inválido ou não encontrado na base de dados. ' +
+                'Por favor, informe novamente o funcionário.',
+                reply_markup=ReplyKeyboardMarkup(adms_reply, one_time_keyboard=True))
+
+            session.close()
+
+            return ESCOLHA_ADMINISTRATIVO
+
+
+
+        # buff.append(pdfPonto)
+        
+        administrativo = session.query(Administrativo).filter_by(
+                        telegram_user=usuario_enviado).first()
+
+        adm_intervalo = session.query(
+            func.min(PontosAdministrativo.entrada).label("min_date"),
+            func.max(PontosAdministrativo.saida).label("max_date")).filter_by(
+                administrativo_id=administrativo.id
+            )
+
+        res = adm_intervalo.one()
+        min_date = res.min_date
+        max_date = res.max_date
+
+        periodos = CalendarUtils.periodosRange(min_date.month, min_date.year, max_date.month, max_date.year)
+
+        if not periodos:
+            update.message.reply_text('Não há registros.', reply_markup=ReplyKeyboardRemove())
+            return ConversationHandler.END
+
+        pdfPonto = RegPdfPonto(
+            username=update.message.from_user.username,
+            chat_id=update.message.chat_id,
+            role_send='administrativo',
+            username_send=usuario_enviado,
+            name_send=nome,
+            periodos=periodos
+        )
+
+        buff.append(pdfPonto)
+
+        session.close()
+        update.message.reply_text('Selecione o período:', reply_markup=ReplyKeyboardMarkup(periodos, one_time_keyboard=True))
+
+        return PERIODO_ENVIO
+
+
+    def periodo_envio(self, update, context):
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+
+        if not [update.message.text] in item.periodos:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='Período inválido, por favor, informe novamente.')
+
+            update.message.reply_text('Selecione o período:', reply_markup=ReplyKeyboardMarkup(item.periodos, one_time_keyboard=True))
+
+            return PERIODO_ENVIO
+
+        Session = Database.Session
+        session = Session()
+
+        administrativo = session.query(Administrativo).filter_by(
+                        telegram_user=item.username_send).first()
+
+        month, year = update.message.text.split(' ')
+
+        range_intervalo = CalendarUtils.getRangeByFullMonth(month, year)
+
+        adm_ponto = session.query(PontosAdministrativo).filter_by(
+                administrativo_id=administrativo.id,
+            ).filter(
+                PontosAdministrativo.entrada >= range_intervalo[0],
+                PontosAdministrativo.saida <= range_intervalo[1]
+            )
+
+        clock_ins = []
+
+        for ponto in adm_ponto:
+            item.acumulateHorasTrabalhadas(ponto.horas_trabalhadas)
+            intervalos = session.query(IntervalosDePontoAdministrativo).filter_by(
+                ponto=ponto)
+            clock_ins.append(item.pontoToArrayFormatted(ponto, intervalos))
+
+        factory = PdfFactory('media/' + item.media_dir )
+
+        buff.pop(buff.index(item))
+
+        fileToSend = factory.sheetHours(month, year, administrativo, clock_ins, item.horas_trabalhadas_send, 'N/A')
+        context.bot.sendDocument(chat_id=item.chat_id, document=fileToSend)
+       
+        os.unlink(fileToSend.name)
+
+        return ConversationHandler.END
 
     def escolha_motorista(self, update, context):
         return
