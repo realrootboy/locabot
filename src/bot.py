@@ -2,7 +2,7 @@ from controllers.pontoController import PontoController
 from controllers.checklistController import ChecklistController
 from controllers.combustivelController import CombustivelController
 
-from views.PontosMotorista import PontosMotorista
+from views.PontosExport import PontosExport
 
 from configs.bot import config
 from telegram import (ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode)
@@ -30,7 +30,7 @@ class Locatransbot:
         self.ponto = PontoController(logger)
     
     def loadViews(self):
-        self.ponto_views = PontosMotorista(logger)
+        self.ponto_views = PontosExport(logger)
 
     def loadHandlers(self):
         self.dp.add_handler(self.combustivel.conv_handler)

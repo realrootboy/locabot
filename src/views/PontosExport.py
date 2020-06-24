@@ -24,13 +24,6 @@ from pytz import timezone
 
 import os
 
-
-MONTHS = {'jan': 1, 'fev': 2, 'mar': 3, 'abr': 4,  'mai': 5,  'jun': 6,
-          'jul': 7, 'ago': 8, 'set': 9, 'out': 10, 'nov': 11, 'dez': 12}
-FULL_MONTHS = {'janeiro': 1,  'fevereiro': 2, u'março': 3,    'abril': 4,
-               'maio': 5,     'junho': 6,     'julho': 7,     'agosto': 8,
-               'setembro': 9, 'outubro': 10,  'novembro': 11, 'dezembro': 12}
-
 buff = list()
 
 ESCOLHA_ROLE = 1
@@ -38,7 +31,7 @@ ESCOLHA_ADMINISTRATIVO = 2
 ESCOLHA_MOTORISTA = 3
 PERIODO_ENVIO = 4
 
-class PontosMotorista:
+class PontosExport:
     def __init__(self, logger):
         self.logger = logger
         self.conv_handler = ConversationHandler(
@@ -187,6 +180,11 @@ class PontosMotorista:
                 return ConversationHandler.END
         except:
             nome, usuario_enviado = ['xxx', 'xxx']
+
+        if (not (update.message.from_user.username == usuario_enviado)) and (not (update.message.from_user.username == 'igorpittol')):
+            update.message.reply_text('Operação não permitida/Privilégios insuficientes.')
+
+            return ConversationHandler.END
 
         administrativo = session.query(Administrativo).filter_by(
             telegram_user=usuario_enviado).first()
