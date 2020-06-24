@@ -221,12 +221,15 @@ class PontosExport:
             func.max(PontosAdministrativo.saida).label("max_date")).filter_by(
                 administrativo_id=administrativo.id
             )
-
-        res = adm_intervalo.one()
-        min_date = res.min_date
-        max_date = res.max_date
-
-        periodos = CalendarUtils.periodosRange(min_date.month, min_date.year, max_date.month, max_date.year)
+        try: 
+            res = adm_intervalo.one()
+            min_date = res.min_date
+            max_date = res.max_date
+    
+            periodos = CalendarUtils.periodosRange(min_date.month, min_date.year, max_date.month, max_date.year)
+        except:
+            update.message.reply_text('Não há registros.', reply_markup=ReplyKeyboardRemove())
+            return ConversationHandler.END
 
         if not periodos:
             update.message.reply_text('Não há registros.', reply_markup=ReplyKeyboardRemove())
@@ -278,6 +281,8 @@ class PontosExport:
             ).filter(
                 PontosAdministrativo.entrada >= range_intervalo[0],
                 PontosAdministrativo.saida <= range_intervalo[1]
+            ).order_by(
+                PontosAdministrativo.entrada.asc()
             )
 
         clock_ins = []
