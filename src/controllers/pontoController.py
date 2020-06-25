@@ -130,12 +130,9 @@ class PontoController:
             else:
                 intervaloDePonto = session.query(IntervalosDePontoAdministrativo).filter_by(
                     ponto_administrativo_id=pontoDb.id).order_by(IntervalosDePontoAdministrativo.id.desc()).first()
-
             if (intervaloDePonto and intervaloDePonto.fim_intervalo is None):
                 ponto.intervalo = intervaloDePonto.intervalo
                 ponto.fim_intervalo = intervaloDePonto.fim_intervalo
-
-
         except Exception as e:
             print(e)
 

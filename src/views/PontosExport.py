@@ -72,7 +72,10 @@ class PontosExport:
                 saida=None)
 
             for item in adm_disponiveis:
-                disponiveis += item.administrativo.nome + ' @' + item.administrativo.telegram_user +'\n'
+                intervalo = session.query(IntervalosDePontoAdministrativo).filter_by(
+                    ponto=item, fim_intervalo=None).order_by(IntervalosDePontoAdministrativo.id.desc()).first()
+                if intervalo is None:
+                    disponiveis += item.administrativo.nome + ' @' + item.administrativo.telegram_user +'\n'
 
         except Exception as e:
             print(e)
