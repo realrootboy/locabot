@@ -13,13 +13,23 @@ REV_FULL_MONTHS = ['',
 				   'setembro', 'outubro', 'novembro', 'dezembro']
 
 def getRangeByFullMonth(month, year):
-	try:
-		range = (year+'-'+str(FULL_MONTHS[month])+'-1',
-				 year+'-'+str(FULL_MONTHS[month])+'-'+str(calendar.monthrange(int(year), FULL_MONTHS[month])[1]))
-		return range
-	except Exception as e:
-		print(e)
-		return None
+    try:
+        last_year = int(year)
+        last_month = FULL_MONTHS[month]
+		
+        if(FULL_MONTHS[month] == 12):
+            last_year = last_year + 1
+            last_month = 1
+        else:
+            last_month = last_month + 1
+		
+        range = (year+'-'+str(FULL_MONTHS[month])+'-1',
+                 str(last_year)+'-'+str(last_month)+'-1')
+
+        return range
+    except Exception as e:
+        print(e)
+        return None
 
 def periodosRange(start_month, start_year, end_month, end_year):
 	if end_year < start_year:

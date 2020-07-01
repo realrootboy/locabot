@@ -283,7 +283,7 @@ class PontosExport:
                 administrativo_id=administrativo.id,
             ).filter(
                 PontosAdministrativo.entrada >= range_intervalo[0],
-                PontosAdministrativo.saida <= range_intervalo[1]
+                PontosAdministrativo.entrada <= range_intervalo[1]
             ).order_by(
                 PontosAdministrativo.entrada.asc()
             )
