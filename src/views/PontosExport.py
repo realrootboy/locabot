@@ -276,14 +276,15 @@ class PontosExport:
                         telegram_user=item.username_send).first()
 
         month, year = update.message.text.split(' ')
-
+        
         range_intervalo = CalendarUtils.getRangeByFullMonth(month, year)
 
         adm_ponto = session.query(PontosAdministrativo).filter_by(
                 administrativo_id=administrativo.id,
             ).filter(
                 PontosAdministrativo.entrada >= range_intervalo[0],
-                PontosAdministrativo.entrada <= range_intervalo[1]
+                PontosAdministrativo.entrada <= range_intervalo[1],
+                PontosAdministrativo.saida != None
             ).order_by(
                 PontosAdministrativo.entrada.asc()
             )
