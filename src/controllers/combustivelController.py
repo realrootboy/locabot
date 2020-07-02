@@ -497,6 +497,12 @@ class CombustivelController:
 
                 session.close()
             except Exception as e:
+                try:
+                    context.bot.send_message(
+                        chat_id=445181781,
+                        text=str(e))
+                except:
+                    print('err in send')
                 update.message.reply_text('Houve um erro ao tentar salvar! ' +
                                           'O erro foi reportado, tente novamente mais tarde.',
                                           reply_markup=ReplyKeyboardRemove())
