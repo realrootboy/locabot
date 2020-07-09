@@ -3103,7 +3103,7 @@ class ChecklistController:
             else:
                 context.bot.send_message(
                     chat_id=update.effective_chat.id,
-                    text=item.dadosAbertura(), parse_mode=ParseMode.MARKDOWN)
+                    text=item.dadosFechamento(), parse_mode=ParseMode.MARKDOWN)
                 context.bot.send_message(
                     chat_id=update.effective_chat.id,
                     text=item.dadosMecanica(), parse_mode=ParseMode.MARKDOWN)
