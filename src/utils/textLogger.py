@@ -3,7 +3,7 @@ from pytz import timezone
 
 default_path = 'logs/'
 
-def logMsg(msg):
+def log(msg):
     F = open(default_path + getDailyFilename(),'a')
     F.write('[' + getFormattedTime() + ']\n')
     F.write('LOG: ' + msg + '\n\n')

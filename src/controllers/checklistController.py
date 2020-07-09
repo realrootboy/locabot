@@ -17,6 +17,8 @@ from models.Veiculos import Veiculos
 
 from models.regChecklist import RegChecklist
 
+from utils import textLogger
+
 from database.main import Database
 
 PLACA = -3
@@ -579,6 +581,7 @@ class ChecklistController:
                                           'O erro foi reportado, tente novamente mais tarde.',
                                           reply_markup=ReplyKeyboardRemove())
                 print(e)
+                textLogger.log('Checklist - ' + str(e))
                 buff.pop(buff.index(item))
                 return ConversationHandler.END
 
@@ -3005,6 +3008,7 @@ class ChecklistController:
                                           'O erro foi reportado, tente novamente mais tarde.',
                                           reply_markup=ReplyKeyboardRemove())
                 print(e)
+                textLogger.log('Checklist - ' + str(e))
                 buff.pop(buff.index(item))
                 return ConversationHandler.END
 

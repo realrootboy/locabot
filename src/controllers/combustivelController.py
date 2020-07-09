@@ -14,6 +14,8 @@ from models.Motorista import Motorista
 from models.Registro import Registro
 from models.Veiculos import Veiculos
 
+from utils import textLogger
+
 from database.main import Database
 
 
@@ -128,6 +130,7 @@ class CombustivelController:
                 placas.append([veiculo.placa])
 
             session.close()
+
         except:
             update.message.reply_text('Houve um erro ao tentar se conectar com a base de dados! ' +
                                           'O erro foi reportado, tente novamente mais tarde.',
@@ -506,6 +509,7 @@ class CombustivelController:
                 update.message.reply_text('Houve um erro ao tentar salvar! ' +
                                           'O erro foi reportado, tente novamente mais tarde.',
                                           reply_markup=ReplyKeyboardRemove())
+                textLogger.log('Combustivel - ' + str(e))
                 print(e)
                 buff.pop(buff.index(item))
                 return ConversationHandler.END
