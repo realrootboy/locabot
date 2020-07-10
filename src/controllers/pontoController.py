@@ -17,6 +17,8 @@ from models.EscalasMotorista import EscalasMotorista
 
 from models.regPonto import RegPonto
 
+from utils import textLogger
+
 from database.main import Database
 
 OPTS, ENTRADA, INTERVALO, FIM_INTERVALO, SAIDA, REABERTURA = range(6)
@@ -96,12 +98,12 @@ class PontoController:
                     return ConversationHandler.END
                 else:
                     pontoDb = session.query(PontosMotorista).filter_by(
-                        motorista_id=motorista.id).order_by(PontosMotorista.id.desc()).first()
+                        motorista_id=motorista.id).order_by(PontosMotorista.entrada.desc()).first()
                     ponto.role = 'motorista'
                     nome = motorista.nome
             else:
                 pontoDb = session.query(PontosAdministrativo).filter_by(
-                    administrativo_id=administrativo.id).order_by(PontosAdministrativo.id.desc()).first()
+                    administrativo_id=administrativo.id).order_by(PontosAdministrativo.entrada.desc()).first()
                 ponto.role = administrativo.role
                 nome = administrativo.nome
             
@@ -126,10 +128,10 @@ class PontoController:
         try:
             if ponto.role == 'motorista':
                 intervaloDePonto = session.query(IntervalosDePontoMotorista).filter_by(
-                    ponto_motorista_id=pontoDb.id).order_by(IntervalosDePontoMotorista.id.desc()).first()
+                    ponto_motorista_id=pontoDb.id).order_by(IntervalosDePontoMotorista.intervalo.desc()).first()
             else:
                 intervaloDePonto = session.query(IntervalosDePontoAdministrativo).filter_by(
-                    ponto_administrativo_id=pontoDb.id).order_by(IntervalosDePontoAdministrativo.id.desc()).first()
+                    ponto_administrativo_id=pontoDb.id).order_by(IntervalosDePontoAdministrativo.intervalo.desc()).first()
             if (intervaloDePonto and intervaloDePonto.fim_intervalo is None):
                 ponto.intervalo = intervaloDePonto.intervalo
                 ponto.fim_intervalo = intervaloDePonto.fim_intervalo
@@ -324,7 +326,7 @@ class PontoController:
                         telegram_user=item.username).first()
 
                     pontoDb = session.query(PontosMotorista).filter_by(
-                        motorista_id=motorista.id).order_by(PontosMotorista.id.desc()).first()
+                        motorista_id=motorista.id).order_by(PontosMotorista.entrada.desc()).first()
 
                     intervalo = IntervalosDePontoMotorista(
                         pontoDb,
@@ -336,7 +338,7 @@ class PontoController:
                         telegram_user=item.username).first()
                     
                     pontoDb = session.query(PontosAdministrativo).filter_by(
-                        administrativo_id=administrativo.id).order_by(PontosAdministrativo.id.desc()).first()
+                        administrativo_id=administrativo.id).order_by(PontosAdministrativo.entrada.desc()).first()
                     
                     intervalo = IntervalosDePontoAdministrativo(
                         pontoDb,
@@ -425,19 +427,19 @@ class PontoController:
                         telegram_user=item.username).first()
 
                     pontoDb = session.query(PontosMotorista).filter_by(
-                        motorista_id=motorista.id).order_by(PontosMotorista.id.desc()).first()
+                        motorista_id=motorista.id).order_by(PontosMotorista.entrada.desc()).first()
 
                     intervalo = session.query(IntervalosDePontoMotorista).filter_by(
-                        ponto_motorista_id=pontoDb.id).order_by(IntervalosDePontoMotorista.id.desc()).first()
+                        ponto_motorista_id=pontoDb.id).order_by(IntervalosDePontoMotorista.intervalo.desc()).first()
                 else:
                     administrativo = session.query(Administrativo).filter_by(
                         telegram_user=item.username).first()
                     
                     pontoDb = session.query(PontosAdministrativo).filter_by(
-                        administrativo_id=administrativo.id).order_by(PontosAdministrativo.id.desc()).first()
+                        administrativo_id=administrativo.id).order_by(PontosAdministrativo.entrada.desc()).first()
                     
                     intervalo = session.query(IntervalosDePontoAdministrativo).filter_by(
-                        ponto_administrativo_id=pontoDb.id).order_by(IntervalosDePontoAdministrativo.id.desc()).first()
+                        ponto_administrativo_id=pontoDb.id).order_by(IntervalosDePontoAdministrativo.intervalo.desc()).first()
 
                 intervalo.fim_intervalo = item.fim_intervalo
 
@@ -523,13 +525,13 @@ class PontoController:
                         telegram_user=item.username).first()
 
                     pontoDb = session.query(PontosMotorista).filter_by(
-                        motorista_id=motorista.id).order_by(PontosMotorista.id.desc()).first()
+                        motorista_id=motorista.id).order_by(PontosMotorista.entrada.desc()).first()
                 else:
                     administrativo = session.query(Administrativo).filter_by(
                         telegram_user=item.username).first()
                     
                     pontoDb = session.query(PontosAdministrativo).filter_by(
-                        administrativo_id=administrativo.id).order_by(PontosAdministrativo.id.desc()).first()
+                        administrativo_id=administrativo.id).order_by(PontosAdministrativo.entrada.desc()).first()
 
                 pontoDb.entrada = item.entrada,
                 pontoDb.saida = item.saida
