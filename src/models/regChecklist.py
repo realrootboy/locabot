@@ -169,7 +169,7 @@ class RegChecklist:
         self.higienizacao_interna = higienizacao_interna
 
     def dadosAbertura(self):
-        return('*Usuário:* ' + self.username + '\n' +
+        return('*Usuário:* ' + self.username.replace("_", " ") + '\n' +
                '*Chat Atual:* ' + str(self.chat_id) + '\n\n' +
                '*Placa:* ' + self.placa + '\n' +
                '*KM Inicial:* ' + str(self.km_inicial) + '\n' +
@@ -183,7 +183,7 @@ class RegChecklist:
                '*Calibrou os pneus:* ' + strBool(self.calibrou_pneu) + '\n')
 
     def dadosFechamento(self):
-        return('*Usuário:* ' + self.username + '\n' +
+        return('*Usuário:* ' + self.username.replace("_", " ") + '\n' +
                '*Chat Atual:* ' + str(self.chat_id) + '\n\n' +
                '*Placa:* ' + self.placa + '\n' +
                '*KM Inicial:* ' + str(self.km_inicial) + '\n' +

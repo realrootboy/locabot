@@ -25,7 +25,7 @@ class RegAbastecimento:
         self.media_dir = datetime.now(timezone('America/Sao_Paulo')).strftime('%d-%b-%Y (%H:%M:%S.%f)') + ' ' + username
 
     def stringData(self):
-        return('*Usuário:* ' + self.username + '\n' +
+        return('*Usuário:* ' + self.username.replace("_", " ") + '\n' +
                '*Chat Atual:* ' + str(self.chat_id) + '\n\n' +
                '*Placa:* ' + self.placa + '\n' +
                '*Quilometragem:* ' + str(self.quilometragem) + ' KM\n' +

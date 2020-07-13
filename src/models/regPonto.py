@@ -55,7 +55,7 @@ class RegPonto:
         self.role_query = role_query
 
     def stringData(self):
-        return('*Usuário:* ' + self.username + '\n' +
+        return('*Usuário:* ' + self.username.replace("_", " ") + '\n' +
                '*Chat Atual:* ' + str(self.chat_id) + '\n' +
                '*Função:* ' + self.getFilteredRole() + '\n\n' +
                '*Entrada:* ' + tzToHumans(self.entrada) + '\n' +

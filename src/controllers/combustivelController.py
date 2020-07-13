@@ -477,10 +477,10 @@ class CombustivelController:
                 update.message.reply_text('Houve um erro ao tentar salvar! ' +
                                           'O erro foi reportado, tente novamente mais tarde.',
                                           reply_markup=ReplyKeyboardRemove())
-                textLogger.log('Combustivel - ' + str(e))
-                print(e)
-                buff.pop(buff.index(item))
-                return ConversationHandler.END
+            textLogger.log('Combustivel - ' + str(e))
+            print(e)
+            buff.pop(buff.index(item))
+            return ConversationHandler.END
         
     def confirm(self, update, context):
         item = listUtils.searchAndGetItem(buff,
