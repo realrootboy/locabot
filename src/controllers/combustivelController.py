@@ -452,21 +452,36 @@ class CombustivelController:
             )
             return NFISCAL
 
-        a = float(str(item.qnt_litro).replace(',', '.'))
-        b = float(str(item.val_litro).replace(',', '.'))
-        item.val_total = str(float(a*b)).replace('.', ',')
+        try:
+            a = float(str(item.qnt_litro).replace(',', '.'))
+            b = float(str(item.val_litro).replace(',', '.'))
+            item.val_total = str(float(a*b)).replace('.', ',')
 
-        update.message.reply_text(
-            item.stringData(), parse_mode=ParseMode.MARKDOWN)
+            update.message.reply_text(
+                item.stringData(), parse_mode=ParseMode.MARKDOWN)
 
-        reply_keyboard = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+            reply_keyboard = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
 
-        update.message.reply_text(
-            'O dados informados estão corretos?',
-            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            update.message.reply_text(
+                'O dados informados estão corretos?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
-        return CONFIRM
-
+            return CONFIRM
+        except Exception as e:
+            try:
+                    context.bot.send_message(
+                        chat_id=445181781,
+                        text=str(e))
+            except:
+                print('err in send')
+                update.message.reply_text('Houve um erro ao tentar salvar! ' +
+                                          'O erro foi reportado, tente novamente mais tarde.',
+                                          reply_markup=ReplyKeyboardRemove())
+                textLogger.log('Combustivel - ' + str(e))
+                print(e)
+                buff.pop(buff.index(item))
+                return ConversationHandler.END
+        
     def confirm(self, update, context):
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
