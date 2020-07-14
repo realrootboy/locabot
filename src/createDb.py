@@ -13,6 +13,8 @@ from models.Registro import Registro
 from models.Checklist import Checklist
 from models.NaoConformidades import NaoConformidades
 
+from models.Account import Account
+
 from models.Veiculos import Veiculos
 
 def main():
