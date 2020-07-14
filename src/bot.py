@@ -2,6 +2,7 @@ from controllers.pontoController import PontoController
 from controllers.checklistController import ChecklistController
 from controllers.combustivelController import CombustivelController
 
+from views.CombustivelExport import CombustivelExport
 from views.PontosExport import PontosExport
 
 from configs.bot import config
@@ -30,6 +31,7 @@ class Locatransbot:
         self.ponto = PontoController(logger)
     
     def loadViews(self):
+        self.combustivel_views = CombustivelExport(logger)
         self.ponto_views = PontosExport(logger)
 
     def loadHandlers(self):
@@ -39,6 +41,7 @@ class Locatransbot:
         self.dp.add_handler(self.ponto.conv_handler)
         self.dp.add_handler(self.ponto_views.conv_handler)
         self.dp.add_handler(self.ponto_views.disponiveis)
+        self.dp.add_handler(self.combustivel_views.info_combustivel)
 
     def start(self):
         self.dp.add_handler(CommandHandler('start', self.startCommand))
