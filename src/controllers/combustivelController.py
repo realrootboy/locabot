@@ -316,6 +316,15 @@ class CombustivelController:
     def tp_combustivel(self, update, context):
         user = update.message.from_user
 
+        reply_keyboard = [['DIESEL COMUM', 'DIESEL S-10'],
+                          ['GASOLINA ADITIVIDADA', 'GASOLINA COMUM']]
+
+        if not update.message.text in ['DIESEL COMUM', 'DIESEL S-10', 'GASOLINA ADITIVIDADA', 'GASOLINA COMUM']:
+            update.message.reply_text('Combustível inválido, por favor informe o tipo correto de combustivel.',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            
+            return TP_COMBUSTIVEL
+
         listUtils.searchAndUpdate(buff,
                                   update.message.from_user.username,
                                   update.message.chat.id,
@@ -339,6 +348,20 @@ class CombustivelController:
 
     def posto(self, update, context):
         user = update.message.from_user
+
+        reply_keyboard = [['MARLIN', 'LIDER'],
+                          ['OURO NEGRO', 'RIO NEGRO'],
+                          ['DAMIANI', 'JR / DALLAS'],
+                          ['TIMBOZAO / TREMENDAO', 'RAIZ']]
+
+        if not update.message.text in ['MARLIN', 'LIDER',
+                          'OURO NEGRO', 'RIO NEGRO',
+                          'DAMIANI', 'JR / DALLAS',
+                          'TIMBOZAO / TREMENDAO', 'RAIZ']:
+            update.message.reply_text('Posto inválido, por favor informe o posto correto.',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            
+            return POSTO
 
         listUtils.searchAndUpdate(buff,
                                   update.message.from_user.username,
