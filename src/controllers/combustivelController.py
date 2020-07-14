@@ -3,7 +3,9 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
                           ConversationHandler)
 
 from datetime import datetime
+from pytz import timezone
 
+import xlsxwriter
 import shutil
 import os
 
@@ -15,6 +17,8 @@ from models.Registro import Registro
 from models.Veiculos import Veiculos
 
 from utils import textLogger
+from utils import CalendarUtils
+from drive import gdrive
 
 from database.main import Database
 
@@ -455,7 +459,7 @@ class CombustivelController:
         try:
             a = float(str(item.qnt_litro).replace(',', '.'))
             b = float(str(item.val_litro).replace(',', '.'))
-            item.val_total = str(float(a*b)).replace('.', ',')
+            item.val_total = str(round(float(a*b),2)).replace('.', ',')
 
             update.message.reply_text(
                 item.stringData(), parse_mode=ParseMode.MARKDOWN)
@@ -533,6 +537,55 @@ class CombustivelController:
 
             update.message.reply_text('Dados enviados com sucesso! Caso haja alguma inconsistência favor informar para @renanmgomes ou @igorpittol.',
                                       reply_markup=ReplyKeyboardRemove())
+
+            local_path = 'media/' + datetime.now(timezone('America/Sao_Paulo')).strftime('%b-%Y') + '.xlsx'
+            register_now = datetime.now(timezone('America/Sao_Paulo'))
+
+            range_intervalo = CalendarUtils.getRangeByMonth(register_now.month, register_now.year)
+            
+            Session = Database.Session
+            session = Session()
+
+            registros = session.query(Registro).filter(
+                Registro.created_at >= range_intervalo[0],
+                Registro.created_at < range_intervalo[1]
+            )
+            try:
+                workbook = xlsxwriter.Workbook(local_path)
+                worksheet = workbook.add_worksheet()
+
+                row = 0
+                col = 0
+
+                for registro in registros:
+                    worksheet.write(row, col + 0, registro.id)
+                    worksheet.write(row, col + 1, str(registro.created_at.astimezone(timezone('America/Sao_Paulo')).day) + '/' 
+                    + str(registro.created_at.astimezone(timezone('America/Sao_Paulo')).month)
+                    + '/' + str(registro.created_at.astimezone(timezone('America/Sao_Paulo')).year))
+                    worksheet.write(row, col + 2, registro.created_at.astimezone(timezone('America/Sao_Paulo')).strftime('%H:%M'))
+                    worksheet.write(row, col + 3, registro.posto)
+                    worksheet.write(row, col + 4, ' ')
+                    worksheet.write(row, col + 5, CalendarUtils.REV_FULL_MONTHS[registro.created_at.month])
+                    worksheet.write(row, col + 6, registro.placa)
+                    worksheet.write(row, col + 7, registro.quilometragem.replace(' KM', ''))
+                    worksheet.write(row, col + 8, registro.created_at.year)
+                    worksheet.write(row, col + 9, registro.qnt_litro.replace(' L', ''))
+                    worksheet.write(row, col + 10, registro.val_litro.replace('R$ ', ''))
+                    worksheet.write(row, col + 11, registro.motorista.nome)
+                    worksheet.write(row, col + 12, registro.tp_combustivel.split(' ')[0])
+                    worksheet.write(row, col + 13, registro.tp_combustivel)
+                    worksheet.write(row, col + 14, registro.val_total.replace('R$ ', ''))
+                    row += 1
+                
+                workbook.close()
+
+            except Exception as e:
+                print(e)
+
+            session.close()
+            gdrive.upload_gdrive(local_path, local_path.replace('media/', ''))
+            os.remove(local_path)
+
 
             return ConversationHandler.END
         elif(update.message.text == 'Não, refazer'):

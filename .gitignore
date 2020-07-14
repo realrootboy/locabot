@@ -3,6 +3,9 @@ src/configs/
 media/
 migrations/
 node_modules/
+token.pickle
+credentials.json
+logs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

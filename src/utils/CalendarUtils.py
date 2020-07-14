@@ -31,6 +31,21 @@ def getRangeByFullMonth(month, year):
         print(e)
         return None
 
+def getRangeByMonth(month, year):
+    last_year = int(year)
+    last_month = int(month)
+
+    if(month == 12):
+            last_year = last_year + 1
+            last_month = 1
+    else:
+        last_month = last_month + 1
+
+    range = (str(year)+'-'+str(month)+'-1',
+                str(last_year)+'-'+str(last_month)+'-1')
+    return range
+    
+
 def periodosRange(start_month, start_year, end_month, end_year):
 	if end_year < start_year:
 		return []
