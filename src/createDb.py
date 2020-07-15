@@ -14,6 +14,7 @@ from models.Checklist import Checklist
 from models.NaoConformidades import NaoConformidades
 
 from models.Account import Account
+from models.Credencial import Credencial
 
 from models.Veiculos import Veiculos
 

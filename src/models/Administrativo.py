@@ -17,6 +17,7 @@ class Administrativo(Database.Base):
     role = Column('role', String(255))
     pontos_administrativo = relationship('PontosAdministrativo', back_populates='administrativo')
     created_at = Column('created_at', DateTime(timezone=True))
+    credenciais = relationship('credenciais', back_populates='administrativo')
     accounts = relationship(
         "Account",
         secondary=association_table,
