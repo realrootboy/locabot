@@ -11,7 +11,7 @@ class Credencial(Database.Base):
     administrativo_id = Column(Integer, ForeignKey('administrativos.id'))
     administrativo = relationship('Administrativo', back_populates="credenciais")
     password_hash = Column('password_hash', String(255))
-
+    
     def __init__(self, administrativo, password_hash):
         self.administrativo = administrativo
         self.password_hash = password_hash
