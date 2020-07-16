@@ -18,10 +18,10 @@ class Administrativo(Database.Base):
     pontos_administrativo = relationship('PontosAdministrativo', back_populates='administrativo')
     created_at = Column('created_at', DateTime(timezone=True))
     # credenciais = relationship('credenciais', back_populates='administrativo')
-    accounts = relationship(
-        "Account",
-        secondary=association_table,
-        back_populates="administrativo")
+    # accounts = relationship(
+    #     "Account",
+    #     secondary=association_table,
+    #     back_populates="administrativo")
 
     def __init__(self, nome, telegram_user, setor, role):
         self.nome = nome
