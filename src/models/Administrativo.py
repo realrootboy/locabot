@@ -21,7 +21,7 @@ class Administrativo(Database.Base):
     accounts = relationship(
         "Account",
         secondary=association_table,
-        back_populates="administrativo")
+        back_populates="administrativos")
 
     def __init__(self, nome, telegram_user, setor, role):
         self.nome = nome

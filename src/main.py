@@ -1,11 +1,12 @@
 from bot import Locatransbot
 from database.main import Database
+from createDb import loadDb
 
 # from mainFolder.folder2.file4 import Myclass
 
 
 def main():
-    Database.Base.metadata.create_all(Database.engine)
+    loadDb()
     bot = Locatransbot()
     bot.start()
 

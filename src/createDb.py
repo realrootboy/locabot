@@ -20,6 +20,9 @@ from models.Veiculos import Veiculos
 
 def main():
     print("creating tables...")
+    loadDb()
+
+def loadDb():
     Database.Base.metadata.create_all(Database.engine)
 
 main()

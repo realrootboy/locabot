@@ -14,7 +14,7 @@ class Account(Database.Base):
     administrativos = relationship(
         "Administrativo",
         secondary=association_table,
-        back_populates="account")
+        back_populates="accounts")
 
     def __init__(self,
                  descricao='',
