@@ -167,6 +167,7 @@ class RegChecklist:
         self.pneus_estepe = pneus_estepe
         self.higienizacao_externa = higienizacao_externa
         self.higienizacao_interna = higienizacao_interna
+        self.mapeamento_nc = [False, False, False, False, False, False, False, False, False, False]
 
     def dadosAbertura(self):
         return('*Usuário:* ' + self.username.replace("_", " ") + '\n' +

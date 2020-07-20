@@ -6,9 +6,10 @@ from views.CombustivelExport import CombustivelExport
 from views.PontosExport import PontosExport
 
 from configs.bot import config
-from telegram import (ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode)
+from telegram import (ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode, 
+                      InlineKeyboardButton, InlineKeyboardMarkup)
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
-                          ConversationHandler)
+                          ConversationHandler, CallbackQueryHandler)
 import logging
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -43,14 +44,31 @@ class Locatransbot:
         self.dp.add_handler(self.ponto_views.disponiveis)
         self.dp.add_handler(self.combustivel_views.info_combustivel)
 
+        # self.dp.add_handler(CallbackQueryHandler(self.button))
+
     def start(self):
         self.dp.add_handler(CommandHandler('start', self.startCommand))
         self.dp.add_error_handler(self.error)
         self.updater.start_polling()
         self.updater.idle()
 
+    # def button(self, update, context):
+    #     query = update.callback_query
+# 
+    #     if(query.data == '1'):
+    #         self.checklist.abrir_checklist(update, context)
+    #     if(query.data == '2'):
+    #         self.checklist.fechar_checklist(update, context)
+    #     if(query.data == '3'):
+    #         return 1
+    #     if(query.data == 'Finalizar'):
+    #         return ConversationHandler.END
+    #     if(query.data == 'Cancelar'):
+    #         self.checklist.conversationKiller(update, context)
+
     def startCommand(self, update, context):
-        response_message = "Interação com o bot ativada! Seja bem-vindo! =^._.^="
+        response_message = 'Interação com o bot ativada! Seja bem-vindo! =^._.^=\n\nAbrir Checklist\n/abrir_checklist\n\nFechar Checklist\n/fechar_checklist\n\nCadastrar Informações de Combustível\n/combustivel'
+
         context.bot.send_message(
             chat_id=update.message.chat_id,
             text=response_message

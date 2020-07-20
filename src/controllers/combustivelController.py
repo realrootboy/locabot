@@ -1,6 +1,6 @@
 from telegram import (ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode)
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
-                          ConversationHandler)
+                          ConversationHandler, CallbackQueryHandler)
 
 from datetime import datetime
 from pytz import timezone
@@ -56,27 +56,40 @@ class CombustivelController:
 
     def registro(self, update, context):
         placas = []
-        try:
-            abastecimento = RegAbastecimento(
-                update.message.from_user.username, update.message.chat.id)
-            buff.append(abastecimento)
-        except Exception as e:
-            print(e)
-            update.message.reply_text(
-                'Não é possível realizar o cadastro de combustível sem um nome de usuário cadastrado.',
-                reply_markup=ReplyKeyboardRemove()
-            )
-            return ConversationHandler.END
+        if update.callback_query:
+            try:
+                current_chat_id = update.callback_query.message.chat.id
+                current_username = update.callback_query.from_user.username
+                abastecimento = RegAbastecimento(current_username, current_chat_id)
+                buff.append(abastecimento)
+            except Exception as e:
+                context.bot.send_message(
+                    chat_id=current_chat_id,
+                    text='Não é possível realizar o cadastro de combustível sem um nome de usuário cadastrado.');
+                return ConversationHandler.END
+        else:
+            try:
+                current_chat_id = update.message.chat.id
+                current_username = update.message.from_user.username
+                abastecimento = RegAbastecimento(current_username, current_chat_id)
+                buff.append(abastecimento)
+            except Exception as e:
+                update.message.reply_text(
+                    'Não é possível realizar o cadastro de combustível sem um nome de usuário cadastrado.',
+                    reply_markup=ReplyKeyboardRemove()
+                )
+                return ConversationHandler.END
         
         try:
             Session = Database.Session
             session = Session()
 
-            motorista = session.query(Motorista).filter_by(telegram_user=update.message.from_user.username).first()
+            motorista = session.query(Motorista).filter_by(telegram_user=current_username).first()
 
             if motorista is None:
-                update.message.reply_text(
-                    'Usuário ' + update.message.from_user.username + ' não encontrado na base de dados. ' + 
+                context.bot.send_message(
+                    chat_id=current_chat_id,
+                    text='Usuário ' + current_username + ' não encontrado na base de dados. ' + 
                     'Acesso não autorizado!', reply_markup=ReplyKeyboardRemove()
                 )
                 session.close()
@@ -90,14 +103,17 @@ class CombustivelController:
             session.close()
         except Exception as e:
             print(e)
-            update.message.reply_text('Houve um erro ao tentar se conectar com a base de dados! ' +
-                                          'O erro foi reportado, tente novamente mais tarde.',
-                                          reply_markup=ReplyKeyboardRemove())
+            context.bot.send_message(
+                chat_id=current_chat_id,
+                text='Houve um erro ao tentar se conectar com a base de dados! ' +
+                'O erro foi reportado, tente novamente mais tarde.',
+                reply_markup=ReplyKeyboardRemove())
             buff.remove(abastecimento)
             return ConversationHandler.END
 
-        update.message.reply_text(
-            'Olá, ' + motorista.nome + '. Por favor, informe a placa do veículo.',
+        context.bot.send_message(
+            chat_id=current_chat_id,
+            text='Olá, ' + motorista.nome + '. Por favor, informe a placa do veículo.',
             reply_markup=ReplyKeyboardMarkup(placas, one_time_keyboard=True))
         
         return PLACA
