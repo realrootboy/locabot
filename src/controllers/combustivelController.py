@@ -577,7 +577,7 @@ class CombustivelController:
             update.message.reply_text('Dados enviados com sucesso! Caso haja alguma inconsistência favor informar para @renanmgomes ou @igorpittol.',
                                       reply_markup=ReplyKeyboardRemove())
 
-            local_path = 'media/' + datetime.now(timezone('America/Sao_Paulo')).strftime('%b-%Y') + '.xlsx'
+            local_path = 'media/ABASTECIMENTO-' + datetime.now(timezone('America/Sao_Paulo')).strftime('%b-%Y') + '.xlsx'
             register_now = datetime.now(timezone('America/Sao_Paulo'))
 
             range_intervalo = CalendarUtils.getRangeByMonth(register_now.month, register_now.year)
