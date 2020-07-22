@@ -26,6 +26,8 @@ class RegChecklist:
                  km_inicial='',
                  dt_abertura=datetime.now(timezone('America/Sao_Paulo')),
                  km_final='',
+                 manual=True,
+                 chave_reserva=False,
                  dt_fechamento=None,
                  idd=-1,
                  motorista_id=-1,
@@ -99,6 +101,8 @@ class RegChecklist:
         self.km_inicial = km_inicial
         self.dt_abertura = dt_abertura
         self.km_final = km_final
+        self.manual = manual
+        self.chave_reserva = chave_reserva
         self.dt_fechamento = dt_fechamento
         self.id = idd
         self.motorista_id = motorista_id
@@ -174,14 +178,8 @@ class RegChecklist:
                '*Chat Atual:* ' + str(self.chat_id) + '\n\n' +
                '*Placa:* ' + self.placa + '\n' +
                '*KM Inicial:* ' + str(self.km_inicial) + '\n' +
-               '*Retornou com o carro para casa:* ' + strBool(self.carro_p_casa) + '\n' +
-               '*Viajou com o carro:* ' + strBool(self.viajou_c_carro) + '\n' +
-               '*Outro condutor:* ' + strBool(self.outro_condutor) + '\n' +
-               '*Novo condutor:* ' + str(self.novo_condutor) + '\n' +
-               '*Deixou na oficina:* ' + strBool(self.deixou_oficina) + '\n' +
-               '*Local da oficina:* ' + str(self.local_oficina) + '\n' +
-               '*Trocou o tacógrafo:* ' + strBool(self.van_tacografo) + '\n' +
-               '*Calibrou os pneus:* ' + strBool(self.calibrou_pneu) + '\n')
+               '*Manual está no veículo:* ' + strBool(self.manual) + '\n' +
+               '*Chave reserva está no veículo:* ' + strBool(self.chave_reserva) + '\n')
 
     def dadosFechamento(self):
         return('*Usuário:* ' + self.username.replace("_", " ") + '\n' +
@@ -189,6 +187,8 @@ class RegChecklist:
                '*Placa:* ' + self.placa + '\n' +
                '*KM Inicial:* ' + str(self.km_inicial) + '\n' +
                '*KM Final:* ' + str(self.km_final) + ' KM\n\n' +
+               '*Manual está no veículo:* ' + strBool(self.manual) + '\n' +
+               '*Chave reserva está no veículo:* ' + strBool(self.chave_reserva) + '\n' +
                '*Retornou com o carro para casa:* ' + strBool(self.carro_p_casa) + '\n' +
                '*Viajou com o carro:* ' + strBool(self.viajou_c_carro) + '\n' +
                '*Outro condutor:* ' + strBool(self.outro_condutor) + '\n' +

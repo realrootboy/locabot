@@ -76,7 +76,9 @@ class Checklist(Database.Base):
     pneus_estepe = Column('pneus_estepe', Boolean)
     higienizacao_externa = Column('higienizacao_externa', Boolean)
     higienizacao_interna = Column('higienizacao_interna', Boolean)
-    
+    chave_reserva = Column('chave_reserva', Boolean)
+    manual = Column('manual', Boolean)
+
     nao_conformidades = relationship('NaoConformidades', back_populates='checklist')
 
     def __init__(self,

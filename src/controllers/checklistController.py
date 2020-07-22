@@ -28,7 +28,7 @@ A_CONFIRM = 71
 
 KM_FINAL = 0
 
-KM_CONFIRM = 76
+
 
 CARRO_P_CASA = 1
 VIAJOU_C_CARRO = 2
@@ -115,6 +115,11 @@ O_CONFORMIDADE = 74
 
 MENU_SWITCHER = 75
 
+KM_CONFIRM = 76
+
+MANUAL = 77
+CHAVE_RESERVA = 78
+
 buff = list()
 
 
@@ -129,6 +134,10 @@ class ChecklistController:
                 PLACA: [MessageHandler(Filters.text, self.placa)],
                 KM_INICIAL: [MessageHandler(Filters.text, self.km_inicial)],
                 A_CONFIRM: [MessageHandler(Filters.text, self.a_confirm)],
+                
+                MANUAL: [MessageHandler(Filters.text, self.manual)],
+                CHAVE_RESERVA : [MessageHandler(Filters.text, self.chave_reserva)],
+
                 CARRO_P_CASA: [MessageHandler(Filters.text, self.carro_p_casa)],
                 VIAJOU_C_CARRO: [MessageHandler(Filters.text, self.viajou_c_carro)],
                 OUTRO_CONDUTOR: [MessageHandler(Filters.text, self.outro_condutor)],
@@ -234,6 +243,9 @@ class ChecklistController:
                 LOCAL_OFICINA: [MessageHandler(Filters.text, self.local_oficina)],
                 VAN_TACOGRAFO: [MessageHandler(Filters.text, self.van_tacografo)],
                 CALIBROU_PNEU: [MessageHandler(Filters.text, self.calibrou_pneu)],
+
+                MANUAL: [MessageHandler(Filters.text, self.manual)],
+                CHAVE_RESERVA : [MessageHandler(Filters.text, self.chave_reserva)],
 
                 MENU_SWITCHER: [MessageHandler(Filters.text, self.menu_switcher)],
                 KM_CONFIRM: [MessageHandler(Filters.text, self.km_confirm)],
@@ -382,7 +394,8 @@ class ChecklistController:
                 placas.append([veiculo.placa])
 
             session.close()
-        except:
+        except Exception as e:
+            print(e)
             context.bot.send_message(
                 chat_id=current_chat_id,
                 text='Houve um erro ao tentar se conectar com a base de dados! ' +
@@ -522,10 +535,10 @@ class ChecklistController:
 
         if(str(update.message.text).upper() == 'SIM'):
             update.message.reply_text(
-            'Retornou com o carro para casa?',
-            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+                'O manual está no veículo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
-            return CARRO_P_CASA
+            return MANUAL
         elif(str(update.message.text).upper() == 'NÃO'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -545,6 +558,126 @@ class ChecklistController:
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return KM_CONFIRM
+
+    def manual(self, update, context):
+        reply_keyboard = [['Sim'], ['Não']]
+
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+    
+        if(str(update.message.text).upper() == 'SIM'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'manual',
+                                      True)
+            update.message.reply_text(
+                'A chave reserva está no veículo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            
+            return CHAVE_RESERVA
+        elif(str(update.message.text).upper() == 'NÃO'):
+            print(update.message.text)
+            try:
+                listUtils.searchAndUpdate(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id,
+                                          'manual',
+                                          False)
+            except Exception as e:
+                print(e)
+            update.message.reply_text(
+                'A chave reserva está no veículo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            
+            return CHAVE_RESERVA
+        else:
+            update.message.reply_text(
+                'Opção inválida! Por favor, responda apenas: "Sim" ou "Não"'
+            )
+
+            update.message.reply_text(
+                'O manual está no veículo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return MANUAL
+
+    def chave_reserva(self, update, context):
+        reply_keyboard = [['Sim'], ['Não']]
+
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+    
+        if(str(update.message.text).upper() == 'SIM'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'chave_reserva',
+                                      True)
+            if(item.is_abertura):
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text='Por favor, escolha a opção desejada:\n\n' +
+                        '1 - Registrar NC: Elétrica\n' +
+                        '2 - Registrar NC: Higienização\n' +
+                        '3 - Registrar NC: Lataria\n' +
+                        '4 - Registrar NC: Mecânica\n' +
+                        '5 - Registrar NC: Pneus\n' +
+                        '6 - Registrar NC: Segurança\n' +
+                        '7 - Registrar NC: Vidros\n' +
+                        '8 - CONTINUAR OPERAÇÃO\n' + 
+                        '9 - CANCELAR OPERAÇÃO',
+                        reply_markup=ReplyKeyboardMarkup([['1','2','3'], ['4','5','6'], ['7','8','9']])
+                )
+
+                return MENU_SWITCHER
+            else:
+                update.message.reply_text(
+                    'Retornou com o carro para casa?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+                return CARRO_P_CASA
+        elif(str(update.message.text).upper() == 'NÃO'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'chave_reserva',
+                                      False)
+            if(item.is_abertura):
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text='Por favor, escolha a opção desejada:\n\n' +
+                        '1 - Registrar NC: Elétrica\n' +
+                        '2 - Registrar NC: Higienização\n' +
+                        '3 - Registrar NC: Lataria\n' +
+                        '4 - Registrar NC: Mecânica\n' +
+                        '5 - Registrar NC: Pneus\n' +
+                        '6 - Registrar NC: Segurança\n' +
+                        '7 - Registrar NC: Vidros\n' +
+                        '8 - CONTINUAR OPERAÇÃO\n' + 
+                        '9 - CANCELAR OPERAÇÃO',
+                        reply_markup=ReplyKeyboardMarkup([['1','2','3'], ['4','5','6'], ['7','8','9']])
+                )
+
+                return MENU_SWITCHER
+            else:
+                update.message.reply_text(
+                    'Retornou com o carro para casa?',
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+                return CARRO_P_CASA
+        else:
+            update.message.reply_text(
+                'Opção inválida! Por favor, responda apenas: "Sim" ou "Não"'
+            )
+
+            update.message.reply_text(
+                'A chave reserva está no veículo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            
+            return CHAVE_RESERVA
 
 
     def a_confirm(self, update, context):
@@ -575,6 +708,8 @@ class ChecklistController:
 
                 checklist.carro_p_casa = item.carro_p_casa
                 checklist.viajou_c_carro = item.viajou_c_carro
+                checklist.manual = item.manual
+                checklist.chave_reserva = item.chave_reserva
                 checklist.outro_condutor = item.outro_condutor
                 checklist.novo_condutor = item.novo_condutor
                 checklist.deixou_oficina = item.deixou_oficina
@@ -671,12 +806,10 @@ class ChecklistController:
             return ConversationHandler.END
         elif(update.message.text == 'Não, refazer'):
             update.message.reply_text(
-                'Ok! Vamos refazer então.',
-                reply_markup=ReplyKeyboardMarkup([['Continuar']], one_time_keyboard=True))
+                'Ok! Vamos refazer então. Motorista, informe o KM inicial',
+                one_time_keyboard=True)
 
-            buff.pop(buff.index(item))
-
-            return ConversationHandler.END
+            return KM_INICIAL
         elif(update.message.text == 'Cancelar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -701,7 +834,6 @@ class ChecklistController:
                 current_chat_id = update.callback_query.message.chat.id
                 current_username = update.callback_query.from_user.username
                 open_checklist = RegChecklist(current_username, current_chat_id, False)
-                buff.append(open_checklist)
             except Exception as e:
                 print(e)
                 context.bot.send_message(
@@ -713,7 +845,6 @@ class ChecklistController:
                 current_chat_id = update.message.chat.id
                 current_username = update.message.from_user.username
                 open_checklist = RegChecklist(current_username, current_chat_id, False)
-                buff.append(open_checklist)
             except Exception as e:
                 print(e)
                 update.message.reply_text(
@@ -3213,7 +3344,7 @@ class ChecklistController:
                     motorista,
                     False,
                     item.placa,
-                    str(item.km_inicial) + ' KM',
+                    str(item.km_inicial),
                     item.dt_abertura
                 )
 
@@ -3224,6 +3355,8 @@ class ChecklistController:
 
                 checklist.carro_p_casa = item.carro_p_casa
                 checklist.viajou_c_carro = item.viajou_c_carro
+                checklist.manual = item.manual
+                checklist.chave_reserva = item.chave_reserva
                 checklist.outro_condutor = item.outro_condutor
                 checklist.novo_condutor = item.novo_condutor
                 checklist.deixou_oficina = item.deixou_oficina
@@ -3322,12 +3455,10 @@ class ChecklistController:
             return ConversationHandler.END
         elif(update.message.text == 'Não, refazer'):
             update.message.reply_text(
-                'Ok! Vamos refazer então.',
-                reply_markup=ReplyKeyboardMarkup([['Continuar']], one_time_keyboard=True))
+                'Ok! Vamos refazer então. Motorista, informe a KM Final',
+                one_time_keyboard=True)
 
-            buff.pop(buff.index(item))
-
-            return ConversationHandler.END
+            return KM_FINAL
         elif(update.message.text == 'Cancelar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
