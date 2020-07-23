@@ -26,6 +26,7 @@ class RegChecklist:
                  km_inicial='',
                  dt_abertura=datetime.now(timezone('America/Sao_Paulo')),
                  km_final='',
+                 motivo='',
                  manual=True,
                  chave_reserva=False,
                  dt_fechamento=None,
@@ -101,6 +102,7 @@ class RegChecklist:
         self.km_inicial = km_inicial
         self.dt_abertura = dt_abertura
         self.km_final = km_final
+        self.motivo = motivo
         self.manual = manual
         self.chave_reserva = chave_reserva
         self.dt_fechamento = dt_fechamento
@@ -176,6 +178,7 @@ class RegChecklist:
     def dadosAbertura(self):
         return('*Usuário:* ' + self.username.replace("_", " ") + '\n' +
                '*Chat Atual:* ' + str(self.chat_id) + '\n\n' +
+               '*Motivo de abertura:* ' + self.motivo + '\n' +
                '*Placa:* ' + self.placa + '\n' +
                '*KM Inicial:* ' + str(self.km_inicial) + '\n' +
                '*Manual está no veículo:* ' + strBool(self.manual) + '\n' +
@@ -184,6 +187,7 @@ class RegChecklist:
     def dadosFechamento(self):
         return('*Usuário:* ' + self.username.replace("_", " ") + '\n' +
                '*Chat Atual:* ' + str(self.chat_id) + '\n\n' +
+               '*Motivo de fechamento:* ' + self.motivo + '\n' +
                '*Placa:* ' + self.placa + '\n' +
                '*KM Inicial:* ' + str(self.km_inicial) + '\n' +
                '*KM Final:* ' + str(self.km_final) + ' KM\n\n' +

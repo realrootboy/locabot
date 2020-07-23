@@ -123,6 +123,8 @@ KM_CONFIRM = 76
 MANUAL = 77
 CHAVE_RESERVA = 78
 
+MOTIVO = 79
+
 buff = list()
 
 
@@ -138,6 +140,8 @@ class ChecklistController:
                 KM_INICIAL: [MessageHandler(Filters.text, self.km_inicial)],
                 A_CONFIRM: [MessageHandler(Filters.text, self.a_confirm)],
                 
+                MOTIVO: [MessageHandler(Filters.text, self.motivo)],
+
                 MANUAL: [MessageHandler(Filters.text, self.manual)],
                 CHAVE_RESERVA : [MessageHandler(Filters.text, self.chave_reserva)],
 
@@ -246,6 +250,8 @@ class ChecklistController:
                 LOCAL_OFICINA: [MessageHandler(Filters.text, self.local_oficina)],
                 VAN_TACOGRAFO: [MessageHandler(Filters.text, self.van_tacografo)],
                 CALIBROU_PNEU: [MessageHandler(Filters.text, self.calibrou_pneu)],
+
+                MOTIVO: [MessageHandler(Filters.text, self.motivo)],
 
                 MANUAL: [MessageHandler(Filters.text, self.manual)],
                 CHAVE_RESERVA : [MessageHandler(Filters.text, self.chave_reserva)],
@@ -533,15 +539,17 @@ class ChecklistController:
 
         if item.is_abertura:
             informado = item.km_inicial
+            question_header =  'Por favor, informe o motivo de abertura de checklist:'
         else:
             informado = item.km_final
+            question_header =  'Por favor, informe o motivo de fechamento de checklist:'
 
         if(str(update.message.text).upper() == 'SIM'):
             update.message.reply_text(
-                'O manual está no veículo?',
-                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+                question_header,
+                reply_markup=ReplyKeyboardRemove())
 
-            return MANUAL
+            return MOTIVO
         elif(str(update.message.text).upper() == 'NÃO'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -561,6 +569,21 @@ class ChecklistController:
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return KM_CONFIRM
+
+    def motivo(self, update, context):
+        reply_keyboard = [['Sim'], ['Não']]
+
+        listUtils.searchAndUpdate(buff,
+                                  update.message.from_user.username,
+                                  update.message.chat.id,
+                                  'motivo',
+                                  update.message.text)
+
+        update.message.reply_text(
+            'O manual está no veículo?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        
+        return MANUAL
 
     def manual(self, update, context):
         reply_keyboard = [['Sim'], ['Não']]
@@ -712,6 +735,7 @@ class ChecklistController:
                 checklist.carro_p_casa = item.carro_p_casa
                 checklist.viajou_c_carro = item.viajou_c_carro
                 checklist.manual = item.manual
+                checklist.motivo = item.motivo
                 checklist.chave_reserva = item.chave_reserva
                 checklist.outro_condutor = item.outro_condutor
                 checklist.novo_condutor = item.novo_condutor
@@ -844,8 +868,8 @@ class ChecklistController:
                     worksheet.write(row, col + 0, registro.id)
                     worksheet.write(row, col + 1, registro.is_abertura)
                     worksheet.write(row, col + 2, str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).day) + '/' 
-                    + str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).month)
-                    + '/' + str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).year))
+                        + str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).month)
+                        + '/' + str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).year))
                     worksheet.write(row, col + 3, registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).strftime('%H:%M'))
                     if(registro.dt_fechamento):
                         worksheet.write(row, col + 4, str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).day) + '/' 
@@ -3420,6 +3444,7 @@ class ChecklistController:
                 checklist.carro_p_casa = item.carro_p_casa
                 checklist.viajou_c_carro = item.viajou_c_carro
                 checklist.manual = item.manual
+                checklist.motivo = item.motivo
                 checklist.chave_reserva = item.chave_reserva
                 checklist.outro_condutor = item.outro_condutor
                 checklist.novo_condutor = item.novo_condutor
@@ -3553,13 +3578,14 @@ class ChecklistController:
                     worksheet.write(row, col + 0, registro.id)
                     worksheet.write(row, col + 1, registro.is_abertura)
                     worksheet.write(row, col + 2, str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).day) + '/' 
-                    + str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).month)
-                    + '/' + str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).year))
+                        + str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).month)
+                        + '/' + str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).year))
                     worksheet.write(row, col + 3, registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).strftime('%H:%M'))
-                    worksheet.write(row, col + 4, str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).day) + '/' 
-                    + str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).month)
-                    + '/' + str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).year))
-                    worksheet.write(row, col + 5, registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).strftime('%H:%M'))
+                    if(registro.dt_fechamento):
+                        worksheet.write(row, col + 4, str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).day) + '/' 
+                            + str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).month)
+                            + '/' + str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).year))
+                        worksheet.write(row, col + 5, registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).strftime('%H:%M'))
                     worksheet.write(row, col + 6, registro.placa)
                     worksheet.write(row, col + 7, registro.motorista.nome)
                     worksheet.write(row, col + 8, registro.km_inicial.replace(' KM', ''))
