@@ -182,7 +182,7 @@ class RegChecklist:
                '*Placa:* ' + self.placa + '\n' +
                '*KM Inicial:* ' + str(self.km_inicial) + '\n' +
                '*Manual está no veículo:* ' + strBool(self.manual) + '\n' +
-               '*Chave reserva está no veículo:* ' + strBool(self.chave_reserva) + '\n')
+               '*Chave reserva está no veículo:* ' + strBool(self.chave_reserva) + '\n').replace("_", " ")
 
     def dadosFechamento(self):
         return('*Usuário:* ' + self.username.replace("_", " ") + '\n' +
@@ -200,7 +200,7 @@ class RegChecklist:
                '*Deixou na oficina:* ' + strBool(self.deixou_oficina) + '\n' +
                '*Local da oficina:* ' + str(self.local_oficina) + '\n' +
                '*Trocou o tacógrafo:* ' + strBool(self.van_tacografo) + '\n' +
-               '*Calibrou os pneus:* ' + strBool(self.calibrou_pneu) + '\n')
+               '*Calibrou os pneus:* ' + strBool(self.calibrou_pneu) + '\n').replace("_", " ")
 
     def dadosMecanica(self):
         return('*CHECKLIST DE MECANICA*\n\n' +
@@ -214,7 +214,7 @@ class RegChecklist:
                '*Oleo:* ' + strBool2(self.mecanica_oleo) + '\n' +
                '*Agua:* ' + strBool2(self.mecanica_agua) + '\n' +
                '*Alinhamento:* ' + strBool2(self.mecanica_alinhamento) + '\n' +
-               '*Freio de mão:* ' + strBool2(self.mecanica_freiodemao) + '\n')
+               '*Freio de mão:* ' + strBool2(self.mecanica_freiodemao) + '\n').replace("_", " ")
 
     def dadosLataria(self):
         return ('*CHECKLIST DA LATARIA*\n\n' +
@@ -228,7 +228,7 @@ class RegChecklist:
                 '*Lataria do parachoque dianteiro:* ' + strBool2(self.lataria_parachoquedianteiro) + '\n' +
                 '*Lataria do parachoque traseiro:* ' + strBool2(self.lataria_parachoquetraseiro) + '\n' +
                 '*Lataria do capo:* ' + strBool2(self.lataria_capo) + '\n' +
-                '*Lataria do teto:* ' + strBool2(self.lataria_teto) + '\n')
+                '*Lataria do teto:* ' + strBool2(self.lataria_teto) + '\n').replace("_", " ")
 
     def dadosEletrica(self):
         return ('*CHECKLIST DE ELETRICA*\n\n' +
@@ -244,14 +244,14 @@ class RegChecklist:
                 '*Limpador de parabrisa:* ' + strBool2(self.eletrica_limpadorparabrisa) + '\n' +
                 '*Ar condicionado:* ' + strBool2(self.eletrica_arcondicionado) + '\n' +
                 '*Travas:* ' + strBool2(self.eletrica_travas) + '\n' +
-                '*Vidros:* ' + strBool2(self.eletrica_vidros) + '\n')
+                '*Vidros:* ' + strBool2(self.eletrica_vidros) + '\n').replace("_", " ")
 
     def dadosVidros(self):
         return ('*CHECKLIST DOS VIDROS*\n\n' +
                 '*Parabrisa:* ' + strBool2(self.vidros_parabrisa) + '\n' +
                 '*Laterais esquerdo:* ' + strBool2(self.vidros_lateraisesquerdo) + '\n' +
                 '*Laterais direito:* ' + strBool2(self.vidros_lateraisdireito) + '\n' +
-                '*Traseiro:* ' + strBool2(self.vidros_traseiro) + '\n')
+                '*Traseiro:* ' + strBool2(self.vidros_traseiro) + '\n').replace("_", " ")
 
     def dadosSeguranca(self):
         return ('*CHECKLIST DE SEGURANÇA*\n\n' +
@@ -262,7 +262,7 @@ class RegChecklist:
                 '*Fechaduras:* ' + strBool2(self.seguranca_fechaduras) + '\n' +
                 '*Maçanetas:* ' + strBool2(self.seguranca_macanetas) + '\n' +
                 '*Retrovisores:* ' + strBool2(self.seguranca_retrovisores) + '\n' +
-                '*Macaco:* ' + strBool2(self.seguranca_macaco) + '\n')
+                '*Macaco:* ' + strBool2(self.seguranca_macaco) + '\n').replace("_", " ")
 
     def dadosPneus(self):
         return ('*CHECKLIST DO PNEU*\n\n' +
@@ -270,9 +270,9 @@ class RegChecklist:
                 '*Dianteiro direito:* ' + strBool2(self.pneus_dianteirodireito) + '\n' +
                 '*Traseiro esquerdo:* ' + strBool2(self.pneus_traseiroesquerdo) + '\n' +
                 '*Traseiro direito:* ' + strBool2(self.pneus_traseirodireito) + '\n' + 
-                '*Estepe:* ' + strBool2(self.pneus_estepe) + '\n')
+                '*Estepe:* ' + strBool2(self.pneus_estepe) + '\n').replace("_", " ")
 
     def dadosHigienizacao(self):
         return ('*CHECKLIST DE HIGIENIZAÇÃO*\n\n' +
                 '*Higienização externa:* ' + strBool2(self.higienizacao_externa) + '\n' +
-                '*Higienização interna:* ' + strBool2(self.higienizacao_interna) + '\n')
+                '*Higienização interna:* ' + strBool2(self.higienizacao_interna) + '\n').replace("_", " ")
