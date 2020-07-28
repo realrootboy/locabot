@@ -353,7 +353,13 @@ class CombustivelController:
         reply_keyboard = [['MARLIN', 'LIDER'],
                           ['OURO NEGRO', 'RIO NEGRO'],
                           ['DAMIANI', 'JR / DALLAS'],
-                          ['TIMBOZAO / TREMENDAO', 'RAIZ']]
+                          ['TIMBOZAO / TREMENDAO', 'RAIZ'],
+                          ['SAO JERONIMO DO ANIL', 'JARDIM OCEANICO'],
+                          ['CURICICA', 'SILOMAR'],
+                          ['LEIROZ', 'CONTORNO'],
+                          ['REZENDE RECREIO II', 'TINDIBA'],
+                          ['ML RECREIO', 'AMIGAO'],
+                          ['OUTRO']]
 
         update.message.reply_text(
             'Combustível informado: '+update.message.text+'\n'
@@ -368,12 +374,24 @@ class CombustivelController:
         reply_keyboard = [['MARLIN', 'LIDER'],
                           ['OURO NEGRO', 'RIO NEGRO'],
                           ['DAMIANI', 'JR / DALLAS'],
-                          ['TIMBOZAO / TREMENDAO', 'RAIZ']]
+                          ['TIMBOZAO / TREMENDAO', 'RAIZ'],
+                          ['SAO JERONIMO DO ANIL', 'JARDIM OCEANICO'],
+                          ['CURICICA', 'SILOMAR'],
+                          ['LEIROZ', 'CONTORNO'],
+                          ['REZENDE RECREIO II', 'TINDIBA'],
+                          ['ML RECREIO', 'AMIGAO'],
+                          ['OUTRO']]
 
         if not update.message.text in ['MARLIN', 'LIDER',
                           'OURO NEGRO', 'RIO NEGRO',
                           'DAMIANI', 'JR / DALLAS',
-                          'TIMBOZAO / TREMENDAO', 'RAIZ']:
+                          'TIMBOZAO / TREMENDAO', 'RAIZ',
+                          'SAO JERONIMO DO ANIL', 'JARDIM OCEANICO',
+                          'CURICICA', 'SILOMAR',
+                          'LEIROZ', 'CONTORNO',
+                          'REZENDE RECREIO II', 'TINDIBA',
+                          'ML RECREIO', 'AMIGAO',
+                          'OUTRO']:
             update.message.reply_text('Posto inválido, por favor informe o posto correto.',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
             
