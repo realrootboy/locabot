@@ -416,14 +416,16 @@ class ChecklistController:
         if item.is_abertura:
             informado = item.km_inicial
             question_header =  'Por favor, informe o motivo de abertura de checklist:'
+            reply_keyboard2 = [['OS'],['Manutenção'],['Outro']]
         else:
             informado = item.km_final
             question_header =  'Por favor, informe o motivo de fechamento de checklist:'
+            reply_keyboard2 = [['Finalização de Serviço'],['Manutenção'],['Outro']]
 
         if(str(update.message.text).upper() == 'SIM'):
             update.message.reply_text(
                 question_header,
-                reply_markup=ReplyKeyboardMarkup([['OS'],['Manutenção'],['Outro']], one_time_keyboard=True))
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
 
             return MOTIVO
         elif(str(update.message.text).upper() == 'NÃO'):
