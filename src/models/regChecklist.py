@@ -15,6 +15,67 @@ def strBool2(b):
     else:
         return 'Não está ok'
 
+ASSOC = {
+    'mecanica': [('mecanica','Mecânica'),
+                ('motor','Motor'),
+                ('amortecedor','Amortecedor'),
+                ('escapamento','Escapamento'),
+                ('freio','Freio'),
+                ('embreagem','Embreagem'),
+                ('acelerador','Acelerador'),
+                ('cambio','Câmbio'),
+                ('oleo','Òleo'),
+                ('agua','Agua'),
+                ('alinhamento','Alinhamento'),
+                ('freiodemao','Freio de mão')],
+    'lataria': [('lataria','Lataria'),
+                ('dianteiro','Lataria dianteira'),
+                ('traseiro','Lateria traseira'),
+                ('portadianteiradireita','Porta dianteira direita'),
+                ('portadianteiraesquerda','Porta dianteira esquerda'),
+                ('portatraseiradireita','Porta traseira direita'),
+                ('portatraseiraesquerda','Porta traseira esquerda'),
+                ('portamalas','Porta-malas'),
+                ('parachoquedianteiro','Parachoque dianteiro'),
+                ('parachoquetraseiro', 'Parachoque traseiro')],
+    'eletrica': [('eletrica','Elétrica'),
+                ('farolete','Farolete'),
+                ('farolbaixo','Farol baixo'),
+                ('farolalto','Farol alto'),
+                ('setas','Setas'),
+                ('luzesdopainel','Luzes do painel'),
+                ('luzesinternas','Luzes internas'),
+                ('bateria','Bateria'),
+                ('radio','Radio'),
+                ('altofalantes','Alto falantes'),
+                ('limpadorparabrisa','Limpador de parabrisa'),
+                ('arcondicionado','Ar condicionado'),
+                ('travas','Travas'),
+                ('vidros', 'Vidros')],
+    'vidros': [('vidros','Vidros'),
+                ('parabrisa','Parabrisa'),
+                ('lateraisesquerdo','Laterais esquerdo'),
+                ('lateraisdireito','Laterais direito'),
+                ('traseiro', 'Traseiro')],
+    'seguranca': [('seguranca','Segurança'),
+                ('triangulo','Triangulo'),
+                ('extintor','Extintor'),
+                ('cintos','Cintos'),
+                ('alarme','Alarme'),
+                ('fechaduras','Fechaduras'),
+                ('macanetas','Maçanetas'),
+                ('retrovisores','Retrovisores'),
+                ('macaco', 'Macaco')],
+    'pneus': [('pneus','Pneus'),
+                ('dianteiroesquerdo','Dianteiro esquerdo'),
+                ('dianteirodireito','Dianteiro direito'),
+                ('traseiroesquerdo','Traseiro esquerdo'),
+                ('traseiroedireito','Traseiro direito'),
+                ('estepe', 'Estepe')],
+    'higienizacao': [('higienizacao','Higienização'),
+                ('externa','Higienização externa'),
+                ('interna','Higienização interna')]
+}
 
 class RegChecklist:
 
@@ -93,7 +154,10 @@ class RegChecklist:
                  pneus_traseirodireito=True,
                  pneus_estepe=True,
                  higienizacao_externa=True,
-                 higienizacao_interna=True
+                 higienizacao_interna=True,
+                 cache_id = -1,
+                 cache_field = '',
+                 cache_group = ''
                  ):
         self.username = username
         self.chat_id = chat_id
@@ -173,7 +237,9 @@ class RegChecklist:
         self.pneus_estepe = pneus_estepe
         self.higienizacao_externa = higienizacao_externa
         self.higienizacao_interna = higienizacao_interna
-        self.mapeamento_nc = [False, False, False, False, False, False, False, False, False, False]
+        self.cache_id = cache_id
+        self.cache_field = cache_field
+        self.cache_group = cache_group
 
     def dadosAbertura(self):
         return('*Usuário:* ' + self.username.replace("_", " ") + '\n' +
@@ -182,7 +248,7 @@ class RegChecklist:
                '*Placa:* ' + self.placa + '\n' +
                '*KM Inicial:* ' + str(self.km_inicial) + '\n' +
                '*Manual está no veículo:* ' + strBool(self.manual) + '\n' +
-               '*Chave reserva está no veículo:* ' + strBool(self.chave_reserva) + '\n').replace("_", " ")
+               '*Chave reserva está no veículo:* ' + strBool(self.chave_reserva) + '\n').replace("_", " ").replace('[', " ").replace(']', " ")
 
     def dadosFechamento(self):
         return('*Usuário:* ' + self.username.replace("_", " ") + '\n' +
@@ -200,79 +266,25 @@ class RegChecklist:
                '*Deixou na oficina:* ' + strBool(self.deixou_oficina) + '\n' +
                '*Local da oficina:* ' + str(self.local_oficina) + '\n' +
                '*Trocou o tacógrafo:* ' + strBool(self.van_tacografo) + '\n' +
-               '*Calibrou os pneus:* ' + strBool(self.calibrou_pneu) + '\n').replace("_", " ")
+               '*Calibrou os pneus:* ' + strBool(self.calibrou_pneu) + '\n').replace("_", " ").replace('[', " ").replace(']', " ")
 
-    def dadosMecanica(self):
-        return('*CHECKLIST DE MECANICA*\n\n' +
-               '*Motor:* ' + strBool2(self.mecanica_motor) + '\n' +
-               '*Amortecedor:* ' + strBool2(self.mecanica_amortecedor) + '\n' +
-               '*Escapamento:* ' + strBool2(self.mecanica_escapamento) + '\n' +
-               '*Freio:* ' + strBool2(self.mecanica_freio) + '\n' +
-               '*Embreagem:* ' + strBool2(self.mecanica_embreagem) + '\n' +
-               '*Acelerador:* ' + strBool2(self.mecanica_acelerador) + '\n' +
-               '*Cambio:* ' + strBool2(self.mecanica_cambio) + '\n' +
-               '*Oleo:* ' + strBool2(self.mecanica_oleo) + '\n' +
-               '*Agua:* ' + strBool2(self.mecanica_agua) + '\n' +
-               '*Alinhamento:* ' + strBool2(self.mecanica_alinhamento) + '\n' +
-               '*Freio de mão:* ' + strBool2(self.mecanica_freiodemao) + '\n').replace("_", " ")
+    def dadosFalse(self):
+        dict_data = self.__dict__
 
-    def dadosLataria(self):
-        return ('*CHECKLIST DA LATARIA*\n\n' +
-                '*Lataria dianteira:* ' + strBool2(self.lataria_dianteiro) + '\n' +
-                '*Lataria traseira:* ' + strBool2(self.lataria_traseiro) + '\n' +
-                '*Porta dianteira direita:* ' + strBool2(self.lataria_portadianteiradireita) + '\n' +
-                '*Porta dianteira esquerda:* ' + strBool2(self.lataria_portadianteiraesquerda) + '\n' +
-                '*Porta traseira direita:* ' + strBool2(self.lataria_portatraseiradireita) + '\n' +
-                '*Parte traseira esquerda:* ' + strBool2(self.lataria_portatraseiraesquerda) + '\n' +
-                '*Lataria do portamalas:* ' + strBool2(self.lataria_portamalas) + '\n' +
-                '*Lataria do parachoque dianteiro:* ' + strBool2(self.lataria_parachoquedianteiro) + '\n' +
-                '*Lataria do parachoque traseiro:* ' + strBool2(self.lataria_parachoquetraseiro) + '\n' +
-                '*Lataria do capo:* ' + strBool2(self.lataria_capo) + '\n' +
-                '*Lataria do teto:* ' + strBool2(self.lataria_teto) + '\n').replace("_", " ")
+        dados = ''
 
-    def dadosEletrica(self):
-        return ('*CHECKLIST DE ELETRICA*\n\n' +
-                '*Farolete:* ' + strBool2(self.eletrica_farolete) + '\n' +
-                '*Farol baixo:* ' + strBool2(self.eletrica_farolbaixo) + '\n' +
-                '*Farol alto:* ' + strBool2(self.eletrica_farolalto) + '\n' +
-                '*Setas:* ' + strBool2(self.eletrica_setas) + '\n' +
-                '*Luzes do painel:* ' + strBool2(self.eletrica_luzesdopainel) + '\n' +
-                '*Luzes internas:* ' + strBool2(self.eletrica_luzesinternas) + '\n' +
-                '*Bateria:* ' + strBool2(self.eletrica_bateria) + '\n' +
-                '*Radio:* ' + strBool2(self.eletrica_radio) + '\n' +
-                '*Alto falantes:* ' + strBool2(self.eletrica_altofalantes) + '\n' +
-                '*Limpador de parabrisa:* ' + strBool2(self.eletrica_limpadorparabrisa) + '\n' +
-                '*Ar condicionado:* ' + strBool2(self.eletrica_arcondicionado) + '\n' +
-                '*Travas:* ' + strBool2(self.eletrica_travas) + '\n' +
-                '*Vidros:* ' + strBool2(self.eletrica_vidros) + '\n').replace("_", " ")
+        for key in dict_data:
+            if (dict_data[key] == False):
+                try:
+                    a, b = key.split('_')
+                    arr = ASSOC[a]
+                    for tup in arr:
+                        if b == tup[0]:
+                            dados += 'O item: *' + tup[1] + '* não está ok\n'
+                except:
+                    continue
+        
+        return dados[:-1]
 
-    def dadosVidros(self):
-        return ('*CHECKLIST DOS VIDROS*\n\n' +
-                '*Parabrisa:* ' + strBool2(self.vidros_parabrisa) + '\n' +
-                '*Laterais esquerdo:* ' + strBool2(self.vidros_lateraisesquerdo) + '\n' +
-                '*Laterais direito:* ' + strBool2(self.vidros_lateraisdireito) + '\n' +
-                '*Traseiro:* ' + strBool2(self.vidros_traseiro) + '\n').replace("_", " ")
 
-    def dadosSeguranca(self):
-        return ('*CHECKLIST DE SEGURANÇA*\n\n' +
-                '*Triangulo:* ' + strBool2(self.seguranca_triangulo) + '\n' +
-                '*Extintor:* ' + strBool2(self.seguranca_extintor) + '\n' +
-                '*Cintos:* ' + strBool2(self.seguranca_cintos) + '\n' +
-                '*Alarme:* ' + strBool2(self.seguranca_alarme) + '\n' +
-                '*Fechaduras:* ' + strBool2(self.seguranca_fechaduras) + '\n' +
-                '*Maçanetas:* ' + strBool2(self.seguranca_macanetas) + '\n' +
-                '*Retrovisores:* ' + strBool2(self.seguranca_retrovisores) + '\n' +
-                '*Macaco:* ' + strBool2(self.seguranca_macaco) + '\n').replace("_", " ")
 
-    def dadosPneus(self):
-        return ('*CHECKLIST DO PNEU*\n\n' +
-                '*Dianteiro esquerdo:* ' + strBool2(self.pneus_dianteiroesquerdo) + '\n' +
-                '*Dianteiro direito:* ' + strBool2(self.pneus_dianteirodireito) + '\n' +
-                '*Traseiro esquerdo:* ' + strBool2(self.pneus_traseiroesquerdo) + '\n' +
-                '*Traseiro direito:* ' + strBool2(self.pneus_traseirodireito) + '\n' + 
-                '*Estepe:* ' + strBool2(self.pneus_estepe) + '\n').replace("_", " ")
-
-    def dadosHigienizacao(self):
-        return ('*CHECKLIST DE HIGIENIZAÇÃO*\n\n' +
-                '*Higienização externa:* ' + strBool2(self.higienizacao_externa) + '\n' +
-                '*Higienização interna:* ' + strBool2(self.higienizacao_interna) + '\n').replace("_", " ")
