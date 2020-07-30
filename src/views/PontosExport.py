@@ -19,6 +19,8 @@ from sqlalchemy.sql import func
 from utils import CalendarUtils
 from utils.pdfFactory import PdfFactory
 
+from views.FalcaoBauer import getMotoristasSet
+
 from datetime import datetime
 from pytz import timezone
 
@@ -48,7 +50,20 @@ class PontosExport:
         )
 
         self.disponiveis = CommandHandler('disponiveis', self.disponiveis)
+        self.falcao = CommandHandler('falcao_bauer', self.falcao_bauer)
 
+    def falcao_bauer(self, update, context):
+        factory = PdfFactory('falcao.pdf')
+
+        print(getMotoristasSet())
+
+        fileToSend = factory.falcao(getMotoristasSet())
+
+        context.bot.sendDocument(chat_id=update.message.chat_id, document=fileToSend)
+       
+        os.unlink(fileToSend.name)
+
+        return
 
     def disponiveis(self, update, context):
         disponiveis = '*DISPONIVEIS DO ADMINISTRATIVO*\n\n'

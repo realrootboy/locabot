@@ -3,6 +3,7 @@ src/configs/
 media/
 migrations/
 node_modules/
+secrets/
 token.pickle
 credentials.json
 logs/
