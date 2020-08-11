@@ -1182,7 +1182,7 @@ class ChecklistController:
                     False,
                     item.placa,
                     str(item.km_inicial),
-                    item.dt_abertura
+                    datetime.now(timezone('America/Sao_Paulo'))
                 )
 
                 checklist.km_final = str(item.km_final) + ' KM'
@@ -1301,7 +1301,7 @@ class ChecklistController:
             checklists = session.query(Checklist).filter(
                 Checklist.dt_abertura >= range_intervalo[0],
                 Checklist.dt_abertura < range_intervalo[1]
-            )
+            ).order_by(Checklist.id.asc())
 
             try:
                 workbook = xlsxwriter.Workbook(local_path)

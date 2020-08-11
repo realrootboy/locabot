@@ -164,7 +164,7 @@ class RegChecklist:
         self.is_abertura = is_abertura
         self.placa = placa
         self.km_inicial = km_inicial
-        self.dt_abertura = dt_abertura
+        self.dt_abertura = datetime.now(timezone('America/Sao_Paulo'))
         self.km_final = km_final
         self.motivo = motivo
         self.manual = manual
