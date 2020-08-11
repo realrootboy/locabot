@@ -708,7 +708,7 @@ class ChecklistController:
             checklists = session.query(Checklist).filter(
                 Checklist.dt_abertura >= range_intervalo[0],
                 Checklist.dt_abertura < range_intervalo[1]
-            )
+            ).order_by(Checklist.id.asc())
 
             try:
                 workbook = xlsxwriter.Workbook(local_path)
