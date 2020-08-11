@@ -596,7 +596,7 @@ class ChecklistController:
                     True,
                     item.placa,
                     str(item.km_inicial) + ' KM',
-                    item.dt_abertura
+                    datetime.now(timezone('America/Sao_Paulo'))
                 )
 
                 checklist.carro_p_casa = item.carro_p_casa
