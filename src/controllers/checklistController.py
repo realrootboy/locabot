@@ -832,6 +832,7 @@ class ChecklistController:
                 open_checklist.motorista_id = checklist.motorista_id
                 open_checklist.placa = checklist.placa
                 open_checklist.km_inicial = checklist.km_inicial
+                open_checklist.dt_abertura = checklist.dt_abertura
 
                 buff.append(open_checklist)
             else:
@@ -1182,7 +1183,7 @@ class ChecklistController:
                     False,
                     item.placa,
                     str(item.km_inicial),
-                    datetime.now(timezone('America/Sao_Paulo'))
+                    item.dt_abertura
                 )
 
                 checklist.km_final = str(item.km_final) + ' KM'
