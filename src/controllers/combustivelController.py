@@ -264,6 +264,12 @@ class CombustivelController:
                     text='Formato invalido de quantidade de litros. Por favor, informe novamente!')
                 return QNT_LITRO
 
+        if(float(update.message.text.replace(',', '.')) > 200):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='A quantidade do litros abastecidos inserida é muito grande (limite de 200L). Por favor, informe novamente o valor correto!\n Lembre-se de enviar o valor com vírgula ou ponto, ex: 3,65 no lugar de 365')
+            return QNT_LITRO
+
         replaced = str(update.message.text).replace('.', ',')
 
         listUtils.searchAndUpdate(buff,
@@ -302,6 +308,12 @@ class CombustivelController:
                     chat_id=update.effective_chat.id,
                     text='Formato invalido de valor do litro. Por favor, informe novamente!')
                 return VAL_LITRO
+
+        if(float(update.message.text.replace(',', '.')) > 10):
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text='O valor do litro inserido é muito grande (limite de R$ 10,00). Por favor, informe novamente!\n Lembre-se de enviar o valor com vírgula ou ponto, ex: 3,65 no lugar de 365')
+            return VAL_LITRO
 
         replaced = str(update.message.text).replace('.', ',')
 
@@ -354,6 +366,7 @@ class CombustivelController:
                           ['OURO NEGRO', 'RIO NEGRO'],
                           ['DAMIANI', 'JR / DALLAS'],
                           ['TIMBOZAO / TREMENDAO', 'RAIZ'],
+                          ['TANGUA', 'TREVÃO'],
                           ['GOODCARD', 'REEMBOLSO']]
 
         update.message.reply_text(
@@ -370,13 +383,14 @@ class CombustivelController:
                           ['OURO NEGRO', 'RIO NEGRO'],
                           ['DAMIANI', 'JR / DALLAS'],
                           ['TIMBOZAO / TREMENDAO', 'RAIZ'],
+                          ['TANGUA', 'TREVÃO'],
                           ['GOODCARD', 'REEMBOLSO']]
 
         if not update.message.text in ['MARLIN', 'LIDER',
                           'OURO NEGRO', 'RIO NEGRO',
                           'DAMIANI', 'JR / DALLAS',
                           'TIMBOZAO / TREMENDAO', 'RAIZ',
-                          'GOODCARD', 'REEMBOLSO']:
+                          'GOODCARD', 'REEMBOLSO', 'TANGUA', 'TREVÃO']:
             update.message.reply_text('Posto inválido, por favor informe o posto correto.',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
             
