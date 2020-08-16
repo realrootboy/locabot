@@ -241,7 +241,7 @@ class PontoController:
                     ponto = PontosMotorista(
                         motorista,
                         item.entrada,
-                        item.said
+                        item.saida
                     )
                 
                 else:
