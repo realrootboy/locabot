@@ -636,8 +636,8 @@ class PontoController:
 
                     intervalo = IntervalosDePontoMotorista(
                         pontoDb,
-                        item.fim_intervalo,
-                        None
+                        pontoDb.saida,
+                        item.fim_intervalo
                     )
                 else:
                     administrativo = session.query(Administrativo).filter_by(
