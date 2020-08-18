@@ -163,11 +163,21 @@ class PontosExport:
 
             return ESCOLHA_ADMINISTRATIVO
         elif(update.message.text == 'Motorista'):
-            update.message.reply_text(
-                'Ainda não implementado!',
-                reply_markup=ReplyKeyboardRemove())
+            Session = Database.Session
+            session = Session()
 
-            return ConversationHandler.END
+            motoristas_reply = []
+
+            motoristas = session.query(Motorista).order_by(Motorista.nome.asc())
+
+            for motorista in motoristas:
+                motoristas_reply.append([motorista.nome + ' @' + motorista.telegram_user])
+
+            update.message.reply_text(
+                'Por favor, informe o motorista!',
+                reply_markup=ReplyKeyboardMarkup(motoristas_reply, one_time_keyboard=True))
+
+            return ESCOLHA_MOTORISTA
         elif(update.message.text == 'Cancelar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -287,36 +297,65 @@ class PontosExport:
         Session = Database.Session
         session = Session()
 
-        administrativo = session.query(Administrativo).filter_by(
-                        telegram_user=item.username_send).first()
+        if item.role_send == 'administrativo':
+            administrativo = session.query(Administrativo).filter_by(
+                            telegram_user=item.username_send).first()
 
-        month, year = update.message.text.split(' ')
-        
-        range_intervalo = CalendarUtils.getRangeByFullMonth(month, year)
+            month, year = update.message.text.split(' ')
 
-        adm_ponto = session.query(PontosAdministrativo).filter_by(
-                administrativo_id=administrativo.id,
+            range_intervalo = CalendarUtils.getRangeByFullMonth(month, year)
+
+            adm_ponto = session.query(PontosAdministrativo).filter_by(
+                    administrativo_id=administrativo.id
+                ).filter(
+                    PontosAdministrativo.entrada >= range_intervalo[0],
+                    PontosAdministrativo.entrada <= range_intervalo[1],
+                    PontosAdministrativo.saida != None
+                ).order_by(
+                    PontosAdministrativo.entrada.asc()
+                )
+
+            clock_ins = []
+
+            for ponto in adm_ponto:
+                item.acumulateHorasTrabalhadas(ponto.horas_trabalhadas)
+                intervalos = session.query(IntervalosDePontoAdministrativo).filter_by(
+                    ponto=ponto)
+                clock_ins.append(item.pontoToArrayFormatted(ponto, intervalos))
+
+            model_to_impress = administrativo
+        elif item.role_send == 'motorista':
+            motorista = session.query(Motorista).filter_by(
+                telegram_user=item.username_send).first()
+            
+            month, year = update.message.text.split(' ')
+
+            range_intervalo = CalendarUtils.getRangeByFullMonth(month, year)
+
+            motorista_ponto = session.query(PontosMotorista).filter_by(
+                motorista_id=motorista.id
             ).filter(
-                PontosAdministrativo.entrada >= range_intervalo[0],
-                PontosAdministrativo.entrada <= range_intervalo[1],
-                PontosAdministrativo.saida != None
+                PontosMotorista.entrada >= range_intervalo[0],
+                PontosMotorista.entrada <= range_intervalo[1],
+                PontosMotorista.saida != None
             ).order_by(
-                PontosAdministrativo.entrada.asc()
+                PontosMotorista.entrada.asc()
             )
 
-        clock_ins = []
+            clock_ins = []
 
-        for ponto in adm_ponto:
-            item.acumulateHorasTrabalhadas(ponto.horas_trabalhadas)
-            intervalos = session.query(IntervalosDePontoAdministrativo).filter_by(
-                ponto=ponto)
-            clock_ins.append(item.pontoToArrayFormatted(ponto, intervalos))
+            for ponto in motorista_ponto:
+                item.acumulateHorasTrabalhadas(ponto.horas_trabalhadas)
+                intervalos = session.query(IntervalosDePontoMotorista).filter_by(ponto=ponto)
+                clock_ins.append(item.pontoToArrayFormatted(ponto, intervalos))
+
+            model_to_impress = motorista
 
         factory = PdfFactory('media/' + item.media_dir )
 
         buff.pop(buff.index(item))
 
-        fileToSend = factory.sheetHours(month, year, administrativo, clock_ins, item.horas_trabalhadas_send, 'N/A')
+        fileToSend = factory.sheetHours(month, year, model_to_impress, clock_ins, item.horas_trabalhadas_send, 'N/A')
         context.bot.sendDocument(chat_id=item.chat_id, document=fileToSend)
        
         os.unlink(fileToSend.name)
@@ -324,7 +363,90 @@ class PontosExport:
         return ConversationHandler.END
 
     def escolha_motorista(self, update, context):
-        return
+        user = update.message.from_user
+
+        Session = Database.Session
+        session = Session()
+
+        try:
+            nome, usuario_enviado = update.message.text.split(' @')
+            if usuario_enviado == '':
+                update.message.reply_text('Usuário não cadastrado, conversa encerrada.',
+                    reply_markup=ReplyKeyboardRemove())
+
+                return ConversationHandler.END
+        except:
+            nome, usuario_enviado = ['xxx', 'xxx']
+
+        if (not (update.message.from_user.username == usuario_enviado)) and (not (update.message.from_user.username == 'igorpittol')):
+            update.message.reply_text('Operação não permitida/Privilégios insuficientes.')
+
+            return ConversationHandler.END
+
+        motorista = session.query(Motorista).filter_by(
+            telegram_user=usuario_enviado).first()
+
+        if motorista is None:
+            Session = Database.Session
+            session = Session()
+
+            motoristas_reply = []
+
+            motoristas = session.query(Motorista).order_by(Motorista.nome.asc())
+
+            for motorista in motoristas:
+                motoristas_reply.append([motorista.nome + ' @' + motorista.telegram_user])
+
+            update.message.reply_text(
+                'Motorista ' + update.message.text + ' inválido ou não encontrado na base de dados. ' +
+                'Por favor, informe novamente o motorista.',
+                reply_markup=ReplyKeyboardMarkup(motoristas_reply, one_time_keyboard=True))
+
+            session.close()
+
+            return ESCOLHA_MOTORISTA
+
+
+
+        # buff.append(pdfPonto)
+        
+        motorista = session.query(Motorista).filter_by(
+                        telegram_user=usuario_enviado).first()
+
+        motorista_intervalo = session.query(
+            func.min(PontosMotorista.entrada).label("min_date"),
+            func.max(PontosAdministrativo.saida).label("max_date")).filter_by(
+                motorista_id=motorista.id
+            )
+        try: 
+            res = motorista_intervalo.one()
+            min_date = res.min_date
+            max_date = res.max_date
+    
+            periodos = CalendarUtils.periodosRange(min_date.month, min_date.year, max_date.month, max_date.year)
+        except:
+            update.message.reply_text('Não há registros.', reply_markup=ReplyKeyboardRemove())
+            return ConversationHandler.END
+
+        if not periodos:
+            update.message.reply_text('Não há registros.', reply_markup=ReplyKeyboardRemove())
+            return ConversationHandler.END
+
+        pdfPonto = RegPdfPonto(
+            username=update.message.from_user.username,
+            chat_id=update.message.chat_id,
+            role_send='motorista',
+            username_send=usuario_enviado,
+            name_send=nome,
+            periodos=periodos
+        )
+
+        buff.append(pdfPonto)
+
+        session.close()
+        update.message.reply_text('Selecione o período:', reply_markup=ReplyKeyboardMarkup(periodos, one_time_keyboard=True))
+
+        return PERIODO_ENVIO
 
     def cancel(self, update, context):
         user = update.message.from_user

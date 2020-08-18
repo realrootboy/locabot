@@ -55,4 +55,4 @@ class RegPdfPonto:
 		sum_hours = int(hours) + int(new_hours) + (sum_minutes // 60)
 		hours = sum_hours
 
-		self.horas_trabalhadas_send = str(hours) + ':' + str(minutes) + ':' + str(seconds)
+		self.horas_trabalhadas_send = str(hours) + ':' + '%.2d' % minutes + ':' + '%.2d' % seconds
