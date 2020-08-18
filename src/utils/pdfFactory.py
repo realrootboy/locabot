@@ -66,7 +66,11 @@ class PdfFactory:
         if employee is None:
         	return None
         name = 'Nome: ' + employee.nome
-        role = 'Função: ' + employee.role
+        if employee.role:
+            role = 'Função: ' + employee.role
+        else:
+            role = 'Função: motorista'
+        
         cpf = 'CPF: '
         ctps = 'CTPS: '
         ###############
