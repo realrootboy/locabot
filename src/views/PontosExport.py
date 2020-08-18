@@ -108,7 +108,7 @@ class PontosExport:
     def registro(self, update, context):
         if update.message.from_user.username is None:
             update.message.reply_text(
-                'Não é possível realizar o cadastro de ponto sem um nome de usuário cadastrado.',
+                'Não é possível realizar a visualização de informações de ponto sem um nome de usuário cadastrado.',
                 reply_markup=ReplyKeyboardRemove()
             )
             return ConversationHandler.END
@@ -120,7 +120,10 @@ class PontosExport:
             administrativo = session.query(Administrativo).filter_by(
                 telegram_user=update.message.from_user.username).first()
             
-            if administrativo is None:
+            motorista = session.query(Motorista).filter_by(
+                telegram_user=update.message.from_user.username).first()
+            
+            if (administrativo is None) and (motorista is None):
                 update.message.reply_text(
                     'Usuário ' + update.message.from_user.username + ' não encontrado na base de dados. ' +
                     'Acesso não autorizado!', reply_markup=ReplyKeyboardRemove()
