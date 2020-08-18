@@ -138,9 +138,14 @@ class PontosExport:
                                       reply_markup=ReplyKeyboardRemove())
             return ConversationHandler.END
 
-        update.message.reply_text(
-            'Olá, ' + administrativo.nome + '. Por favor, escolha o setor de consulta.',
-            reply_markup=ReplyKeyboardMarkup([['Administrativo'], ['Motorista'], ['Cancelar']], one_time_keyboard=True))
+        if administrativo:
+            update.message.reply_text(
+                'Olá, ' + administrativo.nome + '. Por favor, escolha o setor de consulta.',
+                reply_markup=ReplyKeyboardMarkup([['Administrativo'], ['Motorista'], ['Cancelar']], one_time_keyboard=True))
+        else:
+            update.message.reply_text(
+                'Olá, ' + motorista.nome + '. Por favor, escolha o setor de consulta.',
+                reply_markup=ReplyKeyboardMarkup([['Administrativo'], ['Motorista'], ['Cancelar']], one_time_keyboard=True))
 
         session.close()
 
