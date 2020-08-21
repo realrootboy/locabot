@@ -32,10 +32,52 @@ class PdfFactory:
                     [motorista['nome']]
             ]
             table_input.append(['Dia', 'Entrada', 'Saida', 'Total Diário'])
+
             for dia in list(motorista['horarios']):
+                fst_month = dia.split('/')[1]
+                table_input.append(['MES ' + fst_month])
+                total_mensal = '00:00:00'
+                break
+
+            for dia in list(motorista['horarios']):
+                current_month = dia.split('/')[1]
+
+                if not (fst_month == current_month):
+                    #old_s = int(s)
+                    #s = (int(s) + seconds) % 60
+                    #old_m = int(m)
+                    #m = ((int(m) + minutes) % 60) + ((old_s + seconds) // 60)
+                    #h = (int(h) + int(hour - 1)) + ((old_m + minutes) // 60)
+
+                    table_input.append(['Total do mês '+ fst_month +': ' + total_mensal])
+
+                    table_input.append(['MES ' + current_month])
+                    fst_month = current_month
+                    total_mensal = '00:00:00'
                 
                 for hrs in list(motorista['horarios'][dia]):
+                    h, m, s = total_mensal.split(':')
+
+                    if not hrs[2] == '':
+                        hour, minutes, seconds = hrs[2].split(':')
+
+                        old_s = int(s)
+                        s = (int(s) + int(seconds)) % 60
+                        old_m = int(m)
+                        m = ((int(m) + int(minutes)) % 60) + ((old_s + int(seconds)) // 60)
+                        h = (int(h) + int(int(hour))) + ((old_m + int(minutes)) // 60)
+                        
+                        total_mensal = '%.2d' % int(h) + ':' + '%.2d' % int(m) + ':' + '%.2d' % int(s)
+
                     table_input.append([dia, hrs[0], hrs[1], hrs[2]])
+
+                    print(total_mensal)
+            
+            table_input.append(['Total do mês '+ fst_month +': ' + total_mensal])
+
+            table_input.append(['MES ' + current_month])
+            fst_month = current_month
+            total_mensal = '00:00:00'
                 
             table_input.append(['Total Final', motorista['total_final']])
             

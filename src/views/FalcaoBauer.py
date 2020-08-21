@@ -90,7 +90,12 @@ def getMotoristasSet():
                     seconds %= 3600
                     minutes = seconds // 60
                     seconds %= 60
-                    hrs[2] = "%d:%02d:%02d" % (hour - 1, minutes, seconds)
+                    
+                    if not hour == 0:
+                        hrs[2] = "%d:%02d:%02d" % (hour - 1, minutes, seconds)
+                    else:
+                        hrs[2] = "%d:%02d:%02d" % (hour, minutes, seconds)
+                    
 
                     h, m, s = motorista['total_final'].split(':')
 
@@ -100,6 +105,6 @@ def getMotoristasSet():
                     m = ((int(m) + minutes) % 60) + ((old_s + seconds) // 60)
                     h = (int(h) + int(hour - 1)) + ((old_m + minutes) // 60)
                     
-                    motorista['total_final'] = str(int(h)) + ':' + str(int(m)) + ':' + str(int(s))
+                    motorista['total_final'] = '%.2d' % int(h) + ':' + '%.2d' % int(m) + ':' + '%.2d' % int(s)
 
     return motorista_set
