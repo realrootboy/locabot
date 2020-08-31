@@ -552,7 +552,7 @@ class CombustivelController:
                                           'O erro foi reportado, tente novamente mais tarde.',
                                           reply_markup=ReplyKeyboardRemove())
             buff.clear()
-            textLogger.log('Combustivel - not item ;' + listUtils.listItens())
+            textLogger.log('Combustivel - not item ;' + listUtils.listItens(buff))
 
         if(update.message.text == 'Sim, confirmar'):
             context.bot.send_message(
