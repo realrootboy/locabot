@@ -547,6 +547,13 @@ class CombustivelController:
                                           update.message.from_user.username,
                                           update.message.chat.id)
 
+        if not item:
+            update.message.reply_text('Houve um erro ao tentar salvar! ' +
+                                          'O erro foi reportado, tente novamente mais tarde.',
+                                          reply_markup=ReplyKeyboardRemove())
+            buff = list()
+            textLogger.log('Combustivel - not item ;' + listUtils.listItens())
+
         if(update.message.text == 'Sim, confirmar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
