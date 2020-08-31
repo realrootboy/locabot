@@ -18,8 +18,10 @@ from models.Credencial import Credencial
 
 from models.Veiculos import Veiculos
 
+from models.DesviosAdministrativo import DesviosAdministrativo
+from models.DesviosMotorista import DesviosMotorista
+
 def main():
-    print("creating tables...")
     loadDb()
 
 def loadDb():

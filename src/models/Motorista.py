@@ -12,6 +12,7 @@ class Motorista(Database.Base):
     nome = Column('nome', String(255))
     telegram_user = Column('telegram_user', String(255))
     registros = relationship('Registro', back_populates='motorista')
+    desvios = relationship('DesviosMotorista', back_populates='motorista')
     checklists = relationship('Checklist', back_populates='motorista')
     pontos_motorista = relationship('PontosMotorista', back_populates='motorista')
     escalas_motorista = relationship('EscalasMotorista', back_populates='motorista')

@@ -636,14 +636,18 @@ class CombustivelController:
                 workbook.close()
 
             except Exception as e:
+
                 print(e)
+                session.close()
+                gdrive.upload_gdrive(local_path, local_path.replace('media/', ''))
+                os.remove(local_path)
+                return ConversationHandler.END
 
             session.close()
             gdrive.upload_gdrive(local_path, local_path.replace('media/', ''))
             os.remove(local_path)
-
-
             return ConversationHandler.END
+
         elif(update.message.text == 'Não, refazer'):
             update.message.reply_text(
                 'Ok! Vamos refazer então.',
