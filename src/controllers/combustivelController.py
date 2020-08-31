@@ -551,7 +551,7 @@ class CombustivelController:
             update.message.reply_text('Houve um erro ao tentar salvar! ' +
                                           'O erro foi reportado, tente novamente mais tarde.',
                                           reply_markup=ReplyKeyboardRemove())
-            buff = list()
+            buff.clear()
             textLogger.log('Combustivel - not item ;' + listUtils.listItens())
 
         if(update.message.text == 'Sim, confirmar'):
