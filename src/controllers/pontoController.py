@@ -54,7 +54,7 @@ class PontoController:
                 REABERTURA: [MessageHandler(Filters.text & (~ Filters.command), self.reabertura)]
             },
 
-            fallbacks=[CommandHandler('cancelar_bater_ponto', self.cancel)]
+            fallbacks=[CommandHandler('cancelar', self.cancel)]
         )
 
     def registro(self, update, context):
