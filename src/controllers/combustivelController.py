@@ -36,22 +36,22 @@ class CombustivelController:
             entry_points = [CommandHandler('combustivel', self.registro)],
 
             states = {
-                RETORNO: [MessageHandler(Filters.text, self.retorno)],
-                PLACA: [MessageHandler(Filters.text, self.placa)],
-                QUILOMETRAGEM: [MessageHandler(Filters.text, self.quilometragem)],
-                QNT_LITRO: [MessageHandler(Filters.text, self.qnt_litro)],
-                VAL_LITRO: [MessageHandler(Filters.text, self.val_litro)],
-                TP_COMBUSTIVEL: [MessageHandler(Filters.text, self.tp_combustivel)],
-                POSTO: [MessageHandler(Filters.text, self.posto)],
+                RETORNO: [MessageHandler(Filters.text & (~ Filters.command), self.retorno)],
+                PLACA: [MessageHandler(Filters.text & (~ Filters.command), self.placa)],
+                QUILOMETRAGEM: [MessageHandler(Filters.text & (~ Filters.command), self.quilometragem)],
+                QNT_LITRO: [MessageHandler(Filters.text & (~ Filters.command), self.qnt_litro)],
+                VAL_LITRO: [MessageHandler(Filters.text & (~ Filters.command), self.val_litro)],
+                TP_COMBUSTIVEL: [MessageHandler(Filters.text & (~ Filters.command), self.tp_combustivel)],
+                POSTO: [MessageHandler(Filters.text & (~ Filters.command), self.posto)],
                 BOMBAINICIO: [MessageHandler(Filters.photo, self.bombainicio)],
                 FPLACA: [MessageHandler(Filters.photo, self.fplaca)],
                 BOMBAFIM: [MessageHandler(Filters.photo, self.bombafim)],
                 PAINEL: [MessageHandler(Filters.photo, self.painel)],
                 NFISCAL: [MessageHandler(Filters.photo, self.nfiscal)],
-                CONFIRM: [MessageHandler(Filters.text, self.confirm)]
+                CONFIRM: [MessageHandler(Filters.text & (~ Filters.command), self.confirm)]
             },
 
-            fallbacks = [CommandHandler('cancelar_combustivel', self.cancel)]
+            fallbacks = [CommandHandler('cancelar', self.cancel)]
         )
 
     def registro(self, update, context):
@@ -690,9 +690,13 @@ class CombustivelController:
             return CONFIRM
 
     def cancel(self, update, context):
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+        buff.pop(buff.index(item))
         user = update.message.from_user
         self.logger.info("Usuario %s cancelou a conversa.", user.first_name)
-        update.message.reply_text('Tchau!',
+        update.message.reply_text('Operação cancelada!',
                                   reply_markup=ReplyKeyboardRemove())
 
         return ConversationHandler.END

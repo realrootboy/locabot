@@ -6,21 +6,21 @@ from sqlalchemy.orm import relationship
 
 from database.main import Database
 
-class EscalasMotorista(Database.Base):
-    __tablename__ = 'escalas_motorista'
+class EscalasAdministrativo(Database.Base):
+    __tablename__ = 'escalas_administrativo'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    motorista_id = Column(Integer, ForeignKey('motoristas.id'))
-    motorista = relationship('Motorista', back_populates="escalas_motorista")
+    administrativo_id = Column(Integer, ForeignKey('administrativos.id'))
+    administrativo = relationship('Administrativo', back_populates="escalas_administrativo")
     escala = Column('escala', String(100))
     vigencia = Column('vigencia', DateTime(timezone=True))
     fim_vigencia = Column('fim_vigencia', DateTime(timezone=True))
 
     def __init__(self,
-                 motorista,
+                 administrativo,
                  escala,
                  vigencia,
                  fim_vigencia):
-        self.motorista = motorista
+        self.administrativo = administrativo
         self.escala = escala
         self.vigencia = vigencia
         self.fim_vigencia = fim_vigencia

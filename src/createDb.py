@@ -8,6 +8,7 @@ from models.EscalasMotorista import EscalasMotorista
 from models.Administrativo import Administrativo
 from models.PontosAdministrativo import PontosAdministrativo
 from models.IntervalosDePontoAdministrativo import IntervalosDePontoAdministrativo
+from models.EscalasAdministrativo import EscalasAdministrativo
 
 from models.Registro import Registro
 from models.Checklist import Checklist

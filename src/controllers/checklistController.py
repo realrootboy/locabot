@@ -161,72 +161,72 @@ class ChecklistController:
                 'abrir_checklist', self.abrir_checklist)],
 
             states={
-                PLACA: [MessageHandler(Filters.text, self.placa)],
-                KM_INICIAL: [MessageHandler(Filters.text, self.km_inicial)],
-                A_CONFIRM: [MessageHandler(Filters.text, self.a_confirm)],
+                PLACA: [MessageHandler(Filters.text & (~ Filters.command), self.placa)],
+                KM_INICIAL: [MessageHandler(Filters.text & (~ Filters.command), self.km_inicial)],
+                A_CONFIRM: [MessageHandler(Filters.text & (~ Filters.command), self.a_confirm)],
                 
-                MOTIVO: [MessageHandler(Filters.text, self.motivo)],
+                MOTIVO: [MessageHandler(Filters.text & (~ Filters.command), self.motivo)],
 
-                MANUAL: [MessageHandler(Filters.text, self.manual)],
+                MANUAL: [MessageHandler(Filters.text & (~ Filters.command), self.manual)],
 
-                CARRO_P_CASA: [MessageHandler(Filters.text, self.carro_p_casa)],
-                VIAJOU_C_CARRO: [MessageHandler(Filters.text, self.viajou_c_carro)],
-                OUTRO_CONDUTOR: [MessageHandler(Filters.text, self.outro_condutor)],
-                NOVO_CONDUTOR: [MessageHandler(Filters.text, self.novo_condutor)],
-                DEIXOU_OFICINA: [MessageHandler(Filters.text, self.deixou_oficina)],
-                LOCAL_OFICINA: [MessageHandler(Filters.text, self.local_oficina)],
-                VAN_TACOGRAFO: [MessageHandler(Filters.text, self.van_tacografo)],
-                CALIBROU_PNEU: [MessageHandler(Filters.text, self.calibrou_pneu)],
+                CARRO_P_CASA: [MessageHandler(Filters.text & (~ Filters.command), self.carro_p_casa)],
+                VIAJOU_C_CARRO: [MessageHandler(Filters.text & (~ Filters.command), self.viajou_c_carro)],
+                OUTRO_CONDUTOR: [MessageHandler(Filters.text & (~ Filters.command), self.outro_condutor)],
+                NOVO_CONDUTOR: [MessageHandler(Filters.text & (~ Filters.command), self.novo_condutor)],
+                DEIXOU_OFICINA: [MessageHandler(Filters.text & (~ Filters.command), self.deixou_oficina)],
+                LOCAL_OFICINA: [MessageHandler(Filters.text & (~ Filters.command), self.local_oficina)],
+                VAN_TACOGRAFO: [MessageHandler(Filters.text & (~ Filters.command), self.van_tacografo)],
+                CALIBROU_PNEU: [MessageHandler(Filters.text & (~ Filters.command), self.calibrou_pneu)],
 
-                MENU_DINAMICO: [MessageHandler(Filters.text, self.menu_dinamico)],
+                MENU_DINAMICO: [MessageHandler(Filters.text & (~ Filters.command), self.menu_dinamico)],
 
-                MENU_SWITCHER: [MessageHandler(Filters.text, self.menu_switcher)],
-                KM_CONFIRM: [MessageHandler(Filters.text, self.km_confirm)],
+                MENU_SWITCHER: [MessageHandler(Filters.text & (~ Filters.command), self.menu_switcher)],
+                KM_CONFIRM: [MessageHandler(Filters.text & (~ Filters.command), self.km_confirm)],
 
-                CONFORMIDADE: [MessageHandler(Filters.text, self.conformidade)],
+                CONFORMIDADE: [MessageHandler(Filters.text & (~ Filters.command), self.conformidade)],
                 F_CONFORMIDADE: [MessageHandler(Filters.photo, self.f_conformidade)],
                 O_CONFORMIDADE: [MessageHandler(
-                    Filters.text, self.o_conformidade)]
+                    Filters.text & (~ Filters.command), self.o_conformidade)]
 
             },
 
             fallbacks=[
-                CommandHandler('cancelar_abrir_checklist', self.cancel)]
+                CommandHandler('cancelar', self.cancel)]
         )
         self.conv_handler_fechamento = ConversationHandler(
             entry_points=[CommandHandler(
                 'fechar_checklist', self.fechar_checklist)],
 
             states={
-                KM_FINAL: [MessageHandler(Filters.text, self.km_final)],
+                KM_FINAL: [MessageHandler(Filters.text & (~ Filters.command), self.km_final)],
 
-                CARRO_P_CASA: [MessageHandler(Filters.text, self.carro_p_casa)],
-                VIAJOU_C_CARRO: [MessageHandler(Filters.text, self.viajou_c_carro)],
-                OUTRO_CONDUTOR: [MessageHandler(Filters.text, self.outro_condutor)],
-                NOVO_CONDUTOR: [MessageHandler(Filters.text, self.novo_condutor)],
-                DEIXOU_OFICINA: [MessageHandler(Filters.text, self.deixou_oficina)],
-                LOCAL_OFICINA: [MessageHandler(Filters.text, self.local_oficina)],
-                VAN_TACOGRAFO: [MessageHandler(Filters.text, self.van_tacografo)],
-                CALIBROU_PNEU: [MessageHandler(Filters.text, self.calibrou_pneu)],
+                CARRO_P_CASA: [MessageHandler(Filters.text & (~ Filters.command), self.carro_p_casa)],
+                VIAJOU_C_CARRO: [MessageHandler(Filters.text & (~ Filters.command), self.viajou_c_carro)],
+                OUTRO_CONDUTOR: [MessageHandler(Filters.text & (~ Filters.command), self.outro_condutor)],
+                NOVO_CONDUTOR: [MessageHandler(Filters.text & (~ Filters.command), self.novo_condutor)],
+                DEIXOU_OFICINA: [MessageHandler(Filters.text & (~ Filters.command), self.deixou_oficina)],
+                LOCAL_OFICINA: [MessageHandler(Filters.text & (~ Filters.command), self.local_oficina)],
+                VAN_TACOGRAFO: [MessageHandler(Filters.text & (~ Filters.command), self.van_tacografo)],
+                CALIBROU_PNEU: [MessageHandler(Filters.text & (~ Filters.command), self.calibrou_pneu)],
 
-                MENU_DINAMICO: [MessageHandler(Filters.text, self.menu_dinamico)],
+                MENU_DINAMICO: [MessageHandler(Filters.text & (~ Filters.command), self.menu_dinamico)],
 
-                MOTIVO: [MessageHandler(Filters.text, self.motivo)],
+                MOTIVO: [MessageHandler(Filters.text & (~ Filters.command), self.motivo)],
 
-                MANUAL: [MessageHandler(Filters.text, self.manual)],
+                MANUAL: [MessageHandler(Filters.text & (~ Filters.command), self.manual)],
 
-                MENU_SWITCHER: [MessageHandler(Filters.text, self.menu_switcher)],
-                KM_CONFIRM: [MessageHandler(Filters.text, self.km_confirm)],
+                MENU_SWITCHER: [MessageHandler(Filters.text & (~ Filters.command), self.menu_switcher)],
+                KM_CONFIRM: [MessageHandler(Filters.text & (~ Filters.command), self.km_confirm)],
 
-                F_CONFIRM: [MessageHandler(Filters.text, self.f_confirm)],
+                F_CONFIRM: [MessageHandler(Filters.text & (~ Filters.command), self.f_confirm)],
 
-                CONFORMIDADE: [MessageHandler(Filters.text, self.conformidade)],
+                CONFORMIDADE: [MessageHandler(Filters.text & (~ Filters.command), self.conformidade)],
                 F_CONFORMIDADE: [MessageHandler(Filters.photo, self.f_conformidade)],
                 O_CONFORMIDADE: [MessageHandler(
-                    Filters.text, self.o_conformidade)]
+                    Filters.text & (~ Filters.command), self.o_conformidade)]
             },
 
-            fallbacks=[CommandHandler('cancelar_fechar_checklist', self.cancel)]
+            fallbacks=[CommandHandler('cancelar', self.cancel)]
         )
 
     def abrir_checklist(self, update, context):
@@ -1383,7 +1383,7 @@ class ChecklistController:
         buff.pop(buff.index(item))
         user = update.message.from_user
         self.logger.info("Usuario %s cancelou a conversa.", user.first_name)
-        update.message.reply_text('Tchau!',
+        update.message.reply_text('Operação cancelada!',
                                   reply_markup=ReplyKeyboardRemove())
 
         return ConversationHandler.END

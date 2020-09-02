@@ -46,12 +46,12 @@ class PontoController:
             entry_points=[CommandHandler('bater_ponto', self.registro)],
 
             states={
-                OPTS: [MessageHandler(Filters.text, self.opts)],
-                ENTRADA: [MessageHandler(Filters.text, self.entrada)],
-                INTERVALO: [MessageHandler(Filters.text, self.intervalo)],
-                FIM_INTERVALO: [MessageHandler(Filters.text, self.fim_intervalo)],
-                SAIDA: [MessageHandler(Filters.text, self.saida)],
-                REABERTURA: [MessageHandler(Filters.text, self.reabertura)]
+                OPTS: [MessageHandler(Filters.text & (~ Filters.command), self.opts)],
+                ENTRADA: [MessageHandler(Filters.text & (~ Filters.command), self.entrada)],
+                INTERVALO: [MessageHandler(Filters.text & (~ Filters.command), self.intervalo)],
+                FIM_INTERVALO: [MessageHandler(Filters.text & (~ Filters.command), self.fim_intervalo)],
+                SAIDA: [MessageHandler(Filters.text & (~ Filters.command), self.saida)],
+                REABERTURA: [MessageHandler(Filters.text & (~ Filters.command), self.reabertura)]
             },
 
             fallbacks=[CommandHandler('cancelar_bater_ponto', self.cancel)]
@@ -719,7 +719,7 @@ class PontoController:
         buff.pop(buff.index(item))
         user = update.message.from_user
         self.logger.info("Usuario %s cancelou a conversa.", user.first_name)
-        update.message.reply_text('Tchau!',
+        update.message.reply_text('Operação cancelada!',
                                   reply_markup=ReplyKeyboardRemove())
 
         return ConversationHandler.END

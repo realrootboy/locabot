@@ -14,4 +14,4 @@ def searchAndGetItem(gen_list, pkey1, pkey2):
 
 def listItens(gen_list):
     for item in gen_list:
-        print(item.username + ' ' + str(item.chat_id) + ' ' + str(item.media_dir))
+        print(item.username + ' ' + str(item.chat_id) + ' ' + str(item.media_dir) + ' \n')
