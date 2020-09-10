@@ -539,11 +539,11 @@ class PontoController:
                 if item.role == 'motorista':
                     intervalos = session.query(IntervalosDePontoMotorista).filter_by(
                         ponto_motorista_id=pontoDb.id)
-                    item.horas_extra = 0
+                    item.horas_extra = '00:00:00'
                 else:
                     intervalos = session.query(IntervalosDePontoAdministrativo).filter_by(
                         ponto_administrativo_id=pontoDb.id)
-                    item.horas_extra = 0
+                    item.horas_extra = '00:00:00'
 
                 item.calculateHours(intervalos)
 
