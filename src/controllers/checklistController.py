@@ -1,4 +1,4 @@
-from telegram import (ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode, 
+from telegram import (ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode,
                       InlineKeyboardButton, InlineKeyboardMarkup)
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
                           ConversationHandler, CallbackQueryHandler)
@@ -15,6 +15,7 @@ from controllers.controllerUtils import listUtils
 from models.Checklist import Checklist
 from models.Motorista import Motorista
 from models.NaoConformidades import NaoConformidades
+from models.IdentificacaoFalcao import IdentificacaoFalcao
 from models.Veiculos import Veiculos
 
 from models.regChecklist import RegChecklist
@@ -57,81 +58,85 @@ CHAVE_RESERVA = 78
 
 MOTIVO = 79
 
+NOME_FALCAO = 80
+
 buff = list()
 
 ASSOC = {
-    'mecanica': [('mecanica','Mecânica'),
-                ('motor','Motor'),
-                ('amortecedor','Amortecedor'),
-                ('escapamento','Escapamento'),
-                ('freio','Freio'),
-                ('embreagem','Embreagem'),
-                ('acelerador','Acelerador'),
-                ('cambio','Câmbio'),
-                ('oleo','Òleo'),
-                ('agua','Agua'),
-                ('alinhamento','Alinhamento'),
-                ('freiodemao','Freio de mão')],
-    'lataria': [('lataria','Lataria'),
-                ('dianteiro','Lataria dianteira'),
-                ('traseiro','Lateria traseira'),
-                ('portadianteiradireita','Porta dianteira direita'),
-                ('portadianteiraesquerda','Porta dianteira esquerda'),
-                ('portatraseiradireita','Porta traseira direita'),
-                ('portatraseiraesquerda','Porta traseira esquerda'),
-                ('portamalas','Porta-malas'),
-                ('parachoquedianteiro','Parachoque dianteiro'),
+    'mecanica': [('mecanica', 'Mecânica'),
+                 ('motor', 'Motor'),
+                 ('amortecedor', 'Amortecedor'),
+                 ('escapamento', 'Escapamento'),
+                 ('freio', 'Freio'),
+                 ('embreagem', 'Embreagem'),
+                 ('acelerador', 'Acelerador'),
+                 ('cambio', 'Câmbio'),
+                 ('oleo', 'Òleo'),
+                 ('agua', 'Agua'),
+                 ('alinhamento', 'Alinhamento'),
+                 ('freiodemao', 'Freio de mão')],
+    'lataria': [('lataria', 'Lataria'),
+                ('dianteiro', 'Lataria dianteira'),
+                ('traseiro', 'Lateria traseira'),
+                ('portadianteiradireita', 'Porta dianteira direita'),
+                ('portadianteiraesquerda', 'Porta dianteira esquerda'),
+                ('portatraseiradireita', 'Porta traseira direita'),
+                ('portatraseiraesquerda', 'Porta traseira esquerda'),
+                ('portamalas', 'Porta-malas'),
+                ('parachoquedianteiro', 'Parachoque dianteiro'),
                 ('parachoquetraseiro', 'Parachoque traseiro')],
-    'eletrica': [('eletrica','Elétrica'),
-                ('farolete','Farolete'),
-                ('farolbaixo','Farol baixo'),
-                ('farolalto','Farol alto'),
-                ('setas','Setas'),
-                ('luzesdopainel','Luzes do painel'),
-                ('luzesinternas','Luzes internas'),
-                ('bateria','Bateria'),
-                ('radio','Radio'),
-                ('altofalantes','Alto falantes'),
-                ('limpadorparabrisa','Limpador de parabrisa'),
-                ('arcondicionado','Ar condicionado'),
-                ('travas','Travas'),
-                ('vidros', 'Vidros')],
-    'vidros': [('vidros','Vidros'),
-                ('parabrisa','Parabrisa'),
-                ('lateraisesquerdo','Laterais esquerdo'),
-                ('lateraisdireito','Laterais direito'),
-                ('traseiro', 'Traseiro')],
-    'seguranca': [('seguranca','Segurança'),
-                ('triangulo','Triangulo'),
-                ('extintor','Extintor'),
-                ('cintos','Cintos'),
-                ('alarme','Alarme'),
-                ('fechaduras','Fechaduras'),
-                ('macanetas','Maçanetas'),
-                ('retrovisores','Retrovisores'),
-                ('macaco', 'Macaco')],
-    'pneus': [('pneus','Pneus'),
-                ('dianteiroesquerdo','Dianteiro esquerdo'),
-                ('dianteirodireito','Dianteiro direito'),
-                ('traseiroesquerdo','Traseiro esquerdo'),
-                ('traseiroedireito','Traseiro direito'),
-                ('estepe', 'Estepe')],
-    'higienizacao': [('higienizacao','Higienização'),
-                ('externa','Higienização externa'),
-                ('interna','Higienização interna')]
+    'eletrica': [('eletrica', 'Elétrica'),
+                 ('farolete', 'Farolete'),
+                 ('farolbaixo', 'Farol baixo'),
+                 ('farolalto', 'Farol alto'),
+                 ('setas', 'Setas'),
+                 ('luzesdopainel', 'Luzes do painel'),
+                 ('luzesinternas', 'Luzes internas'),
+                 ('bateria', 'Bateria'),
+                 ('radio', 'Radio'),
+                 ('altofalantes', 'Alto falantes'),
+                 ('limpadorparabrisa', 'Limpador de parabrisa'),
+                 ('arcondicionado', 'Ar condicionado'),
+                 ('travas', 'Travas'),
+                 ('vidros', 'Vidros')],
+    'vidros': [('vidros', 'Vidros'),
+               ('parabrisa', 'Parabrisa'),
+               ('lateraisesquerdo', 'Laterais esquerdo'),
+               ('lateraisdireito', 'Laterais direito'),
+               ('traseiro', 'Traseiro')],
+    'seguranca': [('seguranca', 'Segurança'),
+                  ('triangulo', 'Triangulo'),
+                  ('extintor', 'Extintor'),
+                  ('cintos', 'Cintos'),
+                  ('alarme', 'Alarme'),
+                  ('fechaduras', 'Fechaduras'),
+                  ('macanetas', 'Maçanetas'),
+                  ('retrovisores', 'Retrovisores'),
+                  ('macaco', 'Macaco')],
+    'pneus': [('pneus', 'Pneus'),
+              ('dianteiroesquerdo', 'Dianteiro esquerdo'),
+              ('dianteirodireito', 'Dianteiro direito'),
+              ('traseiroesquerdo', 'Traseiro esquerdo'),
+              ('traseiroedireito', 'Traseiro direito'),
+              ('estepe', 'Estepe')],
+    'higienizacao': [('higienizacao', 'Higienização'),
+                     ('externa', 'Higienização externa'),
+                     ('interna', 'Higienização interna')]
 }
 
-valid_in_switcher = list(map(str, list(range(1,len(ASSOC) + 3))))
+valid_in_switcher = list(map(str, list(range(1, len(ASSOC) + 3))))
 
 menu_itens = ''
 for index, key in enumerate(ASSOC):
     menu_itens += str(index + 1) + ' - ' + ASSOC[key][0][1] + '\n'
 
-str_menu = 'Por favor, escolha o grupo de itens desejado para iniciar a revisao:\n\n' + menu_itens + '8 - CONTINUAR OPERAÇÃO\n9 - CANCELAR OPERAÇÃO'
+str_menu = 'Por favor, escolha o grupo de itens desejado para iniciar a revisao:\n\n' + \
+    menu_itens + '8 - CONTINUAR OPERAÇÃO\n9 - CANCELAR OPERAÇÃO'
 
-def keyboardMenu(opts = 0):
+
+def keyboardMenu(opts=0):
     keyboard = []
-    
+
     if opts == 0:
         return keyboard
 
@@ -141,17 +146,20 @@ def keyboardMenu(opts = 0):
         if index % 3 == 0:
             keyboard.append(list(a))
             append_count = append_count + 1
-    
+
     keyboard.append(arr[3*append_count:])
     return keyboard
 
+
 def dynamic_menu(group):
     group_send = ASSOC[group][0][1]
-    str_menu = 'Por favor, selecione o item de ' + group_send + ' que *NÃO ESTÁ OK*\n\n'
+    str_menu = 'Por favor, selecione o item de ' + \
+        group_send + ' que *NÃO ESTÁ OK*\n\n'
     for index, a in enumerate(ASSOC[group][1:]):
         str_menu += str(index + 1) + ' - ' + a[1] + '\n'
     str_menu += str(len(ASSOC[group][1:]) + 1) + ' - VOLTAR'
     return str_menu
+
 
 class ChecklistController:
     def __init__(self, logger):
@@ -164,8 +172,10 @@ class ChecklistController:
                 PLACA: [MessageHandler(Filters.text & (~ Filters.command), self.placa)],
                 KM_INICIAL: [MessageHandler(Filters.text & (~ Filters.command), self.km_inicial)],
                 A_CONFIRM: [MessageHandler(Filters.text & (~ Filters.command), self.a_confirm)],
-                
+
                 MOTIVO: [MessageHandler(Filters.text & (~ Filters.command), self.motivo)],
+
+                NOME_FALCAO: [MessageHandler(Filters.text & (~ Filters.command), self.nome_falcao)],
 
                 MANUAL: [MessageHandler(Filters.text & (~ Filters.command), self.manual)],
 
@@ -236,18 +246,20 @@ class ChecklistController:
             try:
                 current_chat_id = update.callback_query.message.chat.id
                 current_username = update.callback_query.from_user.username
-                open_checklist = RegChecklist(current_username, current_chat_id, True)
+                open_checklist = RegChecklist(
+                    current_username, current_chat_id, True)
                 buff.append(open_checklist)
             except Exception as e:
                 context.bot.send_message(
                     chat_id=current_chat_id,
-                    text='Não é possível realizar o cadastro de checklist sem um nome de usuário cadastrado.');
+                    text='Não é possível realizar o cadastro de checklist sem um nome de usuário cadastrado.')
                 return ConversationHandler.END
         else:
             try:
                 current_chat_id = update.message.chat.id
                 current_username = update.message.from_user.username
-                open_checklist = RegChecklist(current_username, current_chat_id, True)
+                open_checklist = RegChecklist(
+                    current_username, current_chat_id, True)
                 buff.append(open_checklist)
             except Exception as e:
                 print(e)
@@ -305,7 +317,8 @@ class ChecklistController:
 
         context.bot.send_message(
             chat_id=current_chat_id,
-            text='Olá, ' + motorista.nome + '. Por favor, informe a placa do veículo ou digite "CANCELAR" para cancelar a operação',
+            text='Olá, ' + motorista.nome +
+            '. Por favor, informe a placa do veículo ou digite "CANCELAR" para cancelar a operação',
             reply_markup=ReplyKeyboardMarkup(placas, one_time_keyboard=True))
 
         return PLACA
@@ -317,8 +330,8 @@ class ChecklistController:
                 chat_id=update.effective_chat.id,
                 text='Operação cancelada!')
             item = listUtils.searchAndGetItem(buff,
-                                          update.message.from_user.username,
-                                          update.message.chat.id)
+                                              update.message.from_user.username,
+                                              update.message.chat.id)
             buff.pop(buff.index(item))
 
             return ConversationHandler.END
@@ -400,12 +413,12 @@ class ChecklistController:
         reply_keyboard = [['Sim'], ['Não']]
 
         update.message.reply_text(
-            'Quilometragem enviada: ' + update.message.text + ' KM\n\n' + 
+            'Quilometragem enviada: ' + update.message.text + ' KM\n\n' +
             'A quilometragem foi inserida corretamente?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
         return KM_CONFIRM
-    
+
     def km_confirm(self, update, context):
         reply_keyboard = [['Sim'], ['Não']]
 
@@ -415,12 +428,13 @@ class ChecklistController:
 
         if item.is_abertura:
             informado = item.km_inicial
-            question_header =  'Por favor, informe o motivo de abertura de checklist:'
-            reply_keyboard2 = [['OS'],['Manutenção'],['Outro']]
+            question_header = 'Por favor, informe o motivo de abertura de checklist:'
+            reply_keyboard2 = [['OS'], ['Manutenção'], ['Outro']]
         else:
             informado = item.km_final
-            question_header =  'Por favor, informe o motivo de fechamento de checklist:'
-            reply_keyboard2 = [['Finalização de Serviço'],['Manutenção'],['Outro']]
+            question_header = 'Por favor, informe o motivo de fechamento de checklist:'
+            reply_keyboard2 = [['Finalização de Serviço'],
+                               ['Manutenção'], ['Outro']]
 
         if(str(update.message.text).upper() == 'SIM'):
             update.message.reply_text(
@@ -442,7 +456,7 @@ class ChecklistController:
             )
 
             update.message.reply_text(
-                'Quilometragem enviada: ' + informado + ' KM\n\n' + 
+                'Quilometragem enviada: ' + informado + ' KM\n\n' +
                 'A quilometragem foi inserida corretamente?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
@@ -457,10 +471,36 @@ class ChecklistController:
                                   'motivo',
                                   update.message.text)
 
+        if(not update.message.from_user.username in ['RBB2D32',
+                                                     'RKH1B77',
+                                                     'Rbb3h45',
+                                                     'RBB2D29',
+                                                     'RBB2D35',
+                                                     'renanmgomes']):
+            update.message.reply_text(
+                'O manual está no veículo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return MANUAL
+        else:
+            update.message.reply_text('Você está usando um celular compartilhado.\n' +
+                                      'Por favor, informe seu nome',
+                                      reply_markup=ReplyKeyboardRemove())
+            return NOME_FALCAO
+
+    def nome_falcao(self, update, context):
+        reply_keyboard = [['Sim'], ['Não']]
+
+        listUtils.searchAndUpdate(buff,
+                                  update.message.from_user.username,
+                                  update.message.chat.id,
+                                  'nome_falcao',
+                                  update.message.text)
+
         update.message.reply_text(
             'O manual está no veículo?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
-        
+
         return MANUAL
 
     def manual(self, update, context):
@@ -469,7 +509,7 @@ class ChecklistController:
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
                                           update.message.chat.id)
-    
+
         if(str(update.message.text).upper() == 'SIM'):
             listUtils.searchAndUpdate(buff,
                                       update.message.from_user.username,
@@ -481,7 +521,7 @@ class ChecklistController:
                     chat_id=update.effective_chat.id,
                     text=str_menu,
                     reply_markup=ReplyKeyboardMarkup(keyboardMenu(9))
-                )     
+                )
                 return MENU_SWITCHER
             else:
                 update.message.reply_text(
@@ -503,7 +543,7 @@ class ChecklistController:
                     chat_id=update.effective_chat.id,
                     text=str_menu,
                     reply_markup=ReplyKeyboardMarkup(keyboardMenu(9))
-                )     
+                )
                 return MENU_SWITCHER
             else:
                 update.message.reply_text(
@@ -521,7 +561,7 @@ class ChecklistController:
 
             return MANUAL
 
-    #def chave_reserva(self, update, context):
+    # def chave_reserva(self, update, context):
     #    reply_keyboard = [['Sim'], ['Não']]
     #    item = listUtils.searchAndGetItem(buff,
     #                                      update.message.from_user.username,
@@ -538,7 +578,7 @@ class ChecklistController:
     #                chat_id=update.effective_chat.id,
     #                text=str_menu,
     #                reply_markup=ReplyKeyboardMarkup(keyboardMenu(9))
-    #            )     
+    #            )
     #            return MENU_SWITCHER
     #        else:
     #            update.message.reply_text(
@@ -556,7 +596,7 @@ class ChecklistController:
     #                chat_id=update.effective_chat.id,
     #                    text=str_menu,
     #                    reply_markup=ReplyKeyboardMarkup(keyboardMenu(9))
-    #                )     
+    #                )
     #            return MENU_SWITCHER
     #        else:
     #            update.message.reply_text(
@@ -570,7 +610,7 @@ class ChecklistController:
     #        update.message.reply_text(
     #            'A chave reserva está no veículo?',
     #            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
-    #        
+    #
     #        return CHAVE_RESERVA
 
     def a_confirm(self, update, context):
@@ -667,6 +707,14 @@ class ChecklistController:
 
                 session.add(checklist)
 
+                if(item.nome_falcao):
+                    session.add(
+                        IdentificacaoFalcao(
+                            checklist,
+                            item.nome_falcao
+                        )
+                    )
+
                 for i, nc in enumerate(item.desc_conformidades):
                     session.add(
                         NaoConformidades(
@@ -697,11 +745,14 @@ class ChecklistController:
                 chat_id=update.effective_chat.id,
                 text='Caso queira relatar um feedback(sugestões, criticas, etc) acesse https://forms.gle/UEYmho6UTU9wHgyD9')
 
-            local_path = 'media/CHECKLIST-' + datetime.now(timezone('America/Sao_Paulo')).strftime('%b-%Y') + '.xlsx'
+            local_path = 'media/CHECKLIST-' + \
+                datetime.now(timezone('America/Sao_Paulo')
+                             ).strftime('%b-%Y') + '.xlsx'
             register_now = datetime.now(timezone('America/Sao_Paulo'))
 
-            range_intervalo = CalendarUtils.getRangeByMonth(register_now.month, register_now.year)
-            
+            range_intervalo = CalendarUtils.getRangeByMonth(
+                register_now.month, register_now.year)
+
             Session = Database.Session
             session = Session()
 
@@ -730,25 +781,28 @@ class ChecklistController:
 
                 row += 1
 
-
                 for registro in checklists:
                     worksheet.write(row, col + 0, registro.id)
                     worksheet.write(row, col + 1, registro.is_abertura)
-                    worksheet.write(row, col + 2, str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).day) + '/' 
-                        + str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).month)
-                        + '/' + str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).year))
-                    worksheet.write(row, col + 3, registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).strftime('%H:%M'))
+                    worksheet.write(row, col + 2, str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).day) + '/'
+                                    + str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).month)
+                                    + '/' + str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).year))
+                    worksheet.write(row, col + 3, registro.dt_abertura.astimezone(
+                        timezone('America/Sao_Paulo')).strftime('%H:%M'))
                     if(registro.dt_fechamento):
-                        worksheet.write(row, col + 4, str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).day) + '/' 
-                            + str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).month)
-                            + '/' + str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).year))
-                        worksheet.write(row, col + 5, registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).strftime('%H:%M'))
+                        worksheet.write(row, col + 4, str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).day) + '/'
+                                        + str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).month)
+                                        + '/' + str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).year))
+                        worksheet.write(row, col + 5, registro.dt_fechamento.astimezone(
+                            timezone('America/Sao_Paulo')).strftime('%H:%M'))
                     worksheet.write(row, col + 6, registro.placa)
                     worksheet.write(row, col + 7, registro.motorista.nome)
-                    worksheet.write(row, col + 8, registro.km_inicial.replace(' KM', ''))
-                    worksheet.write(row, col + 9, registro.km_final.replace(' KM', ''))
+                    worksheet.write(
+                        row, col + 8, registro.km_inicial.replace(' KM', ''))
+                    worksheet.write(
+                        row, col + 9, registro.km_final.replace(' KM', ''))
                     row += 1
-                
+
                 workbook.close()
 
             except Exception as e:
@@ -778,7 +832,8 @@ class ChecklistController:
                                ['Não, refazer'], ['Cancelar']]
             update.message.reply_text(
                 'Opção inválida, por favor responda apenas: "Sim, confirmar", "Não, refazer" ou "Cancelar".',
-                reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True)
+                reply_markup=ReplyKeyboardMarkup(
+                    reply_keyboard2, one_time_keyboard=True)
             )
 
             return F_CONFIRM
@@ -788,18 +843,20 @@ class ChecklistController:
             try:
                 current_chat_id = update.callback_query.message.chat.id
                 current_username = update.callback_query.from_user.username
-                open_checklist = RegChecklist(current_username, current_chat_id, False)
+                open_checklist = RegChecklist(
+                    current_username, current_chat_id, False)
             except Exception as e:
                 print(e)
                 context.bot.send_message(
                     chat_id=current_chat_id,
-                    text='Não é possível realizar o cadastro de checklist sem um nome de usuário cadastrado.');
+                    text='Não é possível realizar o cadastro de checklist sem um nome de usuário cadastrado.')
                 return ConversationHandler.END
         else:
             try:
                 current_chat_id = update.message.chat.id
                 current_username = update.message.from_user.username
-                open_checklist = RegChecklist(current_username, current_chat_id, False)
+                open_checklist = RegChecklist(
+                    current_username, current_chat_id, False)
             except Exception as e:
                 print(e)
                 update.message.reply_text(
@@ -926,7 +983,7 @@ class ChecklistController:
         reply_keyboard = [['Sim'], ['Não']]
 
         update.message.reply_text(
-            'Quilometragem enviada: ' + update.message.text + ' KM\n\n' + 
+            'Quilometragem enviada: ' + update.message.text + ' KM\n\n' +
             'A quilometragem foi inserida corretamente?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
@@ -1154,7 +1211,7 @@ class ChecklistController:
             chat_id=update.effective_chat.id,
             text=str_menu,
             reply_markup=ReplyKeyboardMarkup(keyboardMenu(9))
-        )     
+        )
 
         return MENU_SWITCHER
 
@@ -1187,7 +1244,8 @@ class ChecklistController:
                 )
 
                 checklist.km_final = str(item.km_final) + ' KM'
-                checklist.dt_fechamento = datetime.now(timezone('America/Sao_Paulo'))
+                checklist.dt_fechamento = datetime.now(
+                    timezone('America/Sao_Paulo'))
 
                 checklist_abertura.dt_fechamento = checklist.dt_fechamento
 
@@ -1291,11 +1349,14 @@ class ChecklistController:
                 chat_id=update.effective_chat.id,
                 text='Caso queira relatar um feedback(sugestões, criticas, etc) acesse https://forms.gle/UEYmho6UTU9wHgyD9')
 
-            local_path = 'media/CHECKLIST-' + datetime.now(timezone('America/Sao_Paulo')).strftime('%b-%Y') + '.xlsx'
+            local_path = 'media/CHECKLIST-' + \
+                datetime.now(timezone('America/Sao_Paulo')
+                             ).strftime('%b-%Y') + '.xlsx'
             register_now = datetime.now(timezone('America/Sao_Paulo'))
 
-            range_intervalo = CalendarUtils.getRangeByMonth(register_now.month, register_now.year)
-            
+            range_intervalo = CalendarUtils.getRangeByMonth(
+                register_now.month, register_now.year)
+
             Session = Database.Session
             session = Session()
 
@@ -1327,21 +1388,25 @@ class ChecklistController:
                 for registro in checklists:
                     worksheet.write(row, col + 0, registro.id)
                     worksheet.write(row, col + 1, registro.is_abertura)
-                    worksheet.write(row, col + 2, str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).day) + '/' 
-                        + str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).month)
-                        + '/' + str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).year))
-                    worksheet.write(row, col + 3, registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).strftime('%H:%M'))
+                    worksheet.write(row, col + 2, str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).day) + '/'
+                                    + str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).month)
+                                    + '/' + str(registro.dt_abertura.astimezone(timezone('America/Sao_Paulo')).year))
+                    worksheet.write(row, col + 3, registro.dt_abertura.astimezone(
+                        timezone('America/Sao_Paulo')).strftime('%H:%M'))
                     if(registro.dt_fechamento):
-                        worksheet.write(row, col + 4, str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).day) + '/' 
-                            + str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).month)
-                            + '/' + str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).year))
-                        worksheet.write(row, col + 5, registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).strftime('%H:%M'))
+                        worksheet.write(row, col + 4, str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).day) + '/'
+                                        + str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).month)
+                                        + '/' + str(registro.dt_fechamento.astimezone(timezone('America/Sao_Paulo')).year))
+                        worksheet.write(row, col + 5, registro.dt_fechamento.astimezone(
+                            timezone('America/Sao_Paulo')).strftime('%H:%M'))
                     worksheet.write(row, col + 6, registro.placa)
                     worksheet.write(row, col + 7, registro.motorista.nome)
-                    worksheet.write(row, col + 8, registro.km_inicial.replace(' KM', ''))
-                    worksheet.write(row, col + 9, registro.km_final.replace(' KM', ''))
+                    worksheet.write(
+                        row, col + 8, registro.km_inicial.replace(' KM', ''))
+                    worksheet.write(
+                        row, col + 9, registro.km_final.replace(' KM', ''))
                     row += 1
-                
+
                 workbook.close()
 
             except Exception as e:
@@ -1371,7 +1436,8 @@ class ChecklistController:
                                ['Não, refazer'], ['Cancelar']]
             update.message.reply_text(
                 'Opção inválida, por favor responda apenas: "Sim, confirmar", "Não, refazer" ou "Cancelar".',
-                reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True)
+                reply_markup=ReplyKeyboardMarkup(
+                    reply_keyboard2, one_time_keyboard=True)
             )
 
             return F_CONFIRM
@@ -1397,7 +1463,8 @@ class ChecklistController:
                 text='Por favor, envie a foto da ocorrência a ser registrada.')
             return F_CONFORMIDADE
         elif(update.message.text == 'Não, finalizar'):
-            reply_keyboard2 = [['Sim, confirmar'], ['Não, refazer'], ['Cancelar']]
+            reply_keyboard2 = [['Sim, confirmar'],
+                               ['Não, refazer'], ['Cancelar']]
 
             item = listUtils.searchAndGetItem(buff,
                                               update.message.from_user.username,
@@ -1409,18 +1476,18 @@ class ChecklistController:
 
             try:
                 context.bot.send_message(
-                        chat_id=update.effective_chat.id,
-                        text=item.dadosFalse(), parse_mode=ParseMode.MARKDOWN)
+                    chat_id=update.effective_chat.id,
+                    text=item.dadosFalse(), parse_mode=ParseMode.MARKDOWN)
             except:
                 context.bot.send_message(
-                        chat_id=update.effective_chat.id,
-                        text="Todos itens do veículo estão ok.", parse_mode=ParseMode.MARKDOWN)
+                    chat_id=update.effective_chat.id,
+                    text="Todos itens do veículo estão ok.", parse_mode=ParseMode.MARKDOWN)
 
             if(item.is_abertura):
                 context.bot.send_message(
                     chat_id=update.effective_chat.id,
                     text=item.dadosAbertura(), parse_mode=ParseMode.MARKDOWN)
-                
+
                 update.message.reply_text(
                     'O dados informados estão corretos?',
                     reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
@@ -1429,7 +1496,7 @@ class ChecklistController:
                 context.bot.send_message(
                     chat_id=update.effective_chat.id,
                     text=item.dadosFechamento(), parse_mode=ParseMode.MARKDOWN)
-                
+
                 update.message.reply_text(
                     'O dados informados estão corretos?',
                     reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
@@ -1486,7 +1553,7 @@ class ChecklistController:
         )
 
         return O_CONFORMIDADE
-    
+
     def o_conformidade(self, update, context):
 
         item = listUtils.searchAndGetItem(buff,
@@ -1523,23 +1590,24 @@ class ChecklistController:
         if not update.message.text in valid_in_switcher:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text="Opção inválida, por favor, responda apenas: " + str(valid_in_switcher).replace("'", "")
+                text="Opção inválida, por favor, responda apenas: " +
+                str(valid_in_switcher).replace("'", "")
             )
             context.bot.send_message(
-            chat_id=update.effective_chat.id,
+                chat_id=update.effective_chat.id,
                 text=str_menu,
                 reply_markup=ReplyKeyboardMarkup(keyboardMenu(9))
-            )     
+            )
 
             return MENU_SWITCHER
-        
+
         item = listUtils.searchAndGetItem(buff,
                                           update.message.from_user.username,
                                           update.message.chat.id)
 
         if update.message.text == '8':
             reply_keyboard2 = [['Sim, registrar'],
-                           ['Não, finalizar'], ['Cancelar']]
+                               ['Não, finalizar'], ['Cancelar']]
             update.message.reply_text(
                 'Deseja registrar algo por foto?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True))
@@ -1560,20 +1628,19 @@ class ChecklistController:
                     choosed = a
                     break
             listUtils.searchAndUpdate(buff,
-                                  update.message.from_user.username,
-                                  update.message.chat.id,
-                                  'cache_group',
-                                  choosed)
-            
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'cache_group',
+                                      choosed)
+
             update.message.reply_text(
                 dynamic_menu(choosed),
-                reply_markup=ReplyKeyboardMarkup(keyboardMenu(len(ASSOC[choosed]))),
+                reply_markup=ReplyKeyboardMarkup(
+                    keyboardMenu(len(ASSOC[choosed]))),
                 parse_mode=ParseMode.MARKDOWN
             )
 
             return MENU_DINAMICO
-            
-
 
         return ConversationHandler.END
 
@@ -1582,38 +1649,44 @@ class ChecklistController:
                                           update.message.from_user.username,
                                           update.message.chat.id)
 
-        valid = list(map(str, list(range(1, len(ASSOC[item.cache_group]) + 1))))
+        valid = list(
+            map(str, list(range(1, len(ASSOC[item.cache_group]) + 1))))
 
         print(item.cache_id, item.cache_group)
-        
+
         if item.cache_id > 0 and (not update.message.text in ['Sim, confirmar', 'Não, retornar']):
             selected_item = ASSOC[item.cache_group][item.cache_id]
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text="Opção inválida, por favor, responda apenas: " + str(['Sim, confirmar', 'Não, retornar']).replace("'", "")
+                text="Opção inválida, por favor, responda apenas: " +
+                str(['Sim, confirmar', 'Não, retornar']).replace("'", "")
             )
 
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text="Deseja confirmar que o item -> *" + selected_item[1] + "* não está ok?",
+                text="Deseja confirmar que o item -> *" +
+                selected_item[1] + "* não está ok?",
                 parse_mode=ParseMode.MARKDOWN,
-                reply_markup=ReplyKeyboardMarkup([['Sim, confirmar'],['Não, retornar']])
+                reply_markup=ReplyKeyboardMarkup(
+                    [['Sim, confirmar'], ['Não, retornar']])
             )
 
             return MENU_DINAMICO
-        
+
         if (update.message.text == 'Sim, confirmar') and item.cache_id > 0:
             selected_item = ASSOC[item.cache_group][item.cache_id]
 
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text="O item *" + selected_item[1] + "* foi registrado como 'NÃO ESTÁ OK'",
+                text="O item *" + selected_item[1] +
+                "* foi registrado como 'NÃO ESTÁ OK'",
                 parse_mode=ParseMode.MARKDOWN
             )
             listUtils.searchAndUpdate(buff,
                                       update.message.from_user.username,
                                       update.message.chat.id,
-                                      item.cache_group + '_' + selected_item[0],
+                                      item.cache_group + '_' +
+                                      selected_item[0],
                                       False)
             listUtils.searchAndUpdate(buff,
                                       update.message.from_user.username,
@@ -1629,7 +1702,8 @@ class ChecklistController:
         elif not update.message.text in valid:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text="Opção inválida, por favor, responda apenas: " + str(valid).replace("'", "")
+                text="Opção inválida, por favor, responda apenas: " +
+                str(valid).replace("'", "")
             )
         else:
             if int(update.message.text) == len(ASSOC[item.cache_group]):
@@ -1637,7 +1711,7 @@ class ChecklistController:
                     chat_id=update.effective_chat.id,
                     text=str_menu,
                     reply_markup=ReplyKeyboardMarkup(keyboardMenu(9))
-                )     
+                )
 
                 return MENU_SWITCHER
 
@@ -1650,16 +1724,19 @@ class ChecklistController:
             selected_item = ASSOC[item.cache_group][int(update.message.text)]
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text="Deseja confirmar que o item -> *" + selected_item[1] + "* não está ok?",
+                text="Deseja confirmar que o item -> *" +
+                selected_item[1] + "* não está ok?",
                 parse_mode=ParseMode.MARKDOWN,
-                reply_markup=ReplyKeyboardMarkup([['Sim, confirmar'],['Não, retornar']])
+                reply_markup=ReplyKeyboardMarkup(
+                    [['Sim, confirmar'], ['Não, retornar']])
             )
 
             return MENU_DINAMICO
-        
+
         update.message.reply_text(
             dynamic_menu(item.cache_group),
-            reply_markup=ReplyKeyboardMarkup(keyboardMenu(len(ASSOC[item.cache_group]))),
+            reply_markup=ReplyKeyboardMarkup(
+                keyboardMenu(len(ASSOC[item.cache_group]))),
             parse_mode=ParseMode.MARKDOWN
         )
 

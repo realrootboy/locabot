@@ -13,6 +13,7 @@ from models.EscalasAdministrativo import EscalasAdministrativo
 from models.Registro import Registro
 from models.Checklist import Checklist
 from models.NaoConformidades import NaoConformidades
+from models.IdentificacaoFalcao import IdentificacaoFalcao
 
 from models.Account import Account
 from models.Credencial import Credencial

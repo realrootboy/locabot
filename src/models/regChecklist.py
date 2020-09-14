@@ -157,7 +157,8 @@ class RegChecklist:
                  higienizacao_interna=True,
                  cache_id = -1,
                  cache_field = '',
-                 cache_group = ''
+                 cache_group = '',
+                 nome_falcao = '',
                  ):
         self.username = username
         self.chat_id = chat_id
@@ -240,6 +241,7 @@ class RegChecklist:
         self.cache_id = cache_id
         self.cache_field = cache_field
         self.cache_group = cache_group
+        self.nome_falcao = nome_falcao
 
     def dadosAbertura(self):
         return('*Usuário:* ' + self.username.replace("_", " ") + '\n' +
