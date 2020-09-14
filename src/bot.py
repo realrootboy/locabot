@@ -2,6 +2,7 @@ from controllers.pontoController import PontoController
 from controllers.checklistController import ChecklistController
 from controllers.combustivelController import CombustivelController
 
+from views.ChecklistExport import ChecklistExport
 from views.CombustivelExport import CombustivelExport
 from views.PontosExport import PontosExport
 
@@ -32,6 +33,7 @@ class Locatransbot:
         self.ponto = PontoController(logger)
     
     def loadViews(self):
+        self.checklist_views = ChecklistExport(logger)
         self.combustivel_views = CombustivelExport(logger)
         self.ponto_views = PontosExport(logger)
 
@@ -44,28 +46,13 @@ class Locatransbot:
         self.dp.add_handler(self.ponto_views.disponiveis)
         self.dp.add_handler(self.ponto_views.falcao)
         self.dp.add_handler(self.combustivel_views.info_combustivel)
-
-        # self.dp.add_handler(CallbackQueryHandler(self.button))
+        self.dp.add_handler(self.checklist_views.info_checklist)
 
     def start(self):
         self.dp.add_handler(CommandHandler('start', self.startCommand))
         self.dp.add_error_handler(self.error)
         self.updater.start_polling()
         self.updater.idle()
-
-    # def button(self, update, context):
-    #     query = update.callback_query
-# 
-    #     if(query.data == '1'):
-    #         self.checklist.abrir_checklist(update, context)
-    #     if(query.data == '2'):
-    #         self.checklist.fechar_checklist(update, context)
-    #     if(query.data == '3'):
-    #         return 1
-    #     if(query.data == 'Finalizar'):
-    #         return ConversationHandler.END
-    #     if(query.data == 'Cancelar'):
-    #         self.checklist.conversationKiller(update, context)
 
     def startCommand(self, update, context):
         response_message = 'Interação com o bot ativada! Seja bem-vindo! =^._.^=\n\nAbrir Checklist\n/abrir_checklist\n\nFechar Checklist\n/fechar_checklist\n\nCadastrar Informações de Combustível\n/combustivel'
