@@ -475,7 +475,7 @@ class ChecklistController:
                                           update.message.from_user.username,
                                           update.message.chat.id)
 
-        if(item.is_abertura and (not update.message.from_user.username in ['RBB2D32',
+        if((not item.is_abertura) and (not update.message.from_user.username in ['RBB2D32',
                                                                           'RKH1B77',
                                                                           'Rbb3h45',
                                                                           'RBB2D29',
