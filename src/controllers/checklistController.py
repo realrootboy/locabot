@@ -475,23 +475,11 @@ class ChecklistController:
                                           update.message.from_user.username,
                                           update.message.chat.id)
 
-        if((not item.is_abertura) and (not update.message.from_user.username in ['RBB2D32',
+        if(item.is_abertura and (update.message.from_user.username in ['RBB2D32',
                                                                           'RKH1B77',
                                                                           'Rbb3h45',
                                                                           'RBB2D29',
-                                                                          'RBB2D35',
-                                                                          'renanmgomes'])):
-            update.message.reply_text(
-                'O manual está no veículo?',
-                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
-
-            return MANUAL
-        elif (item.is_abertura and update.message.from_user.username in ['RBB2D32',
-                                                                          'RKH1B77',
-                                                                          'Rbb3h45',
-                                                                          'RBB2D29',
-                                                                          'RBB2D35',
-                                                                          'renanmgomes']):
+                                                                          'RBB2D35'])):
             update.message.reply_text('Você está usando um celular compartilhado.\n' +
                                       'Por favor, informe seu nome',
                                       reply_markup=ReplyKeyboardRemove())
