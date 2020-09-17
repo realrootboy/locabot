@@ -486,11 +486,17 @@ class ChecklistController:
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return MANUAL
-        else:
+        elif not item.is_abertura:
             update.message.reply_text('Você está usando um celular compartilhado.\n' +
                                       'Por favor, informe seu nome',
                                       reply_markup=ReplyKeyboardRemove())
             return NOME_FALCAO
+        else:
+            update.message.reply_text(
+                'O manual está no veículo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return MANUAL
 
     def nome_falcao(self, update, context):
         reply_keyboard = [['Sim'], ['Não']]
