@@ -471,12 +471,16 @@ class ChecklistController:
                                   'motivo',
                                   update.message.text)
 
-        if(not update.message.from_user.username in ['RBB2D32',
-                                                     'RKH1B77',
-                                                     'Rbb3h45',
-                                                     'RBB2D29',
-                                                     'RBB2D35',
-                                                     'renanmgomes']):
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+
+        if(item.is_abertura and not update.message.from_user.username in ['RBB2D32',
+                                                                          'RKH1B77',
+                                                                          'Rbb3h45',
+                                                                          'RBB2D29',
+                                                                          'RBB2D35',
+                                                                          'renanmgomes']):
             update.message.reply_text(
                 'O manual está no veículo?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
