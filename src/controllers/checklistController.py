@@ -486,7 +486,12 @@ class ChecklistController:
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return MANUAL
-        elif not item.is_abertura:
+        elif (item.is_abertura and update.message.from_user.username in ['RBB2D32',
+                                                                          'RKH1B77',
+                                                                          'Rbb3h45',
+                                                                          'RBB2D29',
+                                                                          'RBB2D35',
+                                                                          'renanmgomes']):
             update.message.reply_text('Você está usando um celular compartilhado.\n' +
                                       'Por favor, informe seu nome',
                                       reply_markup=ReplyKeyboardRemove())
