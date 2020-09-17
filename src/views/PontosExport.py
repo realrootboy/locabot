@@ -66,7 +66,7 @@ class PontosExport:
         return
 
     def disponiveis(self, update, context):
-        disponiveis = '*DISPONIVEIS DO ADMINISTRATIVO*\n\n'
+        disponiveis = 'DISPONIVEIS DO ADMINISTRATIVO\n\n'
 
         try:
             Session = Database.Session
@@ -101,7 +101,7 @@ class PontosExport:
 
         session.close()
 
-        update.message.reply_text(disponiveis, reply_markup=ReplyKeyboardRemove(), parse_mode=ParseMode.MARKDOWN)
+        update.message.reply_text(disponiveis, reply_markup=ReplyKeyboardRemove())
 
 
 
