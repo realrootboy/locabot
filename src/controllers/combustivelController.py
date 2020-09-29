@@ -367,6 +367,7 @@ class CombustivelController:
                           ['DAMIANI', 'JR / DALLAS'],
                           ['TIMBOZAO / TREMENDAO', 'RAIZ'],
                           ['TANGUA', 'TREVÃO'],
+                          ['CAJU', 'TICKTLOG'],
                           ['GOODCARD', 'REEMBOLSO']]
 
         update.message.reply_text(
@@ -384,12 +385,13 @@ class CombustivelController:
                           ['DAMIANI', 'JR / DALLAS'],
                           ['TIMBOZAO / TREMENDAO', 'RAIZ'],
                           ['TANGUA', 'TREVÃO'],
+                          ['CAJU', 'TICKTLOG'],
                           ['GOODCARD', 'REEMBOLSO']]
 
         if not update.message.text in ['MARLIN', 'LIDER',
                           'OURO NEGRO', 'RIO NEGRO',
                           'DAMIANI', 'JR / DALLAS',
-                          'TIMBOZAO / TREMENDAO', 'RAIZ',
+                          'TIMBOZAO / TREMENDAO', 'RAIZ', 'CAJU', 'TICKTLOG',
                           'GOODCARD', 'REEMBOLSO', 'TANGUA', 'TREVÃO']:
             update.message.reply_text('Posto inválido, por favor informe o posto correto.',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
