@@ -42,7 +42,7 @@ class Locatransbot:
         self.dp.add_handler(self.checklist.conv_handler_abertura)
         self.dp.add_handler(self.checklist.conv_handler_fechamento)
         self.dp.add_handler(self.ponto.conv_handler)
-        # self.dp.add_handler(self.ponto_views.conv_handler)
+        self.dp.add_handler(self.ponto_views.conv_handler)
         self.dp.add_handler(self.ponto_views.disponiveis)
         self.dp.add_handler(self.ponto_views.falcao)
         self.dp.add_handler(self.combustivel_views.info_combustivel)

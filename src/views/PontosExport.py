@@ -141,7 +141,7 @@ class PontosExport:
         if administrativo:
             update.message.reply_text(
                 'Olá, ' + administrativo.nome + '. Por favor, escolha o setor de consulta.',
-                reply_markup=ReplyKeyboardMarkup([['Administrativo'], ['Motorista'], ['Cancelar']], one_time_keyboard=True))
+                reply_markup=ReplyKeyboardMarkup([['Administrativo'], ['Cancelar']], one_time_keyboard=True))
         else:
             update.message.reply_text(
                 'Olá, ' + motorista.nome + '. Por favor, escolha o setor de consulta.',
@@ -170,22 +170,22 @@ class PontosExport:
             session.close()
 
             return ESCOLHA_ADMINISTRATIVO
-        elif(update.message.text == 'Motorista'):
-            Session = Database.Session
-            session = Session()
-
-            motoristas_reply = []
-
-            motoristas = session.query(Motorista).order_by(Motorista.nome.asc())
-
-            for motorista in motoristas:
-                motoristas_reply.append([motorista.nome + ' @' + motorista.telegram_user])
-
-            update.message.reply_text(
-                'Por favor, informe o motorista!',
-                reply_markup=ReplyKeyboardMarkup(motoristas_reply, one_time_keyboard=True))
-
-            return ESCOLHA_MOTORISTA
+        #elif(update.message.text == 'Motorista'):
+        #    Session = Database.Session
+        #    session = Session()
+#
+        #    motoristas_reply = []
+#
+        #    motoristas = session.query(Motorista).order_by(Motorista.nome.asc())
+#
+        #    for motorista in motoristas:
+        #        motoristas_reply.append([motorista.nome + ' @' + motorista.telegram_user])
+#
+        #    update.message.reply_text(
+        #        'Por favor, informe o motorista!',
+        #        reply_markup=ReplyKeyboardMarkup(motoristas_reply, one_time_keyboard=True))
+#
+        #    return ESCOLHA_MOTORISTA
         elif(update.message.text == 'Cancelar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -193,9 +193,9 @@ class PontosExport:
 
             return ConversationHandler.END
         else:
-            reply_keyboard2 = [['Administrativo'], ['Motorista'], ['Cancelar']]
+            reply_keyboard2 = [['Administrativo'], ['Cancelar']]
             update.message.reply_text(
-                'Opção inválida, por favor responda apenas: "Administrativo", "Motorista" ou "Cancelar".',
+                'Opção inválida, por favor responda apenas: "Administrativo" ou "Cancelar".',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard2, one_time_keyboard=True)
             )
 
