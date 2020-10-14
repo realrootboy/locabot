@@ -120,9 +120,10 @@ class PontosExport:
             administrativo = session.query(Administrativo).filter_by(
                 telegram_user=update.message.from_user.username).first()
             
-            motorista = session.query(Motorista).filter_by(
-                telegram_user=update.message.from_user.username).first()
-            
+            #motorista = session.query(Motorista).filter_by(
+            #    telegram_user=update.message.from_user.username).first()
+            motorista = None
+
             if (administrativo is None) and (motorista is None):
                 update.message.reply_text(
                     'Usuário ' + update.message.from_user.username + ' não encontrado na base de dados. ' +
@@ -170,22 +171,22 @@ class PontosExport:
             session.close()
 
             return ESCOLHA_ADMINISTRATIVO
-        #elif(update.message.text == 'Motorista'):
-        #    Session = Database.Session
-        #    session = Session()
+        elif(update.message.text == 'Motorista'):
+            Session = Database.Session
+            session = Session()
 #
-        #    motoristas_reply = []
+            motoristas_reply = []
 #
-        #    motoristas = session.query(Motorista).order_by(Motorista.nome.asc())
+            motoristas = session.query(Motorista).order_by(Motorista.nome.asc())
 #
-        #    for motorista in motoristas:
-        #        motoristas_reply.append([motorista.nome + ' @' + motorista.telegram_user])
+            for motorista in motoristas:
+                motoristas_reply.append([motorista.nome + ' @' + motorista.telegram_user])
 #
-        #    update.message.reply_text(
-        #        'Por favor, informe o motorista!',
-        #        reply_markup=ReplyKeyboardMarkup(motoristas_reply, one_time_keyboard=True))
+            update.message.reply_text(
+                'Por favor, informe o motorista!',
+                reply_markup=ReplyKeyboardMarkup(motoristas_reply, one_time_keyboard=True))
 #
-        #    return ESCOLHA_MOTORISTA
+            return ESCOLHA_MOTORISTA
         elif(update.message.text == 'Cancelar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
