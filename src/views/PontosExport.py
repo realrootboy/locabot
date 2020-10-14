@@ -218,7 +218,7 @@ class PontosExport:
             nome, usuario_enviado = ['xxx', 'xxx']
 
         if ((not (update.message.from_user.username == usuario_enviado)) 
-            and (not (update.message.from_user.username == 'igorpittol')
+            and (not (update.message.from_user.username == 'igorpittol'))
             and (not (update.message.from_user.username == 'stephanypsantos'))):
             update.message.reply_text('Operação não permitida/Privilégios insuficientes.')
 
