@@ -64,3 +64,7 @@ def periodosRange(start_month, start_year, end_month, end_year):
 				periodos.append([REV_FULL_MONTHS[j] +' ' + str(i)])
 
 	return periodos
+
+def getLastDayMonth(month, year):
+    return calendar.monthrange(int(year), FULL_MONTHS[month])[1]
+
