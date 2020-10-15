@@ -430,8 +430,9 @@ class PontosExport:
             month, year, model_to_impress, clock_ins, item.horas_trabalhadas_send, 'N/A')
         context.bot.sendDocument(chat_id=item.chat_id, document=fileToSend)
 
-        planilha = open(local_path, 'rb')
-        context.bot.sendDocument(chat_id=item.chat_id, document=planilha)
+        if item.role_send == 'administrativo':
+            planilha = open(local_path, 'rb')
+            context.bot.sendDocument(chat_id=item.chat_id, document=planilha)
 
         os.unlink(fileToSend.name)
 

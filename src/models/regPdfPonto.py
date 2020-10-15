@@ -27,7 +27,7 @@ class RegPdfPonto:
 		self.horas_trabalhadas_send = '00:00:00'
 
 	def pontoToArrayFormatted(self, ponto, intervalos):
-		return [tzToHumans(ponto.entrada), self.intervalosToStr(intervalos), tzToHumans(ponto.saida), ponto.horas_trabalhadas]
+		return [tzToHumans(ponto.entrada), self.intervalosToStr(intervalos), tzToHumans(ponto.saida), ponto.horas_extra]
 
 	def intervalosToStr(self, intervalos):
 		if (intervalos is None) or (intervalos.count() == 0):

@@ -124,7 +124,7 @@ class PdfFactory:
         input_title = 'Entrada'
         intervals_title = 'Intervalos'
         output_title = 'Saida'
-        day_hours_title = 'Horas Por Dia'
+        day_hours_title = 'Horas Extra'
         clock_ins_titles = [input_title, intervals_title, output_title, day_hours_title]
         ###############
         table_input = [
