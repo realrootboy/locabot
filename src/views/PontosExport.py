@@ -126,10 +126,9 @@ class PontosExport:
             administrativo = session.query(Administrativo).filter_by(
                 telegram_user=update.message.from_user.username).first()
 
-            # motorista = session.query(Motorista).filter_by(
-            #    telegram_user=update.message.from_user.username).first()
-            motorista = None
-
+            motorista = session.query(Motorista).filter_by(
+                telegram_user=update.message.from_user.username).first()
+            
             if (administrativo is None) and (motorista is None):
                 update.message.reply_text(
                     'Usuário ' + update.message.from_user.username + ' não encontrado na base de dados. ' +
@@ -204,9 +203,9 @@ class PontosExport:
 
             return ConversationHandler.END
         else:
-            reply_keyboard2 = [['Administrativo'], ['Cancelar']]
+            reply_keyboard2 = [['Administrativo'], ['Motorista'], ['Cancelar']]
             update.message.reply_text(
-                'Opção inválida, por favor responda apenas: "Administrativo" ou "Cancelar".',
+                'Opção inválida, por favor responda apenas: "Administrativo", "Motorista" ou "Cancelar".',
                 reply_markup=ReplyKeyboardMarkup(
                     reply_keyboard2, one_time_keyboard=True)
             )

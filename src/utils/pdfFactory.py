@@ -49,7 +49,8 @@ class PdfFactory:
                     #m = ((int(m) + minutes) % 60) + ((old_s + seconds) // 60)
                     #h = (int(h) + int(hour - 1)) + ((old_m + minutes) // 60)
 
-                    table_input.append(['Total do mês '+ fst_month +': ' + total_mensal])
+                    # table_input.append(['Total do mês '+ fst_month +':' + total_mensal])
+                    table_input.append(['Total do mês '+ fst_month +': N/A' ])
 
                     table_input.append(['MES ' + current_month])
                     fst_month = current_month
