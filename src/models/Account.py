@@ -11,10 +11,7 @@ class Account(Database.Base):
     descricao = Column('descricao', String(255))
     login = Column('login', String(255))
     password_hash = Column('password_hash', String(255))
-    administrativos = relationship(
-        "Administrativo",
-        secondary=association_table,
-        back_populates="accounts")
+    
 
     def __init__(self,
                  descricao='',

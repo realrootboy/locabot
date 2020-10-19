@@ -3,9 +3,7 @@ from sqlalchemy.orm import relationship
 
 from database.main import Database
 
-association_table = Table('account_administrativo', Database.Base.metadata,
+association_table = Table('categorias_administrativo', Database.Base.metadata,
     Column('administrativo_id', Integer, ForeignKey('administrativos.id')),
-    Column('account_id', Integer, ForeignKey('accounts.id'))
+    Column('categoria_id', Integer, ForeignKey('categorias.id'))
 )
-
-

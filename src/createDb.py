@@ -15,13 +15,22 @@ from models.Checklist import Checklist
 from models.NaoConformidades import NaoConformidades
 from models.IdentificacaoFalcao import IdentificacaoFalcao
 
-from models.Account import Account
 from models.Credencial import Credencial
 
 from models.Veiculos import Veiculos
 
 from models.DesviosAdministrativo import DesviosAdministrativo
 from models.DesviosMotorista import DesviosMotorista
+
+# from models.Empresa import Empresa
+# from models.PessoasEmpresa import PessoasEmpresa
+# from models.UnidadesEmpresa import UnidadesEmpresa
+# 
+# from models.OrdemDeServico import OrdemDeServico
+
+from models.Categorias import Categorias
+from models.CategoriasAdministrativo import *
+from models.Senhas import Senhas
 
 def main():
     loadDb()

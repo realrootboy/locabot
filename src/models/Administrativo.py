@@ -6,8 +6,6 @@ from sqlalchemy.orm import relationship
 
 from database.main import Database
 
-from models.Account_Administrativo import association_table
-
 class Administrativo(Database.Base):
     __tablename__ = 'administrativos'
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -19,10 +17,6 @@ class Administrativo(Database.Base):
     created_at = Column('created_at', DateTime(timezone=True))
     escalas_administrativo = relationship('EscalasAdministrativo', back_populates='administrativo')
     credenciais = relationship('Credencial', back_populates='administrativo')
-    accounts = relationship(
-        "Account",
-        secondary=association_table,
-        back_populates="administrativos")
 
     def __init__(self, nome, telegram_user, setor, role):
         self.nome = nome

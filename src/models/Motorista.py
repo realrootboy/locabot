@@ -14,6 +14,7 @@ class Motorista(Database.Base):
     registros = relationship('Registro', back_populates='motorista')
     desvios = relationship('DesviosMotorista', back_populates='motorista')
     checklists = relationship('Checklist', back_populates='motorista')
+    ordens = relationship('OrdemDeServico', back_populates='motorista')
     pontos_motorista = relationship('PontosMotorista', back_populates='motorista')
     escalas_motorista = relationship('EscalasMotorista', back_populates='motorista')
     created_at = Column('created_at', DateTime(timezone=True))
