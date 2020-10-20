@@ -426,11 +426,11 @@ class PontosExport:
                              ).strftime('%b-%Y') + '.xlsx'
 
             pontos_dict = dict()
-            for ponto in adm_ponto:
+            for ponto in motorista_ponto:
                 item.acumulateHorasTrabalhadas(ponto.horas_trabalhadas)
                 timetuple = timestampToTimeTuple(str(ponto.entrada))
                 timetuple2 = timestampToTimeTuple(str(ponto.saida))
-                intervalos = session.query(IntervalosDePontoAdministrativo).filter_by(
+                intervalos = session.query(IntervalosDePontoMotorista).filter_by(
                     ponto=ponto)
                 pontos_dict[timetuple[0]] = (timetuple[1],
                                              timetuple2[1],
