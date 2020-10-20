@@ -5,6 +5,7 @@ from controllers.combustivelController import CombustivelController
 from views.ChecklistExport import ChecklistExport
 from views.CombustivelExport import CombustivelExport
 from views.PontosExport import PontosExport
+from views.MensalExport import MensalExport
 
 from configs.bot import config
 from telegram import (ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode, 
@@ -36,6 +37,7 @@ class Locatransbot:
         self.checklist_views = ChecklistExport(logger)
         self.combustivel_views = CombustivelExport(logger)
         self.ponto_views = PontosExport(logger)
+        self.mensal_views = MensalExport(logger)
 
     def loadHandlers(self):
         self.dp.add_handler(self.combustivel.conv_handler)
@@ -45,6 +47,7 @@ class Locatransbot:
         self.dp.add_handler(self.ponto_views.conv_handler)
         self.dp.add_handler(self.ponto_views.disponiveis)
         self.dp.add_handler(self.ponto_views.falcao)
+        self.dp.add_handler(self.mensal_views.mensal)
         self.dp.add_handler(self.combustivel_views.info_combustivel)
         self.dp.add_handler(self.checklist_views.info_checklist)
 

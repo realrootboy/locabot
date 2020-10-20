@@ -32,6 +32,25 @@ def getRangeByFullMonth(month, year):
         return None
 
 def getRangeByMonth(month, year):
+    try:
+        last_year = int(year)
+        last_month = int(month)
+		
+        if(month == 12):
+            last_year = last_year + 1
+            last_month = 1
+        else:
+            last_month = last_month + 1
+		
+        range = (year+'-'+str(FULL_MONTHS[month])+'-21',
+                 str(last_year)+'-'+str(last_month)+'-21')
+
+        return range
+    except Exception as e:
+        print(e)
+        return None
+
+def getRangeByMonth(month, year):
     last_year = int(year)
     last_month = int(month)
 
