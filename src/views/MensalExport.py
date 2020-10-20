@@ -128,12 +128,14 @@ class MensalExport:
                 last_day = int(CalendarUtils.getLastDayMonth(CalendarUtils.REV_FULL_MONTHS[month], year))
                 print('Last Day: ' + str(last_day))
                 days = 20
+                atual_month = month
                 for i in range(last_day):
                     if(days == last_day):
                         days = 1
+                        atual_month = atual_month + 1
                     else:
                         days = days + 1
-                    dia = str('%.2d' % (days)) + '/' + str('%.2d' % (month)) + '/' + str(year)
+                    dia = str('%.2d' % (days)) + '/' + str('%.2d' % (atual_month)) + '/' + str(year)
                     worksheet.write(row + i + 1, col, dia)
                     if dia in pontos_dict:
                         x = pontos_dict[dia]
