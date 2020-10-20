@@ -128,7 +128,7 @@ class PontosExport:
 
             motorista = session.query(Motorista).filter_by(
                 telegram_user=update.message.from_user.username).first()
-            
+
             if (administrativo is None) and (motorista is None):
                 update.message.reply_text(
                     'Usuário ' + update.message.from_user.username + ' não encontrado na base de dados. ' +
@@ -228,9 +228,12 @@ class PontosExport:
         except:
             nome, usuario_enviado = ['xxx', 'xxx']
 
-        if ((not (update.message.from_user.username == usuario_enviado))
+        if (
+            (not (update.message.from_user.username == usuario_enviado))
             and (not (update.message.from_user.username == 'igorpittol'))
-                and (not (update.message.from_user.username == 'stephanypsantos'))):
+            and (not (update.message.from_user.username == 'stephanypsantos'))
+            and (not (update.message.from_user.username == 'renanmgomes'))
+        ):
             update.message.reply_text(
                 'Operação não permitida/Privilégios insuficientes.')
 
@@ -374,8 +377,6 @@ class PontosExport:
                 worksheet.write(0, 3, "HORAS TRABALHADAS")
                 worksheet.write(0, 4, "HORAS EXTRA")
 
-                
-                
                 for i in range(CalendarUtils.getLastDayMonth(month, year)):
                     dia = str('%.2d' % (i+1) + '/' + '%.2d' %
                               CalendarUtils.FULL_MONTHS[month] + '/' + year)
@@ -386,7 +387,6 @@ class PontosExport:
                         worksheet.write(row + i + 1, 2, x[1])
                         worksheet.write(row + i + 1, 3, x[2])
                         worksheet.write(row + i + 1, 4, x[3])
-                        
 
                 workbook.close()
             except Exception as e:
@@ -421,6 +421,52 @@ class PontosExport:
 
             model_to_impress = motorista
 
+            local_path = 'media/PONTOS-' + \
+                datetime.now(timezone('America/Sao_Paulo')
+                             ).strftime('%b-%Y') + '.xlsx'
+
+            pontos_dict = dict()
+            for ponto in adm_ponto:
+                item.acumulateHorasTrabalhadas(ponto.horas_trabalhadas)
+                timetuple = timestampToTimeTuple(str(ponto.entrada))
+                timetuple2 = timestampToTimeTuple(str(ponto.saida))
+                intervalos = session.query(IntervalosDePontoAdministrativo).filter_by(
+                    ponto=ponto)
+                pontos_dict[timetuple[0]] = (timetuple[1],
+                                             timetuple2[1],
+                                             ponto.horas_trabalhadas,
+                                             ponto.horas_extra,
+                                             datetimeArrToTimeTupleArr)
+                clock_ins.append(item.pontoToArrayFormatted(ponto, intervalos))
+
+            try:
+                workbook = xlsxwriter.Workbook(local_path)
+                worksheet = workbook.add_worksheet()
+                row = 0
+                col = 0
+
+                worksheet.write(0, 0, "DATA")
+                worksheet.write(0, 1, "ENTRADA")
+                worksheet.write(0, 2, "SAIDA")
+                worksheet.write(0, 3, "HORAS TRABALHADAS")
+                worksheet.write(0, 4, "HORAS EXTRA")
+
+                for i in range(CalendarUtils.getLastDayMonth(month, year)):
+                    dia = str('%.2d' % (i+1) + '/' + '%.2d' %
+                              CalendarUtils.FULL_MONTHS[month] + '/' + year)
+                    worksheet.write(row + i + 1, col, dia)
+                    if dia in pontos_dict:
+                        x = pontos_dict[dia]
+                        worksheet.write(row + i + 1, 1, x[0])
+                        worksheet.write(row + i + 1, 2, x[1])
+                        worksheet.write(row + i + 1, 3, x[2])
+                        worksheet.write(row + i + 1, 4, x[3])
+
+                workbook.close()
+            except Exception as e:
+                print(e)
+                os.remove(local_path)
+
         factory = PdfFactory('media/' + item.media_dir)
 
         buff.pop(buff.index(item))
@@ -453,7 +499,12 @@ class PontosExport:
         except:
             nome, usuario_enviado = ['xxx', 'xxx']
 
-        if (not (update.message.from_user.username == usuario_enviado)) and (not (update.message.from_user.username == 'igorpittol')) and (not (update.message.from_user.username == 'stephanypsantos')):
+        if (
+            (not (update.message.from_user.username == usuario_enviado))
+            and (not (update.message.from_user.username == 'igorpittol'))
+            and (not (update.message.from_user.username == 'stephanypsantos'))
+            and (not (update.message.from_user.username == 'renanmgomes'))
+        ):
             update.message.reply_text(
                 'Operação não permitida/Privilégios insuficientes.')
 
