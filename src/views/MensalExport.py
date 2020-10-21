@@ -110,11 +110,18 @@ class MensalExport:
                 timetuple = timestampToTimeTuple(str(ponto.entrada))
                 timetuple2 = timestampToTimeTuple(str(ponto.saida))
                 intervalos = session.query(IntervalosDePontoMotorista).filter_by(
-                    ponto=ponto)
+                    ponto=ponto).first()
+                timetuple3 = None
+                timetuple4 = None
+                if not(intervalos is None):
+                    timetuple3 = timestampToTimeTuple(intervalos.intervalo)
+                    timetuple4 = timestampToTimeTuple(intervalos.fim_intervalo)
                 pontos_dict[timetuple[0]] = (timetuple[1],
                                              timetuple2[1],
                                              ponto.horas_trabalhadas,
                                              ponto.horas_extra,
+                                             timetuple3[1],
+                                             timetuple4[1],
                                              datetimeArrToTimeTupleArr)
             try:
                 worksheet = workbook.add_worksheet(str(id_motorista) + " " +motorista.nome.split(" ")[0])
@@ -122,11 +129,13 @@ class MensalExport:
                 col = 0
                 worksheet.write(0, 0, "DATA")
                 worksheet.write(0, 1, "ENTRADA")
-                worksheet.write(0, 2, "SAIDA")
-                worksheet.write(0, 3, "HORAS TRABALHADAS")
-                worksheet.write(0, 4, "HORAS EXTRA")
+                worksheet.write(0, 2, "INTERVALO")
+                worksheet.write(0, 3, "FIM DO INTERVALO")
+                worksheet.write(0, 4, "SAIDA")
+                worksheet.write(0, 5, "HORAS TRABALHADAS")
+                worksheet.write(0, 6, "HORAS EXTRA")
                 last_day = int(CalendarUtils.getLastDayMonth(CalendarUtils.REV_FULL_MONTHS[month], year))
-                print('Last Day: ' + str(last_day))
+                
                 days = 20
                 atual_month = month
                 for i in range(last_day):
@@ -141,8 +150,12 @@ class MensalExport:
                         x = pontos_dict[dia]
                         worksheet.write(row + i + 1, 1, x[0])
                         worksheet.write(row + i + 1, 2, x[1])
-                        worksheet.write(row + i + 1, 3, x[2])
-                        worksheet.write(row + i + 1, 4, x[3])
+                        worksheet.write(row + i + 1, 5, x[2])
+                        worksheet.write(row + i + 1, 6, x[3])
+                        if(x[4] is None or x[5] is None):
+                            continue
+                        worksheet.write(row + i + 1, 3, x[4])
+                        worksheet.write(row + i + 1, 4, x[5])
                 
             except Exception as e:
                 print(e)
