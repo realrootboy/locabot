@@ -111,8 +111,8 @@ class MensalExport:
                 timetuple2 = timestampToTimeTuple(str(ponto.saida))
                 intervalos = session.query(IntervalosDePontoMotorista).filter_by(
                     ponto=ponto).first()
-                timetuple3 = None
-                timetuple4 = None
+                timetuple3 = 0
+                timetuple4 = 0
                 if not(intervalos is None):
                     timetuple3 = timestampToTimeTuple(intervalos.intervalo)
                     timetuple4 = timestampToTimeTuple(intervalos.fim_intervalo)
@@ -152,7 +152,7 @@ class MensalExport:
                         worksheet.write(row + i + 1, 2, x[1])
                         worksheet.write(row + i + 1, 5, x[2])
                         worksheet.write(row + i + 1, 6, x[3])
-                        if(x[4] is None or x[5] is None):
+                        if(x[4] == 0 or x[5] == 0):
                             continue
                         worksheet.write(row + i + 1, 3, x[4])
                         worksheet.write(row + i + 1, 4, x[5])
