@@ -111,18 +111,24 @@ class MensalExport:
                 timetuple2 = timestampToTimeTuple(str(ponto.saida))
                 intervalos = session.query(IntervalosDePontoMotorista).filter_by(
                     ponto=ponto).first()
-                timetuple3 = 0
-                timetuple4 = 0
                 if not(intervalos is None):
                     timetuple3 = timestampToTimeTuple(intervalos.intervalo)
                     timetuple4 = timestampToTimeTuple(intervalos.fim_intervalo)
-                pontos_dict[timetuple[0]] = (timetuple[1],
-                                             timetuple2[1],
-                                             ponto.horas_trabalhadas,
-                                             ponto.horas_extra,
-                                             timetuple3[1],
-                                             timetuple4[1],
-                                             datetimeArrToTimeTupleArr)
+                    pontos_dict[timetuple[0]] = (timetuple[1],
+                                                 timetuple2[1],
+                                                 ponto.horas_trabalhadas,
+                                                 ponto.horas_extra,
+                                                 timetuple3[1],
+                                                 timetuple4[1],
+                                                 datetimeArrToTimeTupleArr)
+                else:
+                    pontos_dict[timetuple[0]] = (timetuple[1],
+                                                 timetuple2[1],
+                                                 ponto.horas_trabalhadas,
+                                                 ponto.horas_extra,
+                                                 0,
+                                                 0,
+                                                 datetimeArrToTimeTupleArr)
             try:
                 worksheet = workbook.add_worksheet(str(id_motorista) + " " +motorista.nome.split(" ")[0])
                 row = 0
