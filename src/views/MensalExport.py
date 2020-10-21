@@ -155,13 +155,13 @@ class MensalExport:
                     if dia in pontos_dict:
                         x = pontos_dict[dia]
                         worksheet.write(row + i + 1, 1, x[0])
-                        worksheet.write(row + i + 1, 2, x[1])
+                        worksheet.write(row + i + 1, 4, x[1])
                         worksheet.write(row + i + 1, 5, x[2])
                         worksheet.write(row + i + 1, 6, x[3])
                         if(x[4] == 0 or x[5] == 0):
                             continue
-                        worksheet.write(row + i + 1, 3, x[4])
-                        worksheet.write(row + i + 1, 4, x[5])
+                        worksheet.write(row + i + 1, 2, x[4])
+                        worksheet.write(row + i + 1, 3, x[5])
                 
             except Exception as e:
                 print(e)
