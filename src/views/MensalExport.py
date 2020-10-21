@@ -112,8 +112,8 @@ class MensalExport:
                 intervalos = session.query(IntervalosDePontoMotorista).filter_by(
                     ponto=ponto).first()
                 if not(intervalos is None):
-                    timetuple3 = timestampToTimeTuple(intervalos.intervalo)
-                    timetuple4 = timestampToTimeTuple(intervalos.fim_intervalo)
+                    timetuple3 = timestampToTimeTuple(str(intervalos.intervalo))
+                    timetuple4 = timestampToTimeTuple(str(intervalos.fim_intervalo))
                     pontos_dict[timetuple[0]] = (timetuple[1],
                                                  timetuple2[1],
                                                  ponto.horas_trabalhadas,
