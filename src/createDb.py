@@ -26,7 +26,7 @@ from models.Empresa import Empresa
 from models.PessoasEmpresa import PessoasEmpresa
 from models.UnidadesEmpresa import UnidadesEmpresa
  
-from models.OrdemDeServico import OrdemDeServico
+#from models.OrdemDeServico import OrdemDeServico
 
 from models.Categorias import Categorias
 from models.CategoriasAdministrativo import *
