@@ -58,8 +58,7 @@ class Locatransbot:
         self.updater.idle()
 
     def startCommand(self, update, context):
-        response_message = 'Interação com o bot ativada! Seja bem-vindo! =^._.^=\n\nAbrir Checklist\n/abrir_checklist\n\nFechar Checklist\n/fechar_checklist\n\nCadastrar Informações de Combustível\n/combustivel'
-
+        response_message='Iniciado!'
         context.bot.send_message(
             chat_id=update.message.chat_id,
             text=response_message
