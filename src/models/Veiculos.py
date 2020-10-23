@@ -20,6 +20,9 @@ class Veiculos(Database.Base):
     ano_modelo = Column('ano_modelo', String(255))
     created_at = Column('created_at', DateTime(timezone=True))
     disponivel = Column('disponivel', Boolean)
+    categoria = Column('categoria', String(255))
+    tag1_id = Column(Integer, ForeignKey('tags.id'))
+    tag2_id = Column(Integer, ForeignKey('tags.id'))
 
     def __init__(self,
                  placa,

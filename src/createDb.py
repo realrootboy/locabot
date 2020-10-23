@@ -22,15 +22,22 @@ from models.Veiculos import Veiculos
 from models.DesviosAdministrativo import DesviosAdministrativo
 from models.DesviosMotorista import DesviosMotorista
 
-# from models.Empresa import Empresa
-# from models.PessoasEmpresa import PessoasEmpresa
-# from models.UnidadesEmpresa import UnidadesEmpresa
-# 
-# from models.OrdemDeServico import OrdemDeServico
+from models.Empresa import Empresa
+from models.PessoasEmpresa import PessoasEmpresa
+from models.UnidadesEmpresa import UnidadesEmpresa
+ 
+from models.OrdemDeServico import OrdemDeServico
 
 from models.Categorias import Categorias
 from models.CategoriasAdministrativo import *
 from models.Senhas import Senhas
+
+from models.Velocidades import Velocidades
+from models.Deslocamentos import Deslocamentos
+
+from models.Tags import Tags
+from models.Pedagios import Pedagios
+
 
 def main():
     loadDb()
