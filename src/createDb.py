@@ -22,9 +22,9 @@ from models.Veiculos import Veiculos
 from models.DesviosAdministrativo import DesviosAdministrativo
 from models.DesviosMotorista import DesviosMotorista
 
-from models.Empresa import Empresa
-from models.PessoasEmpresa import PessoasEmpresa
-from models.UnidadesEmpresa import UnidadesEmpresa
+#from models.Empresa import Empresa
+#from models.PessoasEmpresa import PessoasEmpresa
+#from models.UnidadesEmpresa import UnidadesEmpresa
  
 #from models.OrdemDeServico import OrdemDeServico
 
