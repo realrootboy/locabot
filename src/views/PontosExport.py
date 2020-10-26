@@ -413,12 +413,6 @@ class PontosExport:
 
             clock_ins = []
 
-            for ponto in motorista_ponto:
-                item.acumulateHorasTrabalhadas(ponto.horas_trabalhadas)
-                intervalos = session.query(
-                    IntervalosDePontoMotorista).filter_by(ponto=ponto)
-                clock_ins.append(item.pontoToArrayFormatted(ponto, intervalos))
-
             model_to_impress = motorista
 
             local_path = 'media/PONTOS-' + \
@@ -475,10 +469,17 @@ class PontosExport:
             month, year, model_to_impress, clock_ins, item.horas_trabalhadas_send, 'N/A')
         context.bot.sendDocument(chat_id=item.chat_id, document=fileToSend)
 
-        planilha = open(local_path, 'rb')
-        context.bot.sendDocument(chat_id=item.chat_id, document=planilha)
 
+        administrativo = session.query(Administrativo).filter_by(
+            telegram_user=update.message.from_user.username).first()
+
+        if not (administrativo is None):
+            planilha = open(local_path, 'rb')
+            context.bot.sendDocument(chat_id=item.chat_id, document=planilha)
+
+        
         os.unlink(fileToSend.name)
+        os.remove(local_path)
 
         return ConversationHandler.END
 
