@@ -369,6 +369,8 @@ class CombustivelController:
                           ['TANGUA', 'TREVÃO'],
                           ['CAJU', 'TICKTLOG'],
                           ['NOSSA SENHORA DE FATIMA', 'SÃO CRISTOVÃO'],
+                          ['GUARAVE', 'GUARAVE FILIAL'],
+                          ['CARAVELA'],
                           ['SANTA AMÉLIA', 'TULIPA'],
                           ['GOODCARD', 'REEMBOLSO']]
 
@@ -389,6 +391,8 @@ class CombustivelController:
                           ['TANGUA', 'TREVÃO'],
                           ['CAJU', 'TICKTLOG'],
                           ['NOSSA SENHORA DE FATIMA', 'SÃO CRISTOVÃO'],
+                          ['GUARAVE', 'GUARAVE FILIAL'],
+                          ['CARAVELA'],
                           ['SANTA AMÉLIA', 'TULIPA'],
                           ['GOODCARD', 'REEMBOLSO']]
 
@@ -397,6 +401,7 @@ class CombustivelController:
                           'DAMIANI', 'JR / DALLAS',
                           'TIMBOZAO / TREMENDAO', 'RAIZ', 'CAJU', 'TICKTLOG',
                           'NOSSA SENHORA DE FATIMA', 'SÃO CRISTOVÃO',
+                          'GUARAVE', 'GUARAVE FILIAL', 'CARAVELA',
                           'SANTA AMÉLIA', 'TULIPA',
                           'GOODCARD', 'REEMBOLSO', 'TANGUA', 'TREVÃO']:
             update.message.reply_text('Posto inválido, por favor informe o posto correto.',
