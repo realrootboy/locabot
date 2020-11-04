@@ -753,7 +753,7 @@ class ChecklistController:
                              ).strftime('%b-%Y') + '.xlsx'
             register_now = datetime.now(timezone('America/Sao_Paulo'))
 
-            range_intervalo = CalendarUtils.getRangeByMonth(
+            range_intervalo = CalendarUtils.getRangeByMonthUm(
                 register_now.month, register_now.year)
 
             Session = Database.Session
@@ -1357,7 +1357,7 @@ class ChecklistController:
                              ).strftime('%b-%Y') + '.xlsx'
             register_now = datetime.now(timezone('America/Sao_Paulo'))
 
-            range_intervalo = CalendarUtils.getRangeByMonth(
+            range_intervalo = CalendarUtils.getRangeByMonthUm(
                 register_now.month, register_now.year)
 
             Session = Database.Session

@@ -617,8 +617,8 @@ class CombustivelController:
             local_path = 'media/ABASTECIMENTO-' + datetime.now(timezone('America/Sao_Paulo')).strftime('%b-%Y') + '.xlsx'
             register_now = datetime.now(timezone('America/Sao_Paulo'))
 
-            range_intervalo = CalendarUtils.getRangeByMonth(register_now.month, register_now.year)
-            print(CalendarUtils.getRangeByMonth(register_now.month, register_now.year))
+            range_intervalo = CalendarUtils.getRangeByMonthUm(register_now.month, register_now.year)
+    
             Session = Database.Session
             session = Session()
 
