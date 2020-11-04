@@ -618,7 +618,7 @@ class CombustivelController:
             register_now = datetime.now(timezone('America/Sao_Paulo'))
 
             range_intervalo = CalendarUtils.getRangeByMonth(register_now.month, register_now.year)
-            
+            print(CalendarUtils.getRangeByMonth(register_now.month, register_now.year))
             Session = Database.Session
             session = Session()
 
