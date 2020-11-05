@@ -613,7 +613,7 @@ class CombustivelController:
 
             update.message.reply_text('Dados enviados com sucesso! Caso haja alguma inconsistência favor informar para @renanmgomes ou @igorpittol.',
                                       reply_markup=ReplyKeyboardRemove())
-
+            
             local_path = 'media/ABASTECIMENTO-' + datetime.now(timezone('America/Sao_Paulo')).strftime('%b-%Y') + '.xlsx'
             register_now = datetime.now(timezone('America/Sao_Paulo'))
 
@@ -656,10 +656,9 @@ class CombustivelController:
                 workbook.close()
 
             except Exception as e:
-
+                textLogger.log('Planilha Combustivel - ' + str(e))
                 print(e)
                 session.close()
-                gdrive.upload_gdrive(local_path, local_path.replace('media/', ''))
                 os.remove(local_path)
                 return ConversationHandler.END
 
@@ -701,6 +700,7 @@ class CombustivelController:
                     reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
             return CONFIRM
+        return ConversationHandler.END
 
     def cancel(self, update, context):
         item = listUtils.searchAndGetItem(buff,
