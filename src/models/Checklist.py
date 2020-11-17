@@ -78,6 +78,7 @@ class Checklist(Database.Base):
     higienizacao_interna = Column('higienizacao_interna', Boolean)
     chave_reserva = Column('chave_reserva', Boolean)
     manual = Column('manual', Boolean)
+    crlv = Column('crlv', Boolean)
     motivo = Column('motivo', String(255))
 
     nao_conformidades = relationship('NaoConformidades', back_populates='checklist')

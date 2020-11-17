@@ -281,7 +281,8 @@ class PontoController:
         elif(update.message.text == 'Não, finalizar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text='Operação cancelada!')
+                text='Operação cancelada!',
+                reply_markup=ReplyKeyboardRemove())
 
             buff.pop(buff.index(item))
 
@@ -382,7 +383,8 @@ class PontoController:
         elif(update.message.text == 'Não, finalizar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text='Operação cancelada!')
+                text='Operação cancelada!',
+                reply_markup=ReplyKeyboardRemove())
 
             buff.pop(buff.index(item))
 
@@ -473,14 +475,16 @@ class PontoController:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text=item.stringData(),
-                parse_mode=ParseMode.MARKDOWN
+                parse_mode=ParseMode.MARKDOWN,
+                reply_markup=ReplyKeyboardRemove()
             )
 
             return ConversationHandler.END
         elif(update.message.text == 'Não, finalizar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text='Operação cancelada!')
+                text='Operação cancelada!',
+                reply_markup=ReplyKeyboardRemove())
 
             buff.pop(buff.index(item))
 
@@ -587,7 +591,8 @@ class PontoController:
         elif(update.message.text == 'Não, finalizar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text='Operação cancelada!')
+                text='Operação cancelada!',
+                reply_markup=ReplyKeyboardRemove())
 
             buff.pop(buff.index(item))
 
@@ -596,7 +601,8 @@ class PontoController:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text='Resposta inválida, por favor, responda apenas com: ' +
-                '"Sim, confirmar" ou "Não, finalizar"')
+                '"Sim, confirmar" ou "Não, finalizar"',
+                reply_markup=ReplyKeyboardRemove())
 
             update.message.reply_text(
                 'Deseja confirmar o fechamento de expediente?',
@@ -692,7 +698,8 @@ class PontoController:
         elif(update.message.text == 'Não, finalizar'):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text='Operação cancelada!')
+                text='Operação cancelada!',
+                reply_markup=ReplyKeyboardRemove())
 
             buff.pop(buff.index(item))
 

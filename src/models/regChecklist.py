@@ -89,6 +89,7 @@ class RegChecklist:
                  km_final='',
                  motivo='',
                  manual=True,
+                 crlv=True,
                  chave_reserva=False,
                  dt_fechamento=None,
                  idd=-1,
@@ -169,6 +170,7 @@ class RegChecklist:
         self.km_final = km_final
         self.motivo = motivo
         self.manual = manual
+        self.crlv = crlv
         self.chave_reserva = chave_reserva
         self.dt_fechamento = dt_fechamento
         self.id = idd

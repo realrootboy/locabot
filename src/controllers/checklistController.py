@@ -60,6 +60,8 @@ MOTIVO = 79
 
 NOME_FALCAO = 80
 
+CRLV = 81
+
 buff = list()
 
 ASSOC = {
@@ -178,6 +180,7 @@ class ChecklistController:
                 NOME_FALCAO: [MessageHandler(Filters.text & (~ Filters.command), self.nome_falcao)],
 
                 MANUAL: [MessageHandler(Filters.text & (~ Filters.command), self.manual)],
+                CRLV: [MessageHandler(Filters.text & (~ Filters.command), self.crlv)],
 
                 CARRO_P_CASA: [MessageHandler(Filters.text & (~ Filters.command), self.carro_p_casa)],
                 VIAJOU_C_CARRO: [MessageHandler(Filters.text & (~ Filters.command), self.viajou_c_carro)],
@@ -224,6 +227,7 @@ class ChecklistController:
                 MOTIVO: [MessageHandler(Filters.text & (~ Filters.command), self.motivo)],
 
                 MANUAL: [MessageHandler(Filters.text & (~ Filters.command), self.manual)],
+                CRLV: [MessageHandler(Filters.text & (~ Filters.command), self.crlv)],
 
                 MENU_SWITCHER: [MessageHandler(Filters.text & (~ Filters.command), self.menu_switcher)],
                 KM_CONFIRM: [MessageHandler(Filters.text & (~ Filters.command), self.km_confirm)],
@@ -519,6 +523,50 @@ class ChecklistController:
                                       update.message.chat.id,
                                       'manual',
                                       True)
+            update.message.reply_text(
+                'O documento do veículo (CRLV) está no veículo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            
+            return CRLV
+        elif(str(update.message.text).upper() == 'NÃO'):
+            print(update.message.text)
+            try:
+                listUtils.searchAndUpdate(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id,
+                                          'manual',
+                                          False)
+            except Exception as e:
+                print(e)
+            update.message.reply_text(
+                'O documento do veículo (CRLV) está no veículo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+            
+            return CRLV
+        else:
+            update.message.reply_text(
+                'Opção inválida! Por favor, responda apenas: "Sim" ou "Não"'
+            )
+
+            update.message.reply_text(
+                'O manual está no veículo?',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+
+            return MANUAL
+    
+    def crlv(self, update, context):
+        reply_keyboard = [['Sim'], ['Não']]
+
+        item = listUtils.searchAndGetItem(buff,
+                                          update.message.from_user.username,
+                                          update.message.chat.id)
+
+        if(str(update.message.text).upper() == 'SIM'):
+            listUtils.searchAndUpdate(buff,
+                                      update.message.from_user.username,
+                                      update.message.chat.id,
+                                      'crlv',
+                                      True)
             if(item.is_abertura):
                 context.bot.send_message(
                     chat_id=update.effective_chat.id,
@@ -537,7 +585,7 @@ class ChecklistController:
                 listUtils.searchAndUpdate(buff,
                                           update.message.from_user.username,
                                           update.message.chat.id,
-                                          'manual',
+                                          'crlv',
                                           False)
             except Exception as e:
                 print(e)
@@ -559,10 +607,10 @@ class ChecklistController:
             )
 
             update.message.reply_text(
-                'O manual está no veículo?',
+                'O documento do veículo (CRLV) está no veículo?',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
-            return MANUAL
+            return CRLV
 
     # def chave_reserva(self, update, context):
     #    reply_keyboard = [['Sim'], ['Não']]
@@ -645,6 +693,7 @@ class ChecklistController:
                 checklist.carro_p_casa = item.carro_p_casa
                 checklist.viajou_c_carro = item.viajou_c_carro
                 checklist.manual = item.manual
+                checklist.crlv = item.crlv
                 checklist.motivo = item.motivo
                 checklist.chave_reserva = item.chave_reserva
                 checklist.outro_condutor = item.outro_condutor
@@ -1255,6 +1304,7 @@ class ChecklistController:
                 checklist.carro_p_casa = item.carro_p_casa
                 checklist.viajou_c_carro = item.viajou_c_carro
                 checklist.manual = item.manual
+                checklist.crlv = item.crlv
                 checklist.motivo = item.motivo
                 checklist.chave_reserva = item.chave_reserva
                 checklist.outro_condutor = item.outro_condutor
