@@ -370,7 +370,7 @@ class CombustivelController:
                           ['CAJU', 'TICKTLOG'],
                           ['NOSSA SENHORA DE FATIMA', 'SÃO CRISTOVÃO'],
                           ['GUARAVE', 'GUARAVE FILIAL'],
-                          ['CARAVELA'],
+                          ['CARAVELA', 'POSTO DINO'],
                           ['SANTA AMÉLIA', 'TULIPA'],
                           ['GOODCARD', 'REEMBOLSO']]
 
@@ -392,7 +392,7 @@ class CombustivelController:
                           ['CAJU', 'TICKTLOG'],
                           ['NOSSA SENHORA DE FATIMA', 'SÃO CRISTOVÃO'],
                           ['GUARAVE', 'GUARAVE FILIAL'],
-                          ['CARAVELA'],
+                          ['CARAVELA', 'POSTO DINO'],
                           ['SANTA AMÉLIA', 'TULIPA'],
                           ['GOODCARD', 'REEMBOLSO']]
 
@@ -402,7 +402,7 @@ class CombustivelController:
                           'TIMBOZAO / TREMENDAO', 'RAIZ', 'CAJU', 'TICKTLOG',
                           'NOSSA SENHORA DE FATIMA', 'SÃO CRISTOVÃO',
                           'GUARAVE', 'GUARAVE FILIAL', 'CARAVELA',
-                          'SANTA AMÉLIA', 'TULIPA',
+                          'SANTA AMÉLIA', 'TULIPA', 'POSTO DINO',
                           'GOODCARD', 'REEMBOLSO', 'TANGUA', 'TREVÃO']:
             update.message.reply_text('Posto inválido, por favor informe o posto correto.',
                 reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
