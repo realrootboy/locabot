@@ -625,7 +625,8 @@ class CombustivelController:
             registros = session.query(Registro).filter(
                 Registro.created_at >= range_intervalo[0],
                 Registro.created_at < range_intervalo[1]
-            )
+            ).order_by(Registro.id.asc())
+
             try:
                 workbook = xlsxwriter.Workbook(local_path)
                 worksheet = workbook.add_worksheet()
