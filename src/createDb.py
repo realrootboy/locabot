@@ -38,6 +38,8 @@ from models.Deslocamentos import Deslocamentos
 from models.Tags import Tags
 from models.Pedagios import Pedagios
 
+from models.Rotas import Rotas
+
 
 def main():
     loadDb()
