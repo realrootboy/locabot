@@ -479,21 +479,11 @@ class ChecklistController:
                                           update.message.from_user.username,
                                           update.message.chat.id)
 
-        if(item.is_abertura and (update.message.from_user.username in ['RBB2D32',
-                                                                          'RKH1B77',
-                                                                          'Rbb3h45',
-                                                                          'RBB2D29',
-                                                                          'RBB2D35'])):
-            update.message.reply_text('Você está usando um celular compartilhado.\n' +
-                                      'Por favor, informe seu nome',
-                                      reply_markup=ReplyKeyboardRemove())
-            return NOME_FALCAO
-        else:
-            update.message.reply_text(
-                'O manual está no veículo?',
-                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+        update.message.reply_text(
+            'O manual está no veículo?',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 
-            return MANUAL
+        return MANUAL
 
     def nome_falcao(self, update, context):
         reply_keyboard = [['Sim'], ['Não']]
