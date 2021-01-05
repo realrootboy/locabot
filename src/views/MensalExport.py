@@ -92,6 +92,7 @@ class MensalExport:
         motoristas = session.query(
                 Motorista).order_by(Motorista.nome.asc())
         id_motorista = 0
+        print(CalendarUtils.getRangeByMonth(month, year))
         for motorista in motoristas:
             id_motorista = id_motorista + 1
             range_intervalo = CalendarUtils.getRangeByMonth(month, year)
@@ -148,6 +149,9 @@ class MensalExport:
                     if(days == last_day):
                         days = 1
                         atual_month = atual_month + 1
+                        if(atual_month == 13):
+                            atual_month = 1
+                            year = year + 1
                     else:
                         days = days + 1
                     dia = str('%.2d' % (days)) + '/' + str('%.2d' % (atual_month)) + '/' + str(year)
