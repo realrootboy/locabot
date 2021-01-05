@@ -145,16 +145,17 @@ class MensalExport:
                 
                 days = 20
                 atual_month = month
+                atual_year = year
                 for i in range(last_day):
                     if(days == last_day):
                         days = 1
                         atual_month = atual_month + 1
                         if(atual_month == 13):
                             atual_month = 1
-                            year = year + 1
+                            atual_year = atual_year + 1
                     else:
                         days = days + 1
-                    dia = str('%.2d' % (days)) + '/' + str('%.2d' % (atual_month)) + '/' + str(year)
+                    dia = str('%.2d' % (days)) + '/' + str('%.2d' % (atual_month)) + '/' + str(atual_year)
                     worksheet.write(row + i + 1, col, dia)
                     if dia in pontos_dict:
                         x = pontos_dict[dia]
