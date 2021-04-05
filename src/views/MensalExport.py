@@ -1,4 +1,5 @@
 from models.Administrativo import Administrativo
+from models.PontosAdministrativo import PontosAdministrativo
 
 from models.Motorista import Motorista
 from models.PontosMotorista import PontosMotorista
