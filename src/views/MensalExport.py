@@ -95,7 +95,7 @@ class MensalExport:
         administrativos = session.query(
                 Administrativo).order_by(Administrativo.nome.asc())
         id_administrativo = 0
-        print(CalendarUtils.getRangeByMonth(month, year))
+        print(CalendarUtils.getRangeByMonthUm(month, year))
         for administrativo in administrativos:
             id_administrativo = id_administrativo + 1
             range_intervalo = CalendarUtils.getRangeByMonth(month, year)
