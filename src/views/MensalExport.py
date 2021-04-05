@@ -98,7 +98,7 @@ class MensalExport:
         print(CalendarUtils.getRangeByMonthUm(month, year))
         for administrativo in administrativos:
             id_administrativo = id_administrativo + 1
-            range_intervalo = CalendarUtils.getRangeByMonth(month, year)
+            range_intervalo = CalendarUtils.getRangeByMonthUm(month, year)
             administrativo_ponto = session.query(PontosAdministrativo).filter_by(
                 administrativo_id=administrativo.id
             ).filter(
