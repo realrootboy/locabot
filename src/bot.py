@@ -48,6 +48,7 @@ class Locatransbot:
         self.dp.add_handler(self.ponto_views.disponiveis)
         self.dp.add_handler(self.ponto_views.falcao)
         self.dp.add_handler(self.mensal_views.mensal_motorista)
+        self.dp.add_handler(self.mensal_views.mensal_adm)
         self.dp.add_handler(self.combustivel_views.info_combustivel)
         self.dp.add_handler(self.checklist_views.info_checklist)
 
