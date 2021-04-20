@@ -222,7 +222,7 @@ class PontoController:
                                       update.message.from_user.username,
                                       update.message.chat.id,
                                       'entrada',
-                                      datetime.now(timezone('America/Sao_Paulo')))
+                                      datetime.now(timezone('America/Sao_Paulo')).replace(second=0))
 
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -311,7 +311,7 @@ class PontoController:
                                       update.message.from_user.username,
                                       update.message.chat.id,
                                       'intervalo',
-                                      datetime.now(timezone('America/Sao_Paulo')))
+                                      datetime.now(timezone('America/Sao_Paulo')).replace(second=0))
 
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -413,7 +413,7 @@ class PontoController:
                                       update.message.from_user.username,
                                       update.message.chat.id,
                                       'fim_intervalo',
-                                      datetime.now(timezone('America/Sao_Paulo')))
+                                      datetime.now(timezone('America/Sao_Paulo')).replace(second=0))
 
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -513,7 +513,7 @@ class PontoController:
                                       update.message.from_user.username,
                                       update.message.chat.id,
                                       'saida',
-                                      datetime.now(timezone('America/Sao_Paulo')))
+                                      datetime.now(timezone('America/Sao_Paulo')).replace(second=0))
 
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -622,7 +622,7 @@ class PontoController:
                                       update.message.from_user.username,
                                       update.message.chat.id,
                                       'fim_intervalo',
-                                      datetime.now(timezone('America/Sao_Paulo')))
+                                      datetime.now(timezone('America/Sao_Paulo')).replace(second=0))
 
             context.bot.send_message(
                 chat_id=update.effective_chat.id,

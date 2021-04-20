@@ -4,7 +4,7 @@ from pytz import timezone
 
 def tzToHumans(time):
     try:
-        return time.astimezone(timezone('America/Sao_Paulo')).strftime('%d-%b-%Y (%H:%M:%S)')
+        return time.astimezone(timezone('America/Sao_Paulo')).strftime('%d-%b-%Y (%H:%M)')
     except:
         return ''
 
