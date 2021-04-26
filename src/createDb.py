@@ -40,6 +40,8 @@ from models.Pedagios import Pedagios
 
 from models.Rotas import Rotas
 
+from models.Patrimonios import Patrimonios
+
 
 def main():
     loadDb()
