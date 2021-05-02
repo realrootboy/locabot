@@ -285,6 +285,8 @@ class PontosExport:
         print(func.max(PontosAdministrativo.saida))
         print(func.min(PontosAdministrativo.entrada).label)
         print(func.max(PontosAdministrativo.saida).label)
+        print(func.min(PontosAdministrativo.entrada).label("min_date"))
+        print(func.max(PontosAdministrativo.saida).label("max_date"))
         print("=====================")
 
         adm_intervalo = session.query(
