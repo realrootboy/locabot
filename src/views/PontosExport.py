@@ -286,7 +286,7 @@ class PontosExport:
             func.min(PontosAdministrativo.entrada),
             func.max(PontosAdministrativo.saida)
         ).filter_by(
-            PontosAdministrativo.administrativo_id==administrativo.id
+            PontosAdministrativo.administrativo_id=administrativo.id
         )
         try:
             res = adm_intervalo.one()
