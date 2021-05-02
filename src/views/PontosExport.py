@@ -282,6 +282,7 @@ class PontosExport:
         print("=====================")
 
         adm_intervalo = session.query(
+            PontosAdministrativo,
             func.min(PontosAdministrativo.entrada),
             func.max(PontosAdministrativo.saida)
         ).filter_by(
