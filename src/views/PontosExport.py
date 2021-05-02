@@ -269,33 +269,14 @@ class PontosExport:
         administrativo = session.query(Administrativo).filter_by(
             telegram_user=usuario_enviado).first()
 
-        print("=====================")
-        print(func)
-        print(func.min)
-        print(func.max)
-        print(func.min(PontosAdministrativo.entrada))
-        print(func.max(PontosAdministrativo.saida))
-        print(func.min(PontosAdministrativo.entrada).label)
-        print(func.max(PontosAdministrativo.saida).label)
-        print(func.min(PontosAdministrativo.entrada).label("min_date"))
-        print(func.max(PontosAdministrativo.saida).label("max_date"))
-        print("=====================")
-
-
-        adm_intervalo_2 = session.query(
-            func.min(PontosAdministrativo.entrada).label('min_date'),
-            func.max(PontosAdministrativo.entrada).label('max_date')
-        )
-
-        print(adm_intervalo_2)
-        print(administrativo.id)
 
         adm_intervalo = session.query(
             func.min(PontosAdministrativo.entrada).label('min_date'),
             func.max(PontosAdministrativo.entrada).label('max_date')
-        ).filter_by(
-            administrativo_id=administrativo.id
         )
+
+        adm_intervalo = adm_intervalo.filter_by(administrativo_id=administrativo.id)
+
         try:
             res = adm_intervalo.one()
             min_date = res.min_date
