@@ -288,6 +288,7 @@ class PontosExport:
         )
 
         print(adm_intervalo_2)
+        print(administrativo.id)
 
         adm_intervalo = session.query(
             func.min(PontosAdministrativo.entrada).label('min_date'),
