@@ -44,11 +44,11 @@ class PontosExport:
             entry_points=[CommandHandler('info_ponto', self.registro)],
 
             states={
-                ESCOLHA_ROLE: [MessageHandler(Filters.text, self.escolha_role)],
-                ESCOLHA_ADMINISTRATIVO: [MessageHandler(Filters.text, self.escolha_administrativo)],
-                ESCOLHA_MOTORISTA: [MessageHandler(Filters.text, self.escolha_motorista)],
+                ESCOLHA_ROLE: [MessageHandler(Filters.text  & (~ Filters.command), self.escolha_role)],
+                ESCOLHA_ADMINISTRATIVO: [MessageHandler(Filters.text  & (~ Filters.command), self.escolha_administrativo)],
+                ESCOLHA_MOTORISTA: [MessageHandler(Filters.text  & (~ Filters.command), self.escolha_motorista)],
                 PERIODO_ENVIO: [MessageHandler(
-                    Filters.text, self.periodo_envio)]
+                    Filters.text  & (~ Filters.command), self.periodo_envio)]
             },
 
             fallbacks=[CommandHandler('cancelar_info_ponto', self.cancel)]
