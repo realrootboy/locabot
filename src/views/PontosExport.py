@@ -44,11 +44,11 @@ class PontosExport:
             entry_points=[CommandHandler('info_ponto', self.registro)],
 
             states={
-                ESCOLHA_ROLE: [MessageHandler(Filters.text  & (~ Filters.command), self.escolha_role)],
-                ESCOLHA_ADMINISTRATIVO: [MessageHandler(Filters.text  & (~ Filters.command), self.escolha_administrativo)],
-                ESCOLHA_MOTORISTA: [MessageHandler(Filters.text  & (~ Filters.command), self.escolha_motorista)],
+                ESCOLHA_ROLE: [MessageHandler(Filters.text & (~ Filters.command), self.escolha_role)],
+                ESCOLHA_ADMINISTRATIVO: [MessageHandler(Filters.text & (~ Filters.command), self.escolha_administrativo)],
+                ESCOLHA_MOTORISTA: [MessageHandler(Filters.text & (~ Filters.command), self.escolha_motorista)],
                 PERIODO_ENVIO: [MessageHandler(
-                    Filters.text  & (~ Filters.command), self.periodo_envio)]
+                    Filters.text & (~ Filters.command), self.periodo_envio)]
             },
 
             fallbacks=[CommandHandler('cancelar', self.cancel)]
@@ -227,9 +227,7 @@ class PontosExport:
                 return ConversationHandler.END
         except:
             nome, usuario_enviado = ['xxx', 'xxx']
-            
 
-   
         if (
             (not (update.message.from_user.username == usuario_enviado))
             and (not (update.message.from_user.username == 'igorpittol'))
@@ -241,11 +239,8 @@ class PontosExport:
 
             return ConversationHandler.END
 
-
         administrativo = session.query(Administrativo).filter_by(
             telegram_user=usuario_enviado).first()
-
-
 
         if administrativo is None:
             Session = Database.Session
@@ -271,11 +266,8 @@ class PontosExport:
 
         # buff.append(pdfPonto)
 
-        
-
         administrativo = session.query(Administrativo).filter_by(
             telegram_user=usuario_enviado).first()
-
 
         print("=====================")
         print(func)
@@ -290,9 +282,10 @@ class PontosExport:
         print("=====================")
 
         adm_intervalo = session.query(
-            func.min(PontosAdministrativo.entrada).label("min_date"),
-            func.max(PontosAdministrativo.saida).label("max_date")).filter_by(
-                administrativo_id=administrativo.id
+            func.min(PontosAdministrativo.entrada),
+            func.max(PontosAdministrativo.saida)
+        ).filter_by(
+            administrativo_id=administrativo.id
         )
         try:
             res = adm_intervalo.one()
@@ -489,7 +482,6 @@ class PontosExport:
             month, year, model_to_impress, clock_ins, item.horas_trabalhadas_send, 'N/A')
         context.bot.sendDocument(chat_id=item.chat_id, document=fileToSend)
 
-
         administrativo = session.query(Administrativo).filter_by(
             telegram_user=update.message.from_user.username).first()
 
@@ -497,7 +489,6 @@ class PontosExport:
             planilha = open(local_path, 'rb')
             context.bot.sendDocument(chat_id=item.chat_id, document=planilha)
 
-        
         os.unlink(fileToSend.name)
         os.remove(local_path)
 
