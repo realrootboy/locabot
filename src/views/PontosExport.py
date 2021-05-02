@@ -287,7 +287,7 @@ class PontosExport:
             func.max(PontosAdministrativo.entrada).label('max_date')
         )
 
-        print(adm_intervalo)
+        print(adm_intervalo_2)
 
         adm_intervalo = session.query(
             func.min(PontosAdministrativo.entrada).label('min_date'),
