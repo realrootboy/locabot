@@ -281,6 +281,16 @@ class PontosExport:
         print(func.max(PontosAdministrativo.saida).label("max_date"))
         print("=====================")
 
+
+        adm_intervalo_2 = session.query(
+            func.min(PontosAdministrativo.entrada),
+            func.max(PontosAdministrativo.entrada)
+        ).filter_by(
+            administrativo_id=administrativo.id
+        )
+
+        print(adm_intervalo_2.one())
+
         adm_intervalo = session.query(
             func.min(PontosAdministrativo.entrada).label('min_date'),
             func.max(PontosAdministrativo.entrada).label('max_date')
