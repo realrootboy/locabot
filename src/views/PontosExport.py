@@ -283,7 +283,7 @@ class PontosExport:
 
         adm_intervalo = session.query(
             func.min(PontosAdministrativo.entrada).label('min_date'),
-            func.max(PontosAdministrativo.saida).label('max_date')
+            func.max(PontosAdministrativo.entrada).label('max_date')
         ).filter_by(
             administrativo_id=administrativo.id
         )
