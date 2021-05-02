@@ -245,7 +245,7 @@ class PontosExport:
         administrativo = session.query(Administrativo).filter_by(
             telegram_user=usuario_enviado).first()
 
-        print("Depois da busca")
+
 
         if administrativo is None:
             Session = Database.Session
@@ -277,7 +277,15 @@ class PontosExport:
             telegram_user=usuario_enviado).first()
 
 
-        print("depois labels")
+        print("=====================")
+        print(func)
+        print(func.min)
+        print(func.max)
+        print(func.min(PontosAdministrativo.entrada))
+        print(func.max(PontosAdministrativo.saida))
+        print(func.min(PontosAdministrativo.entrada).label)
+        print(func.max(PontosAdministrativo.saida).label)
+        print("=====================")
 
         adm_intervalo = session.query(
             func.min(PontosAdministrativo.entrada).label("min_date"),
