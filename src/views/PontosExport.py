@@ -282,11 +282,10 @@ class PontosExport:
         print("=====================")
 
         adm_intervalo = session.query(
-            PontosAdministrativo,
-            func.min(PontosAdministrativo.entrada),
-            func.max(PontosAdministrativo.saida)
+            func.min(PontosAdministrativo.entrada).label('min_date'),
+            func.max(PontosAdministrativo.saida).label('max_date')
         ).filter_by(
-            PontosAdministrativo.administrativo_id=administrativo.id
+            administrativo_id=administrativo.id
         )
         try:
             res = adm_intervalo.one()
