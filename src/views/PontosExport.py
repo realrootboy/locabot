@@ -51,7 +51,7 @@ class PontosExport:
                     Filters.text  & (~ Filters.command), self.periodo_envio)]
             },
 
-            fallbacks=[CommandHandler('cancelar_info_ponto', self.cancel)]
+            fallbacks=[CommandHandler('cancelar', self.cancel)]
         )
 
         self.disponiveis = CommandHandler('disponiveis', self.disponiveis)
@@ -227,7 +227,9 @@ class PontosExport:
                 return ConversationHandler.END
         except:
             nome, usuario_enviado = ['xxx', 'xxx']
+            print("Primeira exception")
 
+        print("Antes comparacao")
         if (
             (not (update.message.from_user.username == usuario_enviado))
             and (not (update.message.from_user.username == 'igorpittol'))
@@ -238,6 +240,8 @@ class PontosExport:
                 'Operação não permitida/Privilégios insuficientes.')
 
             return ConversationHandler.END
+
+        print("Depois comparacao")
 
         administrativo = session.query(Administrativo).filter_by(
             telegram_user=usuario_enviado).first()
@@ -582,7 +586,7 @@ class PontosExport:
     def cancel(self, update, context):
         user = update.message.from_user
         self.logger.info("Usuario %s cancelou a conversa.", user.first_name)
-        update.message.reply_text('Tchau!',
+        update.message.reply_text('Operação cancelada!',
                                   reply_markup=ReplyKeyboardRemove())
 
         return ConversationHandler.END
