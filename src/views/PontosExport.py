@@ -227,9 +227,9 @@ class PontosExport:
                 return ConversationHandler.END
         except:
             nome, usuario_enviado = ['xxx', 'xxx']
-            print("Primeira exception")
+            
 
-        print("Antes comparacao")
+   
         if (
             (not (update.message.from_user.username == usuario_enviado))
             and (not (update.message.from_user.username == 'igorpittol'))
@@ -241,10 +241,11 @@ class PontosExport:
 
             return ConversationHandler.END
 
-        print("Depois comparacao")
 
         administrativo = session.query(Administrativo).filter_by(
             telegram_user=usuario_enviado).first()
+
+        print("Depois da busca")
 
         if administrativo is None:
             Session = Database.Session
@@ -270,6 +271,8 @@ class PontosExport:
 
         # buff.append(pdfPonto)
 
+        print("Achou e ta buscando")
+
         administrativo = session.query(Administrativo).filter_by(
             telegram_user=usuario_enviado).first()
 
@@ -278,6 +281,7 @@ class PontosExport:
             func.max(PontosAdministrativo.saida).label("max_date")).filter_by(
                 administrativo_id=administrativo.id
         )
+        print("depois labels")
         try:
             res = adm_intervalo.one()
             min_date = res.min_date
