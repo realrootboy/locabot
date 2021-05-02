@@ -271,17 +271,19 @@ class PontosExport:
 
         # buff.append(pdfPonto)
 
-        print("Achou e ta buscando")
+        
 
         administrativo = session.query(Administrativo).filter_by(
             telegram_user=usuario_enviado).first()
+
+
+        print("depois labels")
 
         adm_intervalo = session.query(
             func.min(PontosAdministrativo.entrada).label("min_date"),
             func.max(PontosAdministrativo.saida).label("max_date")).filter_by(
                 administrativo_id=administrativo.id
         )
-        print("depois labels")
         try:
             res = adm_intervalo.one()
             min_date = res.min_date
