@@ -13,7 +13,7 @@ class Administrativo(Database.Base):
     telegram_user = Column('telegram_user', String(255))
     setor = Column('setor', String(255))
     role = Column('role', String(255))
-    pontos_administrativo = relationship('PontosAdministrativo', Database.Base.metadata, back_populates='administrativo')
+    pontos_administrativo = relationship('PontosAdministrativo', back_populates='administrativo')
     created_at = Column('created_at', DateTime(timezone=True))
     escalas_administrativo = relationship('EscalasAdministrativo', back_populates='administrativo')
     credenciais = relationship('Credencial', back_populates='administrativo')

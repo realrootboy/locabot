@@ -9,7 +9,7 @@ from database.main import Database
 class PontosAdministrativo(Database.Base):
     __tablename__ = 'pontos_administrativo'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    administrativo_id = Column(Integer, Database.Base.metadata, ForeignKey('administrativos.id'))
+    administrativo_id = Column(Integer, ForeignKey('administrativos.id'))
     administrativo = relationship('Administrativo', back_populates='pontos_administrativo')
     entrada = Column('entrada', DateTime(timezone=True))
     saida = Column('saida', DateTime(timezone=True))
