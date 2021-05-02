@@ -275,7 +275,7 @@ class PontosExport:
             func.max(PontosAdministrativo.entrada).label('max_date')
         )
 
-        adm_intervalo = adm_intervalo.filter_by(administrativo_id=administrativo.id)
+        ##adm_intervalo = adm_intervalo.filter_by(administrativo_id=administrativo.id)
 
         try:
             res = adm_intervalo.one()
