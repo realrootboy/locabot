@@ -11,6 +11,7 @@ from models.Pessoas_Ordem import association_table
 class OrdemDeServico(Database.Base):
     __tablename__ = 'ordem_de_servico'
     id = Column(Integer, primary_key=True, autoincrement=True)
+    administrativo_id = Column(Integer, ForeignKey('administrativos.id'))
 
     tipo_de_ordem = Column('tipo_de_ordem', String(255))
 
@@ -25,10 +26,14 @@ class OrdemDeServico(Database.Base):
     solicitante_id = Column(Integer, ForeignKey('pessoas_empresa.id'))
     
     situacao = Column('situacao', String(255))
-    origem = Column('origem', String(255))
-    destino = Column('destino', String(255))
+    
+
     dt_servico = Column('dt_servico', DateTime(timezone=True))
     observacao = Column('observacao', String(255))
+
+    fk_rota_1 = Column(Integer, ForeignKey('rotas.id'))
+    fk_rota_2 = Column(Integer, ForeignKey('rotas.id'))
+
 
 
     passageiros = relationship(
