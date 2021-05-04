@@ -16,5 +16,5 @@ class Passageiros(Database.Base):
     os_id = Column(Integer, ForeignKey('ordem_de_servico.id'))
 
     def __init__(self, os, nome):
-        self.os = os;
-        self.nome = nome;
+        self.os = os
+        self.nome = nome
