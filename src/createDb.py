@@ -41,6 +41,7 @@ from models.Pedagios import Pedagios
 from models.Rotas import Rotas
 
 from models.LogOs import LogOs
+from models.ParadasDeOs import ParadasDeOs
 
 from models.Patrimonios import Patrimonios
 

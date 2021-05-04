@@ -25,6 +25,8 @@ class OrdemDeServico(Database.Base):
     coordenador_id = Column(Integer, ForeignKey('pessoas_empresa.id'))
     solicitante_id = Column(Integer, ForeignKey('pessoas_empresa.id'))
     
+    categoria = Column('categoria', String(255))
+
     situacao = Column('situacao', String(255))
     
 
