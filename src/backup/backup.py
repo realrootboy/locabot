@@ -17,8 +17,8 @@ def get_gdrive_service():
     # created automatically when the authorization flow completes for the first
     # time.
 
-    if os.path.exists('src/backup/token.json'):
-        creds = Credentials.from_authorized_user_file('src/backup/token.json', SCOPES)
+    if os.path.exists('secrets/backup/token.json'):
+        creds = Credentials.from_authorized_user_file('secrets/backup/token.json', SCOPES)
     
 
 
@@ -28,10 +28,10 @@ def get_gdrive_service():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'src/backup/credentials.json', SCOPES)
+                'secrets/backup/credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open('src/backup/token.json', 'w') as token:
+        with open('secrets/backup/token.json', 'w') as token:
             token.write(creds.to_json())
 
     drive_service = build('drive', 'v3', credentials=creds)
