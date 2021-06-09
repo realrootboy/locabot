@@ -19,6 +19,7 @@ from models.Veiculos import Veiculos
 from utils import textLogger
 from utils import CalendarUtils
 from drive import gdrive
+from backup import backup
 
 from database.main import Database
 
@@ -594,6 +595,17 @@ class CombustivelController:
                 session.commit()
 
                 session.close()
+                backup.upload_photos_fuel('media/' + item.media_dir + '/')
+
+                dir = 'media/' + item.media_dir
+
+                for files in os.listdir(dir):
+                    path = os.path.join(dir, files)
+                    try:
+                        shutil.rmtree(path)
+                    except OSError:
+                        os.remove(path)
+                os.rmdir(dir)
             except Exception as e:
                 try:
                     context.bot.send_message(
