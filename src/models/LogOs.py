@@ -13,6 +13,7 @@ class LogOs(Database.Base):
     administrativo_id = Column(Integer, ForeignKey('administrativos.id'))
     os_id = Column(Integer, ForeignKey('ordem_de_servico.id'))
     acao = Column('acao', String(512))
+    created_at = Column('created_at', DateTime(timezone=True))
 
     def __init__(self,
                  acao):
