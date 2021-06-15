@@ -815,7 +815,6 @@ class ChecklistController:
                 worksheet.write(row, col + 2, 'DATA ABERTURA')
                 worksheet.write(row, col + 3, 'HORA ABERTURA')
                 worksheet.write(row, col + 4, 'DATA FECHAMENTO')
-                
                 worksheet.write(row, col + 5, 'HORA FECHAMENTO')
                 worksheet.write(row, col + 6, 'PLACA')
                 worksheet.write(row, col + 7, 'MOTORISTA')
